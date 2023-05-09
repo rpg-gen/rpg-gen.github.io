@@ -1,3 +1,2 @@
-# Title: rpg-gen.github.io
-
-[Link to another page](another_page.md)
+<!-- [Link to another page](another_page.md) -->
+Site is under construction...
