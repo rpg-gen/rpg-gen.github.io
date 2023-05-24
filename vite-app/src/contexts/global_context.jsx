@@ -11,7 +11,8 @@ const context_obj = {
     site_title: "RPG Assistant",
     is_show_sidebar: false,
     is_show_rightbar: false,
-    rightbar_content: "test"
+    rightbar_content: "test",
+    mongodb_app_id: "application-0-dvaas"
 }
 
 const GlobalContext = createContext(context_obj);

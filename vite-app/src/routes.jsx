@@ -2,14 +2,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Root from "./routes/root";
 import DetailsLayout from "./components/details_layout.jsx";
-import Characters from "./routes/characters";
-import AccountInfo from "./routes/account_info";
+import Characters from "./routes/characters.jsx";
+import AccountInfo from "./routes/account_info.jsx";
 import Generator from "./routes/generator.jsx";
 import CharacterList from "./routes/character_list.jsx";
 import LoginProtected from "./components/login_protected.jsx";
 import Items from "./routes/items.jsx";
-import DataManager from "./routes/data_manager";
-import Abilities from "./routes/abilities";
+import DataManager from "./routes/data_manager.jsx";
+import Abilities from "./routes/abilities.jsx";
+import MapGen from "./routes/map_gen.jsx";
 
 const router = createBrowserRouter([
     {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             {
                 path: "abilities",
                 element: <DetailsLayout page_title="Abilities"><LoginProtected><Abilities /></LoginProtected></DetailsLayout>
+            },
+            {
+                path: "map_gen",
+                element: <DetailsLayout page_title="Map Generator"><LoginProtected><MapGen /></LoginProtected></DetailsLayout>
             },
             {
                 path: "data_manager",

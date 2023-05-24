@@ -2,10 +2,14 @@ import GlobalContext from "../contexts/global_context.jsx";
 import { useContext, useState, useEffect } from "react";
 import configs from "../utility/configs.jsx";
 import useFirebaseAuth from "../hooks/use_firebase_auth.jsx";
+// import useAtlasAuth from "../hooks/use_atlas_auth.jsx";
+
 
 export default function useGlobalContext() {
     const [global_context, set_global_context] = useState(useContext(GlobalContext));
     const firebase_auth = useFirebaseAuth();
+    // const atlas_auth = useAtlasAuth(() => {console.log("user_change_callback")});
+    // const atlas_auth = useAtlasAuth();
 
     function update_global_context(merge_dict) {
         return set_global_context((old_context) => ({
@@ -34,11 +38,23 @@ export default function useGlobalContext() {
             })
         });
 
+        // atlas_auth.set_user_listener(() => (atlas_user) => {
+        //     update_global_context({
+        //         atlas_user: atlas_user,
+        //         is_atlas_auth_checked: true
+        //     });
+        // });
+
+        // atlas_auth.set_user_listener(() => (atlas_user_listener));
+
         return (() => window.removeEventListener("resize", update_window_dimensions))
     },[]);
 
     global_context.update_global_context = update_global_context;
     global_context.firebase_auth = firebase_auth;
+
+    // global_context.atlas_auth = atlas_auth;
+
 
     return global_context;
 }
