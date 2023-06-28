@@ -1,7 +1,7 @@
 import DataContext from "../contexts/data_context.jsx";
 import { useContext } from "react";
 import GlobalContext from "../contexts/global_context.jsx";
-import Cookies from "universal-cookie";
+import HexagonGrid from "../components/hexagon_grid.jsx";
 
 
 export default function MapGen() {
@@ -9,11 +9,8 @@ export default function MapGen() {
 
     return (
         <>
-            <p>Hello world MapGen</p>
-            {/* <div>
-                <button onClick={query_data}>Query Data</button>
-            </div> */}
-            {/* <button onClick={refresh_user}>Refresh User</button> */}
+            <HexagonGrid num_hexes_wide = "4" num_hexes_tall = "4" hex_edge_px_length="60" />
         </>
     );
 };
+
