@@ -11,6 +11,7 @@ import Items from "./routes/items.jsx";
 import DataManager from "./routes/data_manager.jsx";
 import Abilities from "./routes/abilities.jsx";
 import MapGen from "./routes/map_gen.jsx";
+import MapGenRules from "./routes/map_gen_rules";
 
 const router = createBrowserRouter([
     {
@@ -52,7 +53,14 @@ const router = createBrowserRouter([
             },
             {
                 path: "map_gen",
-                element: <DetailsLayout page_title="Map Generator"><LoginProtected><MapGen /></LoginProtected></DetailsLayout>
+                element: <DetailsLayout page_title="Map Generator"><MapGen /></DetailsLayout>
+            },
+            {
+                path: "map_gen/rules",
+                element: <DetailsLayout page_title="Map Generator Rules"><MapGenRules /></DetailsLayout>,
+                children: [
+                    {path: ":subset", element: <MapGenRules />}
+                ]
             },
             {
                 path: "data_manager",

@@ -30,7 +30,9 @@ div.gapdiv {
     padding-bottom: .5em;
 }
 
-
+div.map_gen_rules_nav .active button {
+    color: red
+}
 
 /* NOTE: This is a page provided by the react router trial project */
 
