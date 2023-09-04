@@ -55,10 +55,10 @@ export default function Rightbar() {
 
     return (
         <div style={overlay_style}>
-            <div style={off_click_area_style} onClick={handle_off_click} className="hover-element"></div>
             <div style={sidebar_style}>
                 {global_context.rightbar_content}
             </div>
+            <div style={off_click_area_style} onClick={handle_off_click} className="hover-element"></div>
         </div>
     );
 }

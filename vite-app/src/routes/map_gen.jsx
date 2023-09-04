@@ -39,10 +39,11 @@ export default function MapGen() {
             </LoginProtected>
             <button onClick={zoom_in}>Zoom In</button>{" "}
             <button onClick={zoom_out}>Zoom Out</button>{" "}
-            <div></div>
-            <LoadingProtected is_loading={data_context.is_loading}>
-                <HexagonGrid map_document={data_context?.maps?.[data_context?.loaded_map_name] || {height: 5, width: 5}} hex_edge_px_length={hex_edge_length} />
-            </LoadingProtected>
+            <div style={{overflow: "scroll"}}>
+                <LoadingProtected is_loading={data_context.is_loading}>
+                    <HexagonGrid map_document={data_context?.maps?.[data_context?.loaded_map_name] || {height: 5, width: 5}} hex_edge_px_length={hex_edge_length} />
+                </LoadingProtected>
+            </div>
         </>
     );
 };
