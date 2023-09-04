@@ -15,7 +15,7 @@ import Rightbar from "../components/rightbar.jsx";
 
 export default function Root({ is_error=false }) {
 
-    const is_spoof = true;
+    const is_spoof = false;
     const global_context = useGlobalContext();
 
     // Add the global context user variable to the state, since when the user changes we want to re-render things

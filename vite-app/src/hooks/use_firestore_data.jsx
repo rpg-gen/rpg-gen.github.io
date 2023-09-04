@@ -25,6 +25,8 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
     // Even though this may not show, since the login page will still override the actual page's contents
     const is_use_firestore_data = (! is_spoof && is_logged_in);
 
+    // console.log(is_use_firestore_data)
+
     let firestore_db = undefined;
 
     if (is_use_firestore_data) {
@@ -63,6 +65,10 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
     }
 
     async function save_document_data(collection_name, document_key, document_data) {
+
+        if (document_data.hasOwnProperty("unsubscribe_function")) {
+            delete document_data.unsubscribe_function
+        }
 
         let is_doc_already_exists = false;
 
@@ -285,9 +291,9 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
             // Setup listeners for each character that exists in the firestore database
 
             const collections_to_load = [
-                configs.character_collection_name,
-                configs.item_collection_name,
-                configs.ping_collection_name,
+                // configs.character_collection_name,
+                // configs.item_collection_name,
+                // configs.ping_collection_name,
             ]
 
             collections_to_load.forEach(async (collection_name) => {
@@ -306,6 +312,34 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
             const unsubscribe_function = setup_listener(collection_name, doc.id);
         });
     }
+
+    function set_loaded_map_name(map_key) {
+        set_data_context((old_context) => ({
+            ...old_context,
+            loaded_map_name: map_key
+        }));
+    }
+
+    async function load_map(map_key) {
+        set_is_loading(true);
+        const doc_ref = doc(firestore_db, configs.maps_collection_name, map_key)
+        const doc_snap = await getDoc(doc_ref)
+
+        let return_value = false
+
+        if (doc_snap.data() != undefined) {
+            update_local_document_data(configs.maps_collection_name, map_key, doc_snap.data())
+            const unsubscribe_function = setup_listener(configs.maps_collection_name, map_key);
+            set_loaded_map_name(map_key)
+            return_value = true
+        }
+        
+        set_is_loading(false);
+
+        return return_value
+    }
+
+    data_context.load_map = load_map
 
     useEffect(() => {
         load_all_rpg_data();
