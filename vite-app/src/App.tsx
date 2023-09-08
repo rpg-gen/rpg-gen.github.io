@@ -1,13 +1,22 @@
 import './App.css'
-import MainMenu from './pages/main_menu'
 import { Outlet } from "react-router-dom"
+import usePaintTool from "./hooks/use_paint_tool"
+import PaintContext from "./contexts/paint_context"
 
 function App() {
-  return (
-    <>
-      <Outlet />
-    </>
-  )
+
+    const paint_context = usePaintTool()
+
+    return (
+        <>
+        <PaintContext.Provider value={paint_context}>
+
+        <Outlet />
+
+        </PaintContext.Provider>
+
+        </>
+    )
 }
 
 export default App

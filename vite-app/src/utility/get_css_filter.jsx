@@ -1,6 +1,6 @@
 // See https://codepen.io/sosuke/pen/Pjoqqp
 
-export default function get_css_filter(desired_color_hex: String) {
+export default function get_css_filter(desired_color_hex) {
 
     const rgb = hexToRgb(desired_color_hex);
 
@@ -17,7 +17,7 @@ class Color {
   constructor(r, g, b) {
     this.set(r, g, b);
   }
-  
+
   toString() {
     return `rgb(${Math.round(this.r)}, ${Math.round(this.g)}, ${Math.round(this.b)})`;
   }

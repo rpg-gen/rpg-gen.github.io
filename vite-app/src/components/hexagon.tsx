@@ -1,6 +1,12 @@
-import get_css_filter from "../utility/get_css_filter"
+import colors from "../configs/colors"
+import { useState, useContext } from "react"
+import PaintContext from "../contexts/paint_context"
 
-export default function Hexagon({edge_length, color_hexidecimal} : {edge_length: number, color_hexidecimal: String}) {
+export default function Hexagon({edge_length, row_number, column_number} : {edge_length: number, row_number: number, column_number: number}) {
+
+    const paint_context = useContext(PaintContext)
+
+    const [color_hexidecimal, set_color_hexidecimal] = useState(colors.unset)
 
     const short_diagonal_length = Math.round(Math.sqrt(3) * edge_length)
     const long_diagonal_length = edge_length * 2
@@ -19,22 +25,26 @@ export default function Hexagon({edge_length, color_hexidecimal} : {edge_length:
     const polygon_points = [top_left_point, top_mid_point, top_right_point, bottom_right_point, bottom_mid_point, bottom_left_point]
     const polygon_points_string = polygon_points.join(",")
 
-    const css_color_filter = get_css_filter(color_hexidecimal)
+    // const css_color_filter = get_css_filter(color_hexidecimal)
 
     function handle_hexagon_click() {
-        console.log("clicked")
+        if (paint_context.paint_brush.is_full_hex_color) {
+            console.log(row_number, column_number)
+            set_color_hexidecimal(paint_context.paint_brush.hexidecimal_color)
+        }
     }
 
-
     return (
-        <svg 
-            style={{filter: css_color_filter, display: "inline-block"}}
-            height={boundary_height} 
+        <svg
+            // style={{filter: css_color_filter, display: "inline-block"}}
+            height={boundary_height}
             width={boundary_width}>
-            <polygon 
+            <polygon
                 onClick={handle_hexagon_click}
                 points={polygon_points_string}
+                fill={color_hexidecimal}
                 stroke="black"
+                strokeWidth=".2"
             />
         </svg>
     )

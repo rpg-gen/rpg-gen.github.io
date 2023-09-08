@@ -1,16 +1,25 @@
-import HamMenu from "../components/ham_menu"
-import Hexagon from "../components/hexagon"
-import colors from "../configs/colors"
+import TopBar from "../components/top_bar"
+import PaintContext from "../contexts/paint_context"
+import { useContext } from "react"
+import PaintPicker from "../pages/paint_picker"
+import HexagonGrid from "../components/hexagon_grid"
 
 export default function Map () {
 
+    const paint_context = useContext(PaintContext)
+
     return (
         <>
-        
-        <HamMenu />
-        <Hexagon edge_length={60} color_hexidecimal={colors.blank_hex} />        
-        <Hexagon edge_length={60} color_hexidecimal={colors.blank_hex} />        
-        
+
+        <TopBar />
+        <HexagonGrid num_columns={20} num_rows={20} edge_length={60} />
+
+        {
+            paint_context.is_show_paint_picker
+            ? <PaintPicker />
+            : ""
+        }
+
         </>
     )
 }
