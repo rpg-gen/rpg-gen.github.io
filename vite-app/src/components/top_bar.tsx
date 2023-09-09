@@ -9,7 +9,7 @@ export default function TopBar() {
 
         <div style={{
             display: "flex",
-            position: "fixed",
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
@@ -17,13 +17,15 @@ export default function TopBar() {
             marginLeft: spacing.top_bar_margin.toString() + "rem",
             marginTop: spacing.top_bar_margin.toString() + "rem",
             marginRight: spacing.top_bar_margin.toString() + "rem",
-            alignItems: "center"
+            alignItems: "center",
+            maxWidth: "100%",
+            minWidth: "100%"
         }}>
             <HamMenu />
             <EditBrushButton />
         </div>
 
-        <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div>
+        {/* <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div> */}
 
         </>
     )

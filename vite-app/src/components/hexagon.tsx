@@ -37,6 +37,9 @@ export default function Hexagon({edge_length, row_number, column_number} : {edge
     return (
         <svg
             // style={{filter: css_color_filter, display: "inline-block"}}
+            style={{
+                minWidth: boundary_width
+            }}
             height={boundary_height}
             width={boundary_width}>
             <polygon

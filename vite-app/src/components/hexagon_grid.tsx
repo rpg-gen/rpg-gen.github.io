@@ -1,4 +1,5 @@
 import HexagonRow from "../components/hexagon_row"
+import spacing from "../configs/spacing"
 
 export default function HexagonGrid({num_columns, num_rows, edge_length}: {num_columns: number, num_rows: number, edge_length: number}) {
 
@@ -9,8 +10,18 @@ export default function HexagonGrid({num_columns, num_rows, edge_length}: {num_c
 
     return (
         <>
+        <div style={{
+            minWidth: "100%",
+            maxWidth: "100%",
+            overflow: "scroll",
+            maxHeight: "100%",
+            minHeight: "100%",
+            height: "100%",
 
-        {hexagon_rows}
+        }}>
+            <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div>
+            {hexagon_rows}
+        </div>
 
         </>
     )
