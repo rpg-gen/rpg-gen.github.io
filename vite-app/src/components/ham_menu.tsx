@@ -10,24 +10,30 @@ export default function HamMenu() {
     return (
         <>
 
-        <Link to="/">
-
-        <img
+        <Link 
 
         style={{
             height: ham_menu_height.toString() + "rem",
             width: ham_menu_height.toString() + "rem",
             border: "1px solid black",
-            padding: ".1rem",
             boxSizing: "border-box",
             borderRadius: "20%",
             backgroundColor: "white",
             marginRight: ham_menu_margin.toString() + "rem"
         }}
+        
+        to="/">
 
-        src={ham_menu_black}
+            <img 
+                src={ham_menu_black}
+                style={{
+                    padding: ".1rem",
+                    boxSizing: "border-box",
+                    height: "100%",
+                    width: "100%",
 
-        />
+                }}
+            />
 
         </Link>
 

@@ -17,6 +17,9 @@ export default function TopBar() {
             marginLeft: spacing.top_bar_margin.toString() + "rem",
             marginTop: spacing.top_bar_margin.toString() + "rem",
             marginRight: spacing.top_bar_margin.toString() + "rem",
+            paddingLeft: spacing.top_bar_padding.toString() + "rem",
+            paddingTop: spacing.top_bar_padding.toString() + "rem",
+            paddingRight: spacing.top_bar_padding.toString() + "rem",
             alignItems: "center",
             maxWidth: "100%",
             minWidth: "100%"
