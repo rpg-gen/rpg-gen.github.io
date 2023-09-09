@@ -17,8 +17,7 @@ export default function HexagonGrid({num_columns, num_rows, edge_length}: {num_c
             maxHeight: "100%",
             minHeight: "100%",
             height: "100%",
-            overscrollBehavior: "none"
-
+            // overscrollBehavior: "none"
         }}>
             <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div>
             {hexagon_rows}
