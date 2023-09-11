@@ -1,12 +1,12 @@
 import spacing from "../configs/spacing"
-import paint_brushes from "../configs/paint_brushes"
 import { useContext } from "react"
-import PaintContext from "../contexts/paint_context"
-import paint_brush from "../types/paint_brush"
-import { category, color_type } from "../types/paint_brush"
-import colors from "../configs/colors"
+import MapContext from "../contexts/map_context"
 
-export default function PaintPicker() {
+export default function ZoomPicker() {
+
+    const zoom_options = Array.from({length: 10}, (_, index) => {
+        return <ZoomOption zoom_level={index + 1} />
+    })
 
     return (
         <>
@@ -24,9 +24,20 @@ export default function PaintPicker() {
             flexDirection: "column"
         }}>
 
-            <Section category={category.background} />
-            <Section category={category.action} />
-            <Section category={category.icon} />
+            <div style={{
+                display: "flex",
+                // alignItems: "center",
+                // justifyContent: "center",
+                justifyContent: "center",
+            }}>
+                <div style={{
+                    display: "flex",
+                    maxWidth: ((spacing.top_bar_height * 2.5 + spacing.top_bar_margin * 2) * 3) + "rem",
+                    flexWrap: "wrap",
+                }}>
+                    {zoom_options}
+                </div>
+            </div>
 
         </div>
 
@@ -34,44 +45,13 @@ export default function PaintPicker() {
     )
 }
 
-function Section(props: {category: category}) {
-    const brushes = []
+function ZoomOption(props: {zoom_level: number}) {
 
-    for (const key in paint_brushes) {
-        const paint_brush = paint_brushes[key]
-        if (paint_brush.category == props.category) {
-            brushes.push(<PaintOption key={key} paint_brush={paint_brushes[key]} />)
-        }
-    }
-
-    return (
-        <>
-
-        <div style={{
-                display: "flex",
-                justifyContent: "center",
-                margin: (spacing.top_bar_margin * 2) + "rem"
-            }}>
-                <div style={{
-                    display: "flex",
-                    maxWidth: ((spacing.top_bar_height * 2.5 + spacing.top_bar_margin * 2) * 3) + "rem",
-                    flexWrap: "wrap",
-                }}>
-                    {brushes}
-                </div>
-            </div>
-
-        </>
-    )
-}
-
-function PaintOption({paint_brush}: {paint_brush: paint_brush}) {
-
-    const paint_context = useContext(PaintContext)
+    const map_context = useContext(MapContext)
 
     function handle_click() {
-        paint_context.set_valid_paint_brush(paint_brush.name)
-        paint_context.set_is_show_paint_picker(false)
+        map_context.set_zoom_level(props.zoom_level)
+        map_context.set_is_show_zoom_picker(false)
     }
 
     return (
@@ -81,14 +61,14 @@ function PaintOption({paint_brush}: {paint_brush: paint_brush}) {
             style={{
                 width: (spacing.top_bar_height * 2.5).toString() + "rem",
                 height: spacing.top_bar_height.toString() + "rem",
-                backgroundColor: paint_brush.hexidecimal_color,
+                backgroundColor: "white",
                 margin: spacing.top_bar_margin.toString() + "rem",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 border: "1px solid black",
                 borderRadius: "10%",
-                color: (paint_brush.color_type == color_type.light ? colors.black : colors.white),
+                color: "black",
                 boxSizing: "border-box",
                 flexShrink: 0
             }}
@@ -97,7 +77,7 @@ function PaintOption({paint_brush}: {paint_brush: paint_brush}) {
 
             onClick={handle_click}
         >
-            {paint_brush.name}
+            {props.zoom_level}
         </div>
 
         </>

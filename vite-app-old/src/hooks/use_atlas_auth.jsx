@@ -58,7 +58,6 @@ export default function useAtlasAuth() {
         const realm_service = global_context.atlas_auth.atlas_user.mongoClient("mongodb-atlas");
         const mongo_database = realm_service.db("Cluster0");
 
-        console.log(mongo_database);
     }
 
     return {

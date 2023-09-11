@@ -8,8 +8,6 @@ import useFirebaseAuth from "../hooks/use_firebase_auth.jsx";
 export default function useGlobalContext() {
     const [global_context, set_global_context] = useState(useContext(GlobalContext));
     const firebase_auth = useFirebaseAuth();
-    // const atlas_auth = useAtlasAuth(() => {console.log("user_change_callback")});
-    // const atlas_auth = useAtlasAuth();
 
     function update_global_context(merge_dict) {
         return set_global_context((old_context) => ({

@@ -1,11 +1,9 @@
-import paint_brush from "../assets/paint_brush.svg";
-import spacing from "../configs/spacing"
 import PaintContext from "../contexts/paint_context"
 import { useContext } from "react"
+import CSS from "csstype"
 
-export default function EditBrushButton() {
+export default function EditBrushButton(props: {top_bar_button_style: CSS.Properties}) {
 
-    const {top_bar_height, top_bar_margin} = spacing
     const paint_context = useContext(PaintContext)
 
     function handle_click() {
@@ -15,7 +13,7 @@ export default function EditBrushButton() {
     return (
         <>
 
-        <img
+        {/* <img
 
         style={{
             height: top_bar_height.toString() + "rem",
@@ -32,9 +30,28 @@ export default function EditBrushButton() {
 
         onClick={handle_click}
 
-        />
+        /> */}
 
-        <div>{paint_context.paint_brush.name}</div>
+        <div
+            style={{
+                ...props.top_bar_button_style,
+                backgroundColor: paint_context.paint_brush.hexidecimal_color,
+            }}
+
+            onClick={handle_click}
+
+            className="hover-element"
+
+        >
+            {
+                paint_context.paint_brush.icon
+                ? <img src={paint_context.paint_brush.icon} style={{height: "100%", width: "100%"}} />
+                : ""
+            }
+
+        </div>
+
+        {/* <div>{paint_context.paint_brush.name}</div> */}
 
 
 

@@ -16,8 +16,6 @@ export default function Items() {
 
     const sorted_items = data_context.get_sorted_item_list();
 
-    // console.log(sorted_items)
-
     const form_props = {
         form_mode: form_mode,
         set_form_mode: set_form_mode,
@@ -79,7 +77,7 @@ function ItemRow ({item_data, row_num, set_item_id_to_edit, set_flash_message, f
             <div>{item_data.display_name}</div>
             <div>
                 {
-                    form_mode == "edit" ? "" : 
+                    form_mode == "edit" ? "" :
                     <>
                         <button value={item_data.id} onClick={setup_view}>view</button>{" "}
                         <button value={item_data.id} onClick={setup_edit}>edit</button>

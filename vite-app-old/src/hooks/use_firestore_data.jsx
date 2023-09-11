@@ -25,8 +25,6 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
     // Even though this may not show, since the login page will still override the actual page's contents
     const is_use_firestore_data = (! is_spoof && is_logged_in);
 
-    // console.log(is_use_firestore_data)
-
     let firestore_db = undefined;
 
     if (is_use_firestore_data) {
@@ -267,7 +265,7 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
         const enriched_abilities = abilities.map((ability) => {
             const ability_key_name = ability.ability_name.toLowerCase().replaceAll(" ", "_");
             const ability_key_class = ability.class.toLowerCase().replaceAll(" ", "_");
-            
+
             return {
                 ability_key: ability_key_class + "_" + ability_key_name,
                 ...ability
@@ -279,7 +277,7 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
 
     async function load_all_rpg_data () {
         flash_loading();
-        
+
         load_quest_abilities();
 
         if (!is_use_firestore_data) {
@@ -333,7 +331,7 @@ export default function useFirestoreData(is_spoof = true, is_logged_in = false) 
             set_loaded_map_name(map_key)
             return_value = true
         }
-        
+
         set_is_loading(false);
 
         return return_value

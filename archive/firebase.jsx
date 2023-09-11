@@ -20,28 +20,21 @@ const firebase_auth = getAuth(firebase_app);
 const firebase_db = getFirestore(firebase_app);
 
 async function get_attribute(attribute_key) {
-    console.log("fetching attribute");
     const doc_ref = doc(firebase_db, "attribute", attribute_key);
     const doc_snap = await getDoc(doc_ref);
     if (doc_snap.exists()) {
-        console.log("Document data", doc_snap.data());
         const data = doc_snap.data();
-        console.log(data.tags);
 
     }
     else {
-        console.log("Document data undefined");
     }
 }
 
 async function get_attributes_by_tag(tag_name) {
-    console.log("fetching attributes");
     // const the_query = query(collection(firebase_db, "attribute"), where("name", "==", "greed"));
     const the_query = query(collection(firebase_db, "attribute"), where("tags", "array-contains-any", [tag_name]));
     const query_snapshot = await getDocs(the_query);
-    // console.log(query_snapshot);
     query_snapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
     });
 }
 
@@ -54,7 +47,6 @@ async function clear_collection (collection_name, append_indent_banner) {
     }
 
     query_snapshot.forEach((doc_snapshot) => {
-        // console.log(doc_snapshot.id);
         append_indent_banner("Deleting item with key\"" + doc_snapshot.id + "\"...");
         deleteDoc(doc(firebase_db, collection_name, doc_snapshot.id));
     });

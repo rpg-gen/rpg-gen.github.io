@@ -7,7 +7,8 @@ const colors: {[key: string]: string} = {
     forest: "#387d02",
     desert: "#c2bd27",
     hills: "#995e05",
-    query: "#ffffff"
+    white: "#ffffff",
+    black: "#000000"
 }
 
 export default colors

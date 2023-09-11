@@ -115,7 +115,7 @@ export default function ItemGenForm () {
 
             num_attributes = get_random_array_element(num_attributes_weighted_array)[1];
 
-            // console.log(num_attributes_weighted_array)
+            // (num_attributes_weighted_array)
 
             is_power = get_random_array_element([
                 ...Array(power_chance).fill(true),

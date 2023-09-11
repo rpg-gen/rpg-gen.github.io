@@ -1,9 +1,25 @@
 type paint_brush = {
     name: string,
-    is_full_hex_color: boolean,
+    category: category,
     hotkey: string,
     hexidecimal_color: string,
-    font_color: string
+    color_type: color_type
+    icon: string | null,
+    dark_icon: string | null,
+    light_icon: string | null
 }
+
+enum color_type {
+    light="light",
+    dark="dark"
+}
+
+enum category {
+    background="background",
+    action="action",
+    icon="icon"
+}
+
+export { category, color_type}
 
 export default paint_brush

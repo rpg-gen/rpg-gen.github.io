@@ -11,25 +11,33 @@ export default function HexagonRow ({row_number, num_hexes, edge_length} : {row_
         //     is_selected = true
         // }
 
+        const short_diagonal_length = Math.round(Math.sqrt(3) * edge_length)
+
         return (
-            <Hexagon
+            <div
                 key={hexagon_key}
-                // hex_key={hexagon_key}
-                // hex_data={hex_data}
-                column_number={column_number}
-                row_number={row_number}
-                edge_length={edge_length}
-                // is_show_border={true}
-                // is_selected={is_selected}
-                // set_selected_row={set_selected_row}
-                // set_selected_column={set_selected_column}
-            />
+                style={{
+                    height: edge_length * 2,
+                    width: short_diagonal_length,
+                    position: "relative",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <Hexagon
+                    column_number={column_number}
+                    row_number={row_number}
+                    edge_length={edge_length}
+                />
+            </div>
         );
     });
 
     const row_style: CSS.Properties = {
         display: "flex",
-        flexWrap: "nowrap"
+        flexWrap: "nowrap",
+        lineHeight: "0px"
     }
 
     if (row_number % 2 == 1) {

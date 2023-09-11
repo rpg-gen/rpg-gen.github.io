@@ -14,8 +14,6 @@ export default function useFirebaseAuth(auth_changed_callback) {
     //         .catch((error) => {
     //             const error_code = error.code;
     //             const error_message = error.message;
-    //             console.log(error_code);
-    //             console.log(error_message)
     //         })
     // }
 

@@ -1,42 +1,33 @@
 import ham_menu_black from "../assets/ham_menu_black.svg";
-import { Link } from "react-router-dom"
-import spacing from "../configs/spacing"
+import CSS from "csstype"
 
-export default function HamMenu() {
-
-    const ham_menu_height = spacing.top_bar_height
-    const ham_menu_margin = spacing.top_bar_margin
+export default function HamMenu(props: {top_bar_button_style: CSS.Properties}) {
 
     return (
         <>
 
-        <Link 
+        <div
 
-        style={{
-            height: ham_menu_height.toString() + "rem",
-            width: ham_menu_height.toString() + "rem",
-            border: "1px solid black",
-            boxSizing: "border-box",
-            borderRadius: "20%",
-            backgroundColor: "white",
-            marginRight: ham_menu_margin.toString() + "rem"
-        }}
-        
-        to="/">
+            style={{
+                ...props.top_bar_button_style,
+                backgroundColor: "white",
+            }}
 
-            <img 
-                src={ham_menu_black}
-                style={{
-                    padding: ".1rem",
-                    boxSizing: "border-box",
-                    height: "100%",
-                    width: "100%",
+            className="hover-element"
+        >
 
-                }}
-            />
+                <img
+                    src={ham_menu_black}
+                    style={{
+                        padding: ".1rem",
+                        boxSizing: "border-box",
+                        height: "100%",
+                        width: "100%",
 
-        </Link>
+                    }}
+                />
 
+        </div>
         </>
     )
 }
