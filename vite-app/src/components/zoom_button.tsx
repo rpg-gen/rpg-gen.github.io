@@ -19,7 +19,8 @@ export default function ZoomButton(props: {top_bar_button_style: CSS.Properties}
                 ...props.top_bar_button_style,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                backgroundColor: "white"
             }}
 
             className="hover-element"

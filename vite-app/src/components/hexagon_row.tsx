@@ -22,7 +22,8 @@ export default function HexagonRow ({row_number, num_hexes, edge_length} : {row_
                     position: "relative",
                     display: "flex",
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    flexShrink: 0
                 }}
             >
                 <Hexagon

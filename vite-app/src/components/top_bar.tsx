@@ -13,7 +13,8 @@ export default function TopBar() {
         padding: ".1rem",
         boxSizing: "border-box",
         borderRadius: "20%",
-        marginRight: spacing.top_bar_margin.toString() + "rem"
+        marginRight: spacing.top_bar_margin.toString() + "rem",
+        zIndex: 20
     }
 
     return (
