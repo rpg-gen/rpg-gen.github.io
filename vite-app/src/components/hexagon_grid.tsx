@@ -19,7 +19,7 @@ export default function HexagonGrid({num_columns, num_rows, edge_length}: {num_c
             height: "100%",
             overscrollBehavior: "none"
         }}>
-            <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div>
+            <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem"}}></div>
             {hexagon_rows}
         </div>
 

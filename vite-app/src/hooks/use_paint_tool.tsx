@@ -4,7 +4,7 @@ import paint_brush from "../types/paint_brush"
 
 export default function usePaintTool() {
 
-    const [paint_brush, set_paint_brush] = useState(paint_brushes.ocean)
+    const [paint_brush, set_paint_brush] = useState(paint_brushes.river)
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
 
     function set_valid_paint_brush(new_brush: string) {

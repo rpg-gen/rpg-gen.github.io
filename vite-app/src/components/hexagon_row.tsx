@@ -17,13 +17,15 @@ export default function HexagonRow ({row_number, num_hexes, edge_length} : {row_
             <div
                 key={hexagon_key}
                 style={{
-                    height: edge_length * 2,
+                    height: edge_length,
                     width: short_diagonal_length,
                     position: "relative",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    flexShrink: 0
+                    flexShrink: 0,
+                    zIndex: 0,
+                    marginTop: edge_length / 2 + "px"
                 }}
             >
                 <Hexagon
@@ -45,8 +47,8 @@ export default function HexagonRow ({row_number, num_hexes, edge_length} : {row_
         row_style.marginLeft = (Math.round(Math.sqrt(3) * edge_length) / 2).toString() + "px"
     }
     else {
-        row_style.marginTop = (edge_length * -1 / 2).toString() + "px"
-        row_style.marginBottom = (edge_length * -1 / 2).toString() + "px"
+        // row_style.marginTop = (edge_length * -1 / 2).toString() + "px"
+        // row_style.marginBottom = (edge_length * -1 / 2).toString() + "px"
     }
 
     return (

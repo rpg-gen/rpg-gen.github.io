@@ -15,6 +15,8 @@ import svg_url_unset from "../assets/unset.svg"
 import svg_url_village_black from "../assets/village_black.svg"
 import svg_url_village_white from "../assets/village_white.svg"
 
+import svg_url_river from "../assets/river.svg"
+
 const paint_brushes: {[key: string]: paint_brush} = {
     query: {
         name: "Query",
@@ -123,6 +125,16 @@ const paint_brushes: {[key: string]: paint_brush} = {
         hexidecimal_color: colors.white,
         color_type: color_type.light,
         icon: svg_url_unset,
+        dark_icon: null,
+        light_icon: null
+    },
+    river: {
+        name: "River",
+        category: category.icon,
+        hotkey: "u",
+        hexidecimal_color: colors.white,
+        color_type: color_type.light,
+        icon: svg_url_river,
         dark_icon: null,
         light_icon: null
     },

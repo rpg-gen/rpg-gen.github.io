@@ -19,7 +19,7 @@ export default function Map () {
         <>
 
         <TopBar />
-        <HexagonGrid num_columns={20} num_rows={20} edge_length={current_edge_length} />
+        <HexagonGrid num_columns={5} num_rows={5} edge_length={current_edge_length} />
 
         {
             paint_context.is_show_paint_picker

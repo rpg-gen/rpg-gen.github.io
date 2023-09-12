@@ -8,7 +8,7 @@ const context_obj: {
     is_show_zoom_picker: boolean,
     set_is_show_zoom_picker: Function
 } = {
-    zoom_level: 5,
+    zoom_level: 10,
     set_zoom_level: noop,
     is_show_zoom_picker: false,
     set_is_show_zoom_picker: noop
