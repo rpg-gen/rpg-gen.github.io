@@ -27,6 +27,7 @@ export default function PaintPicker() {
             <Section category={category.background} />
             <Section category={category.action} />
             <Section category={category.icon} />
+            <Section category={category.path} />
 
         </div>
 

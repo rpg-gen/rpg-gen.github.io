@@ -118,7 +118,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
         dark_icon: svg_url_village_black,
         light_icon: svg_url_village_white
     },
-    clear: {
+    clear_icon: {
         name: "Clear",
         category: category.icon,
         hotkey: "u",
@@ -130,11 +130,21 @@ const paint_brushes: {[key: string]: paint_brush} = {
     },
     river: {
         name: "River",
-        category: category.icon,
+        category: category.path,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
         icon: svg_url_river,
+        dark_icon: null,
+        light_icon: null
+    },
+    clear_path: {
+        name: "Clear",
+        category: category.path,
+        hotkey: "u",
+        hexidecimal_color: colors.white,
+        color_type: color_type.light,
+        icon: svg_url_unset,
         dark_icon: null,
         light_icon: null
     },

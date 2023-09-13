@@ -17,7 +17,8 @@ enum color_type {
 enum category {
     background="background",
     action="action",
-    icon="icon"
+    icon="icon",
+    path="path"
 }
 
 export { category, color_type}
