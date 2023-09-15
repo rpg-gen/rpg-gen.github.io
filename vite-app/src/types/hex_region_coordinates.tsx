@@ -1,5 +1,5 @@
-enum hex_region {
-    top_left= "top-left",
+enum hex_regions {
+    top_left= "top_left",
     top_right="top_right",
     right="right",
     bottom_right="bottom_right",
@@ -10,8 +10,8 @@ enum hex_region {
 type hex_region_coordinates = {
     column_number: number,
     row_number: number,
-    hex_region: hex_region
+    hex_region: string
 }
 
 export default hex_region_coordinates
-export { hex_region }
+export { hex_regions }

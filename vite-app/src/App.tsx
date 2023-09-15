@@ -8,7 +8,7 @@ import MapContext from "./contexts/map_context"
 function App() {
 
     const paint_context = usePaintTool()
-    const map_context = useMapContext()
+    const map_context = useMapContext(3, 3)
 
     return (
         <>

@@ -71,7 +71,7 @@ function PaintOption({paint_brush}: {paint_brush: paint_brush}) {
     const paint_context = useContext(PaintContext)
 
     function handle_click() {
-        paint_context.set_valid_paint_brush(paint_brush.name)
+        paint_context.set_valid_paint_brush(paint_brush.id)
         paint_context.set_is_show_paint_picker(false)
     }
 
@@ -98,7 +98,7 @@ function PaintOption({paint_brush}: {paint_brush: paint_brush}) {
 
             onClick={handle_click}
         >
-            {paint_brush.name}
+            {paint_brush.display_name}
         </div>
 
         </>

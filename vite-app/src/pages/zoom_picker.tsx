@@ -5,7 +5,7 @@ import MapContext from "../contexts/map_context"
 export default function ZoomPicker() {
 
     const zoom_options = Array.from({length: 10}, (_, index) => {
-        return <ZoomOption zoom_level={index + 1} />
+        return <ZoomOption key={index + 1} zoom_level={index + 1} />
     })
 
     return (

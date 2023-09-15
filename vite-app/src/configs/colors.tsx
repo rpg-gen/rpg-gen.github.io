@@ -1,14 +1,15 @@
 const colors: {[key: string]: string} = {
-    unset: "#bbfaf8", // Light blue / grey
-    ocean: "#037ffc",
-    mountain: "#737373",
-    bog: "#7d0073",
-    plains: "#a1e070",
-    forest: "#387d02",
-    desert: "#c2bd27",
-    hills: "#995e05",
+    unset: "#FFFFFF", // Light blue / grey
+    ocean: "#a5c6fa",
+    mountain: "#9d9fa1",
+    bog: "#ffe4fd",
+    forest: "#a1e070",
+    plains: "#ddfec3",
+    desert: "#f8f7da",
+    hills: "#feeed6",
     white: "#ffffff",
-    black: "#000000"
+    black: "#000000",
+    road: "#664900"
 }
 
 export default colors
