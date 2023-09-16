@@ -2,8 +2,8 @@ import { useState, useContext } from "react"
 import MapContext from "../contexts/map_context"
 import hex_region_coordinates from "../types/hex_region_coordinates"
 import {hex_regions} from "../types/hex_region_coordinates"
-import type_map_definition from "../types/type_map_definition"
-import type_map_definition_record from "../types/type_map_definition_record"
+import type_map_definition from "../types/type_hexagon_definitions"
+import type_map_definition_record from "../types/type_hexagon_definition"
 
 export default function useMapContext(num_columns: number, num_rows: number) {
 

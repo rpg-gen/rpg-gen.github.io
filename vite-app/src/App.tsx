@@ -7,18 +7,18 @@ import MapContext from "./contexts/map_context"
 
 function App() {
 
-    const paint_context = usePaintTool()
-    const map_context = useMapContext(3, 3)
+    // const paint_context = usePaintTool()
+    // const map_context = useMapContext(20, 20)
 
     return (
         <>
-        <MapContext.Provider value={map_context}>
-        <PaintContext.Provider value={paint_context}>
+        {/* <MapContext.Provider value={map_context}> */}
+        {/* <PaintContext.Provider value={paint_context}> */}
 
         <Outlet />
 
-        </PaintContext.Provider>
-        </MapContext.Provider>
+        {/* </PaintContext.Provider> */}
+        {/* </MapContext.Provider> */}
 
         </>
     )

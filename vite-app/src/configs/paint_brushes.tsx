@@ -1,5 +1,5 @@
-import paint_brush from "../types/paint_brush"
-import { category, color_type } from "../types/paint_brush"
+import paint_brush from "../types/type_paint_brush"
+import { paint_category, color_type } from "../types/type_paint_brush"
 import colors from "../configs/colors"
 
 import svg_url_magnifying_glass from "../assets/magnifying_glass.svg"
@@ -14,6 +14,9 @@ import svg_url_unset from "../assets/unset.svg"
 
 import svg_url_village_black from "../assets/village_black.svg"
 import svg_url_village_white from "../assets/village_white.svg"
+import svg_url_village from "../assets/village.svg"
+import svg_url_town from "../assets/town.svg"
+import svg_url_city from "../assets/city.svg"
 
 import svg_url_river from "../assets/river.svg"
 import svg_url_road from "../assets/road.svg"
@@ -22,7 +25,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     query: {
         id: "query",
         display_name: "Query",
-        category: category.action,
+        paint_category: paint_category.action,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
@@ -33,7 +36,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     unset: {
         id: "unset",
         display_name: "Unset",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.unset,
         color_type: color_type.light,
@@ -44,7 +47,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     ocean: {
         id: "ocean",
         display_name: "Ocean",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.ocean,
         color_type: color_type.light,
@@ -55,7 +58,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     mountain: {
         id: "mountain",
         display_name: "Mountain",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.mountain,
         color_type: color_type.light,
@@ -66,7 +69,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     bog: {
         id: "bog",
         display_name: "Bog",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.bog,
         color_type: color_type.light,
@@ -77,7 +80,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     plains: {
         id: "plains",
         display_name: "Plains",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.plains,
         color_type: color_type.light,
@@ -88,7 +91,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     forest: {
         id: "forest",
         display_name: "Forest",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.forest,
         color_type: color_type.light,
@@ -99,7 +102,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     desert: {
         id: "desert",
         display_name: "Desert",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.desert,
         color_type: color_type.light,
@@ -110,7 +113,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     hills: {
         id: "hills",
         display_name: "Hills",
-        category: category.background,
+        paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.hills,
         color_type: color_type.light,
@@ -121,18 +124,40 @@ const paint_brushes: {[key: string]: paint_brush} = {
     village: {
         id: "village",
         display_name: "Village",
-        category: category.icon,
+        paint_category: paint_category.icon,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
-        icon: svg_url_village_black,
+        icon: svg_url_village,
+        dark_icon: svg_url_village,
+        light_icon: svg_url_village
+    },
+    town: {
+        id: "town",
+        display_name: "Town",
+        paint_category: paint_category.icon,
+        hotkey: "u",
+        hexidecimal_color: colors.white,
+        color_type: color_type.light,
+        icon: svg_url_town,
+        dark_icon: svg_url_village_black,
+        light_icon: svg_url_village_white
+    },
+    city: {
+        id: "city",
+        display_name: "City",
+        paint_category: paint_category.icon,
+        hotkey: "u",
+        hexidecimal_color: colors.white,
+        color_type: color_type.light,
+        icon: svg_url_city,
         dark_icon: svg_url_village_black,
         light_icon: svg_url_village_white
     },
     clear_icon: {
         id: "clear_icon",
         display_name: "Clear",
-        category: category.icon,
+        paint_category: paint_category.icon,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
@@ -143,7 +168,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     river: {
         id: "river",
         display_name: "River",
-        category: category.path,
+        paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
@@ -154,7 +179,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     road: {
         id: "road",
         display_name: "Road",
-        category: category.path,
+        paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,
@@ -165,7 +190,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     clear_path: {
         id: "clear_path",
         display_name: "Clear",
-        category: category.path,
+        paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.white,
         color_type: color_type.light,

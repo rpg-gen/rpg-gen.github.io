@@ -1,7 +1,7 @@
-type paint_brush = {
+type type_paint_brush = {
     id: string,
     display_name: string,
-    category: category,
+    paint_category: paint_category,
     hotkey: string,
     hexidecimal_color: string,
     color_type: color_type
@@ -15,13 +15,13 @@ enum color_type {
     dark="dark"
 }
 
-enum category {
+enum paint_category {
     background="background",
     action="action",
     icon="icon",
     path="path"
 }
 
-export { category, color_type}
+export { paint_category, color_type}
 
-export default paint_brush
+export default type_paint_brush

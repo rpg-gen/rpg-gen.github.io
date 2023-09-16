@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type_map_definition from "../types/type_map_definition"
+import type_map_definition from "../types/type_hexagon_definitions"
 
 function noop() {}
 

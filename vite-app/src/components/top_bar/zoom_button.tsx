@@ -1,13 +1,10 @@
-import CSS from "csstype"
-import MapContext from "../contexts/map_context"
-import { useContext } from "react"
+import top_bar_button_style from "./top_bar_button_style"
+import { memo } from "react"
 
-export default function ZoomButton(props: {top_bar_button_style: CSS.Properties}) {
-
-    const map_context = useContext(MapContext)
+export default memo(function ZoomButton(props: {zoom_level: number, set_is_show_zoom_picker: Function}) {
 
     function handle_click() {
-        map_context.set_is_show_zoom_picker(true)
+        props.set_is_show_zoom_picker(true)
     }
 
     return (
@@ -16,7 +13,7 @@ export default function ZoomButton(props: {top_bar_button_style: CSS.Properties}
         <div
 
             style={{
-                ...props.top_bar_button_style,
+                ...top_bar_button_style,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -28,9 +25,9 @@ export default function ZoomButton(props: {top_bar_button_style: CSS.Properties}
             onClick={handle_click}
         >
 
-            x{map_context.zoom_level}
+            x{props.zoom_level}
         </div>
 
         </>
     )
-}
+})

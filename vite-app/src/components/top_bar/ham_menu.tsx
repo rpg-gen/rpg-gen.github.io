@@ -1,7 +1,8 @@
-import ham_menu_black from "../assets/ham_menu_black.svg";
-import CSS from "csstype"
+import ham_menu_black from "../../assets/ham_menu_black.svg"
+import top_bar_button_style from "./top_bar_button_style"
+import { memo } from "react"
 
-export default function HamMenu(props: {top_bar_button_style: CSS.Properties}) {
+export default memo(function HamMenu() {
 
     return (
         <>
@@ -9,7 +10,7 @@ export default function HamMenu(props: {top_bar_button_style: CSS.Properties}) {
         <div
 
             style={{
-                ...props.top_bar_button_style,
+                ...top_bar_button_style,
                 backgroundColor: "white",
             }}
 
@@ -30,4 +31,4 @@ export default function HamMenu(props: {top_bar_button_style: CSS.Properties}) {
         </div>
         </>
     )
-}
+})

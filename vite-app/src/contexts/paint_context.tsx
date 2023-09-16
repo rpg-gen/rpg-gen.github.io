@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import paint_brushes from "../configs/paint_brushes"
-import paint_brush from "../types/paint_brush"
+import paint_brush from "../types/type_paint_brush"
 
 function noop() {}
 

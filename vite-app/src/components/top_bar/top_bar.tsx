@@ -1,21 +1,7 @@
-import HamMenu from "../components/ham_menu"
-import EditBrushButton from "../components/edit_brush_button"
-import ZoomButton from "../components/zoom_button"
-import spacing from "../configs/spacing"
-import CSS from 'csstype'
 
-export default function TopBar() {
+import spacing from "../../configs/spacing"
 
-    const top_bar_button_style: CSS.Properties = {
-        height: spacing.top_bar_height.toString() + "rem",
-        width: spacing.top_bar_height.toString() + "rem",
-        border: "1px solid black",
-        padding: ".1rem",
-        boxSizing: "border-box",
-        borderRadius: "20%",
-        marginRight: spacing.top_bar_margin.toString() + "rem",
-        zIndex: 20
-    }
+export default function TopBar(props: {children: JSX.Element[]}) {
 
     return (
         <>
@@ -37,11 +23,8 @@ export default function TopBar() {
             maxWidth: "100%",
             minWidth: "100%"
         }}>
-            <HamMenu top_bar_button_style={top_bar_button_style} />
-            <EditBrushButton top_bar_button_style={top_bar_button_style} />
-            <ZoomButton top_bar_button_style={top_bar_button_style} />
+            {props.children}
         </div>
-
         {/* <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem" }}></div> */}
 
         </>
