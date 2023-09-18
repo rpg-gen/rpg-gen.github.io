@@ -1,15 +1,19 @@
 import { paint_category } from "../../types/type_paint_brush"
 import paint_brushes from "../../configs/paint_brushes"
 import spacing from "../../configs/spacing"
-import { MouseEvent } from "react"
+import { MouseEvent, MutableRefObject } from "react"
 
-export default function Section(props: {this_paint_category: paint_category, set_is_show_paint_picker: Function, set_paint_brush_id: Function}) {
+export default function Section(props: {this_paint_category: paint_category, set_is_show_paint_picker: Function, set_display_paint_brush_id: Function, ref_paint_brush_id: MutableRefObject<string>}) {
     const brush_buttons = []
 
     function handle_paint_brush_click(event: MouseEvent) {
         const clicked_paint_brush_id = (event.target as HTMLElement).dataset.paintBrushId
         // console.log(clicked_paint_brush_id)
-        props.set_paint_brush_id(clicked_paint_brush_id)
+        // props.set_paint_brush_id(clicked_paint_brush_id)
+        // console.log("clicked")
+        props.ref_paint_brush_id.current = (clicked_paint_brush_id as string)
+        props.set_display_paint_brush_id(clicked_paint_brush_id)
+
         props.set_is_show_paint_picker(false)
     }
 

@@ -6,7 +6,7 @@ const colors: {[key: string]: string} = {
     forest: "#a1e070",
     plains: "#ddfec3",
     desert: "#fae4a7",
-    hills: "#feeed6",
+    hills: "#d1d2d3",
     white: "#ffffff",
     black: "#000000",
     road: "#664900"

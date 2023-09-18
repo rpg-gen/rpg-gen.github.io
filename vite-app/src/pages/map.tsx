@@ -1,12 +1,13 @@
 import TopBar from "../components/top_bar/top_bar"
 // import PaintContext from "../contexts/paint_context"
 // import MapContext from "../contexts/map_context"
-import { useState } from "react"
+import { useState, MouseEvent, useCallback, useRef } from "react"
 import PaintPicker from "../pages/paint_picker"
 import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
 import ZoomPickerOption from "../components/zoom_picker_option"
-import HexagonGrid from "../components/hexagon/hexagon_grid"
+import HexagonGridContainer from "../components/hexagon/hexagon_grid_container"
+import HexGrid from "../components/hexagon/hex_grid"
 import HamMenu from "../components/top_bar/ham_menu"
 import EditBrushButton from "../components/top_bar/edit_brush_button"
 import ZoomButton from "../components/top_bar/zoom_button"
@@ -14,45 +15,89 @@ import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
 import type_hexagon_definitions from "../types/type_hexagon_definitions"
 import build_starting_hexagon_definitions from "../utility/build_starting_hexagon_definitions"
+import enum_grid_type from '../types/enum_grid_type'
 
 export default function Map () {
 
-    // const paint_context = useContext(PaintContext)
-    // const map_context = useContext(MapContext)
-
-    // const [hexagon_definitions, set_hexagon_definitions] = useState<>([])
-    const NUM_COLUMNS = 2
-    const NUM_ROWS = 2
+    const NUM_ROWS = 50
+    const NUM_COLUMNS = NUM_ROWS
 
     const [zoom_level, set_zoom_level] = useState(5);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
-    const [paint_brush_id, set_paint_brush_id] = useState("road");
+
+    const [display_paint_brush_id, set_display_paint_brush_id] = useState("mountain");
+    const ref_paint_brush_id = useRef<string>("mountain")
+
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
     const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, NUM_ROWS))
 
-    const default_edge_length = 60
+    const [is_loading, set_is_loading] = useState()
+
+    const default_edge_length = 30
     const zoom_edge_length = default_edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
+
+    // console.log(hexagon_definitions)
+
+    // function handle_paint_brush_change(event)
+
+    function apply_current_paint_to_hex(row_number: string, column_number: string) {
+        const current_brush = paint_brushes[ref_paint_brush_id.current]
+        const current_brush_category = current_brush.paint_category
+
+        if (current_brush_category == paint_category.background) {
+            const current_brush_background_color = current_brush.hexidecimal_color
+
+            set_hexagon_definitions((previous_definitions) => {
+                const previous_row = previous_definitions[row_number]
+                const previous_hexagon = previous_definitions[row_number][column_number]
+
+                const new_hexagon_definitions = {
+                    ...previous_definitions,
+                    [row_number]: {
+                        ...previous_row,
+                        [column_number]: {
+                            ...previous_hexagon,
+                            background_color_hexidecimal: current_brush_background_color
+                        }
+                    }
+                }
+
+                return new_hexagon_definitions
+            })
+        }
+    }
+
+    const handle_hex_click = useCallback(function (event: MouseEvent) {
+        const target = (event.target as HTMLElement).dataset
+        const clicked_row_number = (target.rowNumber as string)
+        const clicked_column_number = (target.columnNumber as string)
+        apply_current_paint_to_hex(clicked_row_number, clicked_column_number)
+    },[])
 
     return (
         <>
 
         <TopBar>
             {/* <HamMenu /> */}
-            <EditBrushButton paint_brush_id={paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
+            <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
         </TopBar>
 
-        <HexagonGrid hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
+        <HexagonGridContainer>
+            <HexGrid type={enum_grid_type.background} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
+            <HexGrid type={enum_grid_type.icons} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
+            <HexGrid type={enum_grid_type.clickable} hexagon_definitions={hexagon_definitions} click_function={handle_hex_click} edge_length={zoom_edge_length} />
+        </HexagonGridContainer>
 
         {/* // <HexagonGrid num_columns={map_context.num_columns} num_rows={map_context.num_rows} edge_length={current_edge_length} /> */}
 
         {
             is_show_paint_picker
             ? <PaintPicker>
-                <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_paint_brush_id={set_paint_brush_id} />
+                <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} />
                 {/* <PainPickerSection category={paint_category.background}></PainPickerSection> */}
-                <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_paint_brush_id={set_paint_brush_id} />
-                <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_paint_brush_id={set_paint_brush_id} />
+                <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
+                <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
             </PaintPicker>
             : ""
         }

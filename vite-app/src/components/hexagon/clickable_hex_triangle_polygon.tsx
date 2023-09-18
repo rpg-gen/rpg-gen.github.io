@@ -23,19 +23,16 @@ export default function ClickableHexTrianglePolygon(props: {hex_triangle: string
     else if (props.hex_triangle == enum_hex_triangles.left) {polygon_points.push(points.bottom_left, points.top_left)}
 
     return (
-        <>
-            <polygon
-                data-hex-triangle={props.hex_triangle}
-                data-hex-row={props.row_number}
-                data-hex-column={props.column_number}
-                // onClick={handle_hexagon_click}
-                points={polygon_points.join(",")}
-                fill="transparent"
-                stroke="black"
-                className="hover-element"
-                strokeWidth={.2}
-            />
-
-        </>
+        <polygon
+            data-hex-triangle={props.hex_triangle}
+            data-hex-row={props.row_number}
+            data-hex-column={props.column_number}
+            // onClick={handle_hexagon_click}
+            points={polygon_points.join(",")}
+            fill="transparent"
+            stroke="black"
+            className="hover-element"
+            strokeWidth={.2}
+        />
     )
 }
