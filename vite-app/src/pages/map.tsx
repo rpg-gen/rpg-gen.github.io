@@ -16,6 +16,9 @@ import { paint_category } from "../types/type_paint_brush"
 import type_hexagon_definitions from "../types/type_hexagon_definitions"
 import build_starting_hexagon_definitions from "../utility/build_starting_hexagon_definitions"
 import enum_grid_type from '../types/enum_grid_type'
+import Loading from "../pages/loading"
+
+function noop() {}
 
 export default function Map () {
 
@@ -28,10 +31,11 @@ export default function Map () {
     const [display_paint_brush_id, set_display_paint_brush_id] = useState("mountain");
     const ref_paint_brush_id = useRef<string>("mountain")
 
+    const [is_show_loading, set_is_show_loading] = useState(false)
+    const loading_function_ref = useRef<Function>(noop)
+
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
     const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, NUM_ROWS))
-
-    const [is_loading, set_is_loading] = useState()
 
     const default_edge_length = 30
     const zoom_edge_length = default_edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
@@ -89,7 +93,11 @@ export default function Map () {
             <HexGrid type={enum_grid_type.clickable} hexagon_definitions={hexagon_definitions} click_function={handle_hex_click} edge_length={zoom_edge_length} />
         </HexagonGridContainer>
 
-        {/* // <HexagonGrid num_columns={map_context.num_columns} num_rows={map_context.num_rows} edge_length={current_edge_length} /> */}
+        {
+            is_show_loading
+            ? <Loading loading_function={loading_function_ref.current} />
+            : ""
+        }
 
         {
             is_show_paint_picker
@@ -106,7 +114,14 @@ export default function Map () {
             is_show_zoom_picker
             ? <ZoomPicker>
                 {Array.from({length: 10}, (_, index) => {
-                    return <ZoomPickerOption key={index} zoom_level={index+1} set_zoom_level={set_zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
+                    return <ZoomPickerOption
+                        key={index}
+                        zoom_level={index+1}
+                        set_zoom_level={set_zoom_level}
+                        set_is_show_zoom_picker={set_is_show_zoom_picker}
+                        set_is_show_loading={set_is_show_loading}
+                        loading_function_ref={loading_function_ref}
+                    />
                 })}
             </ZoomPicker>
             : ""

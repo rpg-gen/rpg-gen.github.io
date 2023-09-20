@@ -22,7 +22,7 @@ export default memo(function Hexagon(props : {
     click_function?: MouseEventHandler
 }) {
 
-    console.log("hexagon " + props.type + " rerendered")
+    // console.log("hexagon " + props.type + " rerendered")
 
     // function handle_hexagon_click(event: MouseEvent) {
 

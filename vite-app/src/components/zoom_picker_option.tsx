@@ -1,9 +1,22 @@
 import spacing from "../configs/spacing"
+import { MutableRefObject } from "react"
 
-export default function ZoomOption(props: {zoom_level: number, set_zoom_level: Function, set_is_show_zoom_picker: Function}) {
+export default function ZoomOption(props: {
+    zoom_level: number,
+    set_zoom_level: Function,
+    set_is_show_zoom_picker: Function,
+    set_is_show_loading: Function,
+    loading_function_ref: MutableRefObject<Function>
+}) {
+
+    function update_zoom_level() {
+        props.set_zoom_level(props.zoom_level)
+        props.set_is_show_loading(false)
+    }
 
     function handle_click() {
-        props.set_zoom_level(props.zoom_level)
+        props.set_is_show_loading(true)
+        props.loading_function_ref.current = update_zoom_level
         props.set_is_show_zoom_picker(false)
     }
 
