@@ -1,3 +1,5 @@
+import spacing from "../configs/spacing"
+
 function get_short_diagonal_length(edge_length: number) {
     return Math.round(Math.sqrt(3) * edge_length)
 }
@@ -10,24 +12,29 @@ function get_peak_height(edge_length: number) {
     return edge_length / 2
 }
 
-function get_points(edge_length: number) {
+function get_points(edge_length: number, row_number: number, column_number: number) {
+
     const short_diagonal_length = get_short_diagonal_length(edge_length)
     const peak_height = get_peak_height(edge_length)
+    const long_diagonal_length = get_long_diagonal_length(edge_length)
+
+    const x_offset = short_diagonal_length * (column_number - 1) + spacing.hex_grid_side_border + (row_number % 2 == 1 ? short_diagonal_length / 2 : 0)
+    const y_offset = (edge_length + peak_height) * (row_number - 1) + long_diagonal_length
 
     return {
-        center: short_diagonal_length / 2 + " " + edge_length / 2,
-        top_left: "0" + " " + "0",
-        top_mid: short_diagonal_length / 2 + " " + (peak_height * -1),
-        top_right: short_diagonal_length + " " + "0",
-        bottom_right: short_diagonal_length + " " + edge_length,
-        bottom_mid: short_diagonal_length / 2 + " " + (edge_length + peak_height),
-        bottom_left: "0" + " " + (edge_length),
-        top_left_edge: short_diagonal_length / 4 + " " + (peak_height / 2) * -1,
-        top_right_edge: short_diagonal_length * .75 + " " + (peak_height / 2) * -1,
-        right_edge: short_diagonal_length + " " + edge_length / 2,
-        bottom_right_edge: short_diagonal_length * .75 + " " + (edge_length + peak_height / 2),
-        bottom_left_edge: short_diagonal_length / 4 + " " + (edge_length + peak_height / 2),
-        left_edge: "0" + " " + edge_length / 2,
+        center: (short_diagonal_length / 2 + x_offset) + " " + (edge_length / 2 + y_offset),
+        top_left: x_offset + " " + y_offset,
+        top_mid: (short_diagonal_length / 2 + x_offset) + " " + ((peak_height * -1) + y_offset),
+        top_right: (short_diagonal_length + x_offset) + " " + y_offset,
+        bottom_right: (short_diagonal_length + x_offset) + " " + (edge_length + y_offset),
+        bottom_mid: (short_diagonal_length / 2 + x_offset) + " " + ((edge_length + peak_height) + y_offset),
+        bottom_left: x_offset + " " + ((edge_length) + y_offset),
+        top_left_edge: (short_diagonal_length / 4 + x_offset) + " " + ((peak_height / 2) * -1 + y_offset),
+        top_right_edge: (short_diagonal_length * .75 + x_offset) + " " + ((peak_height / 2) * -1 + y_offset),
+        right_edge: (short_diagonal_length + x_offset) + " " + (edge_length / 2 + y_offset),
+        bottom_right_edge: (short_diagonal_length * .75 + x_offset) + " " + ((edge_length + peak_height / 2) + y_offset),
+        bottom_left_edge: (short_diagonal_length / 4 + x_offset) + " " + ((edge_length + peak_height / 2) + y_offset),
+        left_edge: x_offset + " " + (edge_length / 2 + y_offset),
     }
 }
 

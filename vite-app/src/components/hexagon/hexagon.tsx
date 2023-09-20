@@ -13,16 +13,12 @@ import enum_grid_type from "../../types/enum_grid_type"
 
 function default_handle_hex_click(e: MouseEvent) {e.preventDefault}
 
-export default memo(function Hexagon(props : {
-    type: string,
+export default memo(function Hexagon(props: {
     edge_length: number,
     row_number: string,
     column_number: string,
     hexagon_definition: type_hexagon_definition,
-    click_function?: MouseEventHandler
 }) {
-
-    // console.log("hexagon " + props.type + " rerendered")
 
     // function handle_hexagon_click(event: MouseEvent) {
 
@@ -235,7 +231,7 @@ export default memo(function Hexagon(props : {
     //     return (<polygon points={points_array.join(",")} strokeWidth={5} stroke={"black"} strokeLinejoin={"round"} />)
     // }
 
-    const all_points = hexagon_math.get_points(props.edge_length)
+    const all_points = hexagon_math.get_points(props.edge_length, parseInt(props.row_number), parseInt(props.column_number))
     const polygon_points = [
         all_points.top_left,
         all_points.top_mid,
@@ -248,41 +244,59 @@ export default memo(function Hexagon(props : {
 
     const polygons_to_render = []
 
-    if (props.type == enum_grid_type.background) {
-        polygons_to_render.push(
-            <polygon
-                key={props.row_number + "_" + props.column_number}
-                points={polygon_points_string}
-                fill={props.hexagon_definition.background_color_hexidecimal}
-                stroke="black"
-                strokeWidth=".2"
-            />
-        )
-    }
-    else if (props.type == enum_grid_type.clickable) {
-        polygons_to_render.push(
-            <polygon
-                key={props.row_number + "_" + props.column_number}
-                points={polygon_points_string}
-                fill="transparent"
-                stroke="transparent"
-                className="hover-element"
-                data-column-number={props.column_number}
-                data-row-number={props.row_number}
-                onClick={props.click_function || default_handle_hex_click}
-            />
-        )
-    }
+    // if (props.type == enum_grid_type.background) {
+    polygons_to_render.push(
+        <polygon
+            key={props.row_number + "_" + props.column_number}
+            points={polygon_points_string}
+            fill={props.hexagon_definition.background_color_hexidecimal}
+            stroke="black"
+            strokeWidth=".2"
+        />
+    )
+    polygons_to_render.push(
+        <polygon
+            key={props.row_number + "_1" + props.column_number}
+            points={polygon_points_string}
+            fill={props.hexagon_definition.background_color_hexidecimal}
+            stroke="black"
+            strokeWidth=".2"
+        />
+    )
+    polygons_to_render.push(
+        <polygon
+            key={props.row_number + "_2" + props.column_number}
+            points={polygon_points_string}
+            fill={props.hexagon_definition.background_color_hexidecimal}
+            stroke="black"
+            strokeWidth=".2"
+        />
+    )
+    // }
+    // else if (props.type == enum_grid_type.clickable) {
+    //     polygons_to_render.push(
+    //         <polygon
+    //             key={props.row_number + "_" + props.column_number}
+    //             points={polygon_points_string}
+    //             fill="transparent"
+    //             stroke="transparent"
+    //             className="hover-element"
+    //             data-column-number={props.column_number}
+    //             data-row-number={props.row_number}
+    //             onClick={props.click_function || default_handle_hex_click}
+    //         />
+    //     )
+    // }
 
     return (
 
-        <svg
-            overflow={"visible"}
-            height={props.edge_length + hexagon_math.get_peak_height(props.edge_length)}
-            width={hexagon_math.get_short_diagonal_length(props.edge_length)}
-        >
-            {polygons_to_render}
-        </svg>
+        // <svg
+        //     overflow={"visible"}
+        //     height={props.edge_length + hexagon_math.get_peak_height(props.edge_length)}
+        //     width={hexagon_math.get_short_diagonal_length(props.edge_length)}
+        // >
+            <>{polygons_to_render}</>
+        // </svg>
 
     )
 
@@ -310,32 +324,33 @@ export default memo(function Hexagon(props : {
 
     //     </>
     // )
-},(previous_props: {[index: string]: any}, next_props: {[index: string]: any}) => {
-
-    let are_props_equal = true
-
-    // if (previous_props.type == enum_grid_type.clickable) {
-    //     if (previous_props.edge_length != next_props.edge_length) {
-    //         are_props_equal = false
-    //     }
-    // }
-    // if (previous_props.type == enum_grid_type.background)
-    // else {
-
-    for (const prop_key in previous_props) {
-        if (prop_key != "hexagon_definition") {
-            if (!Object.is(previous_props[prop_key], next_props[prop_key])) {
-                are_props_equal = false
-            }
-        }
-        else {
-            const prev_hex_def = previous_props.hexagon_definition
-            const next_hex_def = next_props.hexagon_definition
-            if (previous_props.type == enum_grid_type.background && prev_hex_def.background_color_hexidecimal != next_hex_def.background_color_hexidecimal) {
-                are_props_equal = false
-            }
-        }
-    }
-
-    return are_props_equal
 })
+// ,(previous_props: {[index: string]: any}, next_props: {[index: string]: any}) => {
+
+//     let are_props_equal = true
+
+//     // if (previous_props.type == enum_grid_type.clickable) {
+//     //     if (previous_props.edge_length != next_props.edge_length) {
+//     //         are_props_equal = false
+//     //     }
+//     // }
+//     // if (previous_props.type == enum_grid_type.background)
+//     // else {
+
+//     for (const prop_key in previous_props) {
+//         if (prop_key != "hexagon_definition") {
+//             if (!Object.is(previous_props[prop_key], next_props[prop_key])) {
+//                 are_props_equal = false
+//             }
+//         }
+//         else {
+//             const prev_hex_def = previous_props.hexagon_definition
+//             const next_hex_def = next_props.hexagon_definition
+//             // if (previous_props.type == enum_grid_type.background && prev_hex_def.background_color_hexidecimal != next_hex_def.background_color_hexidecimal) {
+//             //     are_props_equal = false
+//             // }
+//         }
+//     }
+
+//     return are_props_equal
+// }

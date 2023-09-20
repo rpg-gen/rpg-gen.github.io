@@ -22,7 +22,7 @@ function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 50
+    const NUM_ROWS = 100
     const NUM_COLUMNS = NUM_ROWS
 
     const [zoom_level, set_zoom_level] = useState(5);
@@ -87,11 +87,7 @@ export default function Map () {
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
         </TopBar>
 
-        <HexagonGridContainer>
-            <HexGrid type={enum_grid_type.background} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
-            <HexGrid type={enum_grid_type.icons} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
-            <HexGrid type={enum_grid_type.clickable} hexagon_definitions={hexagon_definitions} click_function={handle_hex_click} edge_length={zoom_edge_length} />
-        </HexagonGridContainer>
+        <HexGrid hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
 
         {
             is_show_loading

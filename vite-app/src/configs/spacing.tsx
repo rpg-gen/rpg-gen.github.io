@@ -1,7 +1,8 @@
 const spacing = {
     top_bar_height: 2,
     top_bar_margin: .5,
-    top_bar_padding: 0
+    top_bar_padding: 0,
+    hex_grid_side_border: 5
 }
 
 export default spacing
