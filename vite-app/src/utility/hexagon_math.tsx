@@ -19,7 +19,7 @@ function get_points(edge_length: number, row_number: number, column_number: numb
     const long_diagonal_length = get_long_diagonal_length(edge_length)
 
     const x_offset = short_diagonal_length * (column_number - 1) + spacing.hex_grid_side_border + (row_number % 2 == 1 ? short_diagonal_length / 2 : 0)
-    const y_offset = (edge_length + peak_height) * (row_number - 1) + long_diagonal_length
+    const y_offset = (edge_length + peak_height) * (row_number - 1) + 65
 
     return {
         center: (short_diagonal_length / 2 + x_offset) + " " + (edge_length / 2 + y_offset),
