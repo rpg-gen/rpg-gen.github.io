@@ -22,7 +22,7 @@ function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 50
+    const NUM_ROWS = 100
     const NUM_COLUMNS = NUM_ROWS
 
     const [zoom_level, set_zoom_level] = useState(5);
