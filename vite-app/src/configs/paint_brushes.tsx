@@ -121,9 +121,9 @@ const paint_brushes: {[key: string]: paint_brush} = {
         dark_icon: null,
         light_icon: null
     },
-    village: {
-        id: "village",
-        display_name: "Village",
+    town: {
+        id: "town",
+        display_name: "Town",
         paint_category: paint_category.icon,
         hotkey: "u",
         hexidecimal_color: colors.white,
@@ -132,28 +132,28 @@ const paint_brushes: {[key: string]: paint_brush} = {
         dark_icon: svg_url_village,
         light_icon: svg_url_village
     },
-    town: {
-        id: "town",
-        display_name: "Town",
-        paint_category: paint_category.icon,
-        hotkey: "u",
-        hexidecimal_color: colors.white,
-        color_type: color_type.light,
-        icon: svg_url_town,
-        dark_icon: svg_url_village_black,
-        light_icon: svg_url_village_white
-    },
-    city: {
-        id: "city",
-        display_name: "City",
-        paint_category: paint_category.icon,
-        hotkey: "u",
-        hexidecimal_color: colors.white,
-        color_type: color_type.light,
-        icon: svg_url_city,
-        dark_icon: svg_url_village_black,
-        light_icon: svg_url_village_white
-    },
+    // town: {
+    //     id: "town",
+    //     display_name: "Town",
+    //     paint_category: paint_category.icon,
+    //     hotkey: "u",
+    //     hexidecimal_color: colors.white,
+    //     color_type: color_type.light,
+    //     icon: svg_url_town,
+    //     dark_icon: svg_url_village_black,
+    //     light_icon: svg_url_village_white
+    // },
+    // city: {
+    //     id: "city",
+    //     display_name: "City",
+    //     paint_category: paint_category.icon,
+    //     hotkey: "u",
+    //     hexidecimal_color: colors.white,
+    //     color_type: color_type.light,
+    //     icon: svg_url_city,
+    //     dark_icon: svg_url_village_black,
+    //     light_icon: svg_url_village_white
+    // },
     clear_icon: {
         id: "clear_icon",
         display_name: "Clear",

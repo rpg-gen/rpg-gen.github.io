@@ -17,19 +17,22 @@ import type_hexagon_definitions from "../types/type_hexagon_definitions"
 import build_starting_hexagon_definitions from "../utility/build_starting_hexagon_definitions"
 import enum_grid_type from '../types/enum_grid_type'
 import Loading from "../pages/loading"
+import CivPicker from "../pages/civ_picker"
+import useFabric from "../hooks/use_fabric"
 
 function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 10
+    const NUM_ROWS = 5
     const NUM_COLUMNS = NUM_ROWS
+    const DEFAULT_BRUSH = "town"
 
-    const [zoom_level, set_zoom_level] = useState(5);
+    const [zoom_level, set_zoom_level] = useState(10);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
 
-    const [display_paint_brush_id, set_display_paint_brush_id] = useState("mountain");
-    const ref_paint_brush_id = useRef<string>("mountain")
+    const [display_paint_brush_id, set_display_paint_brush_id] = useState(DEFAULT_BRUSH);
+    const ref_paint_brush_id = useRef<string>(DEFAULT_BRUSH)
 
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
@@ -37,12 +40,17 @@ export default function Map () {
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
     const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, NUM_ROWS))
 
+    const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
+
     const default_edge_length = 30
     const zoom_edge_length = default_edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
-    // console.log(hexagon_definitions)
-
-    // function handle_paint_brush_change(event)
+    const fabric_hook = useFabric(
+        zoom_edge_length,
+        hexagon_definitions,
+        ref_paint_brush_id,
+        set_is_show_civ_picker,
+    )
 
     function apply_current_paint_to_hex(row_number: string, column_number: string) {
         const current_brush = paint_brushes[ref_paint_brush_id.current]
@@ -87,7 +95,10 @@ export default function Map () {
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
         </TopBar>
 
-        <HexGrid hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
+        <HexGrid
+            edge_length={zoom_edge_length}
+            fabric_hook={fabric_hook}
+        />
 
         {
             is_show_loading
@@ -99,7 +110,6 @@ export default function Map () {
             is_show_paint_picker
             ? <PaintPicker>
                 <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} />
-                {/* <PainPickerSection category={paint_category.background}></PainPickerSection> */}
                 <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
                 <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
             </PaintPicker>
@@ -122,6 +132,8 @@ export default function Map () {
             </ZoomPicker>
             : ""
         }
+
+        {is_show_civ_picker ? <CivPicker set_is_show_civ_picker={set_is_show_civ_picker} fabric_hook={fabric_hook} /> : ""}
 
         </>
     )
