@@ -24,11 +24,11 @@ function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 5
+    const NUM_ROWS = 50
     const NUM_COLUMNS = NUM_ROWS
     const DEFAULT_BRUSH = "town"
 
-    const [zoom_level, set_zoom_level] = useState(10);
+    const [zoom_level, set_zoom_level] = useState(1);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
 
     const [display_paint_brush_id, set_display_paint_brush_id] = useState(DEFAULT_BRUSH);

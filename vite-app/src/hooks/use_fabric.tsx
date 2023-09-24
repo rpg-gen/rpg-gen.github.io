@@ -8,11 +8,16 @@ import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
 import type_fabric_hook from '../types/type_fabric_hook'
 
-type custom_attributes = {row_number: number, column_number: number, custom_type: string}
+type custom_attributes = {
+    row_number: number, 
+    column_number: number, 
+    custom_type: string,
+    paint_brush_id: string,
+}
 
 enum enum_custom_types {
     background="background",
-    civ="civ",
+    icon="icon",
     text="text",
 }
 
@@ -54,8 +59,8 @@ export default function useFabric(
                 const points = hexagon_math.get_fabric_points(edge_length, row_number, column_number)
                 const fabric_hexagon = Object.assign(new fabric.Polygon(
                     [points.top_left, points.top_mid, points.top_right, points.bottom_right, points.bottom_mid, points.bottom_left],
-                    {fill: colors.white, stroke: colors.black, strokeWidth: .2, "selectable": false}
-                ), {row_number: row_number.toString(), column_number: column_number.toString(), custom_type: enum_custom_types.background})
+                    {fill: colors.white, stroke: colors.black, strokeWidth: .2, "selectable": false, "perPixelTargetFind": true}
+                ), {row_number: row_number.toString(), column_number: column_number.toString(), custom_type: enum_custom_types.background, paint_brush_id: "unset"})
 
                 the_canvas.add(fabric_hexagon)
             }
@@ -74,10 +79,11 @@ export default function useFabric(
 
                     if (object) {
                         object.set("fill", paint_brushes[ref_paint_brush_id.current].hexidecimal_color)
+                        object.set("paint_brush_id", paint_brushes[ref_paint_brush_id.current].id)
                     }
                 }
                 else if (paint_brush.paint_category == paint_category.icon) {
-                    draw_town(target.row_number, target.column_number)
+                    set_icon(target.row_number, target.column_number, paint_brushes[ref_paint_brush_id.current].id)
                 }
             }
         })
@@ -85,7 +91,7 @@ export default function useFabric(
         ref_canvas.current = the_canvas
     }
 
-    function find_object(row_number: number, column_number: number, custom_type: string) {
+    function find_object(row_number: number, column_number: number, custom_type?: string) {
         if (ref_canvas.current == undefined) {
             return
         }
@@ -94,38 +100,104 @@ export default function useFabric(
 
         for (const object_key in all_objects) {
             const object = all_objects[object_key] as fabric.Object & custom_attributes
-            if (object.custom_type == custom_type && object.row_number == row_number && object.column_number == column_number) {
+            if ((!custom_type || object.custom_type == custom_type) && object.row_number == row_number && object.column_number == column_number) {
                 return object
             }
         }
     }
 
-    function draw_town(row_number: number, column_number: number) {
-        if (!ref_canvas.current) {
+    function find_objects(row_number: number, column_number: number) {
+        if (ref_canvas.current == undefined) {
             return
         }
 
-        const points = hexagon_math.get_fabric_points(edge_length, row_number, column_number)
+        const objects: [{[index: string]: fabric.Object & custom_attributes}] = [{}]
+
+        const all_objects = ref_canvas.current.getObjects()
+
+        for (const object_key in all_objects) {
+            const object = all_objects[object_key] as fabric.Object & custom_attributes
+            if (object.row_number == row_number && object.column_number == column_number) {
+                objects.push({[object.custom_type]: object})
+            }
+        }
+
+        return objects
+    }
+
+    function get_town_icon_points() {
+
+        const points = hexagon_math.get_fabric_points(edge_length, ref_clicked_row_number.current, ref_clicked_column_number.current)
 
         const roof_bottom_y = points.top_left.y + (edge_length / 3)
         const roof_edge_shrink_x = (edge_length / 4)
         const wall_edge_shrink_x = edge_length / 2.5
 
-        const house_icon = Object.assign(new fabric.Polygon(
-            [
-                {x: points.top_left.x + roof_edge_shrink_x, y: roof_bottom_y},
-                {x: points.top_mid.x, y: points.top_mid.y + (edge_length/3)},
-                {x: points.top_right.x - roof_edge_shrink_x, y: roof_bottom_y},
-                {x: points.top_right.x - wall_edge_shrink_x, y: roof_bottom_y},
-                {x: points.bottom_right.x - wall_edge_shrink_x, y: points.bottom_right.y },
-                {x: points.bottom_left.x + wall_edge_shrink_x, y: points.bottom_left.y },
-                {x: points.top_left.x + wall_edge_shrink_x, y: roof_bottom_y },
-            ],
-            {fill: colors.black, "selectable": false, strokeLineJoin: "round", stroke: colors.black, strokeWidth: 5}
-        ), {row_number: row_number, column_number: column_number, custom_type: enum_custom_types.civ})
+        // const house_icon = Object.assign(new fabric.Polygon(
+        //     ,
+        //     {fill: colors.black, "selectable": false, strokeLineJoin: "round", stroke: colors.black, strokeWidth: 5}
+        // ), {row_number: row_number, column_number: column_number, custom_type: enum_custom_types.icon, paint_brush_id: })
+        
+        const house_icon_points = [
+            {x: points.top_left.x + roof_edge_shrink_x, y: roof_bottom_y},
+            {x: points.top_mid.x, y: points.top_mid.y + (edge_length/3)},
+            {x: points.top_right.x - roof_edge_shrink_x, y: roof_bottom_y},
+            {x: points.top_right.x - wall_edge_shrink_x, y: roof_bottom_y},
+            {x: points.bottom_right.x - wall_edge_shrink_x, y: points.bottom_right.y },
+            {x: points.bottom_left.x + wall_edge_shrink_x, y: points.bottom_left.y },
+            {x: points.top_left.x + wall_edge_shrink_x, y: roof_bottom_y },
+        ]
 
-        ref_canvas.current.add(house_icon)
+        return house_icon_points
+    }
+
+    function set_icon(row_number: number, column_number: number, paint_brush_id: string) {
+        if (!ref_canvas.current) {
+            return
+        }
+
+        // console.log(find_objects(ref_clicked_row_number.current, ref_clicked_column_number.current))
+
+        const existing_icon = find_object(ref_clicked_row_number.current, ref_clicked_column_number.current, enum_custom_types.icon) as fabric.Polygon & custom_attributes
+        
+        if (existing_icon) {
+            if (existing_icon.paint_brush_id == paint_brush_id) {
+                set_is_show_civ_picker(true)
+                return
+            }
+            if (existing_icon.paint_brush_id != paint_brush_id) {
+                console.log("remove")
+                ref_canvas.current.remove(existing_icon)
+            }
+        }
+        
+        const common_icon_attributes = {fill: colors.black, "selectable": false, strokeLineJoin: "round", stroke: colors.black, strokeWidth: 5}
+        const custom_attributes = {row_number: row_number, column_number: column_number, custom_type: enum_custom_types.icon, paint_brush_id: paint_brush_id}
+        
+        const icon_to_add = Object.assign(new fabric.Polygon(get_town_icon_points(),common_icon_attributes),custom_attributes)
+
+        ref_canvas.current.add(icon_to_add)
+
         set_is_show_civ_picker(true)
+
+    }
+
+    function get_civ_info() {
+
+        const existing_text = find_object(ref_clicked_row_number.current, ref_clicked_column_number.current, enum_custom_types.text) as fabric.Text & custom_attributes
+
+        let previous_size = "0"
+        let previous_race = "0"
+        let previous_affinity = "0"
+
+        if (existing_text && existing_text.text) {
+            const split_text = existing_text.text.split("") 
+            previous_size = split_text[0]
+            previous_race = split_text[1]
+            previous_affinity = split_text[2]
+        }
+
+        return [previous_size, previous_race, previous_affinity]
 
     }
 
@@ -134,18 +206,28 @@ export default function useFabric(
             return
         }
 
-        const existing_text = find_object(ref_clicked_row_number.current, ref_clicked_column_number.current, enum_custom_types.text)
+        const new_text_string = size.toString() + race.toString() + affinity.toString()
 
-        const points = hexagon_math.get_fabric_points(edge_length, ref_clicked_row_number.current, ref_clicked_column_number.current)
-        const text = Object.assign(
-            new fabric.Text(
-                size.toString() + race.toString() + affinity.toString(),
-                {"selectable": false, fill: colors.white, fontSize: edge_length/2}
-            ),
-            {row_number: ref_clicked_row_number.current, column_number: ref_clicked_column_number.current, custom_type: enum_custom_types.text}
-        )
-        text.setPositionByOrigin(new fabric.Point(points.center.x, points.center.y), "center", "center")
-        ref_canvas.current.add(text)
+        const existing_text = find_object(ref_clicked_row_number.current, ref_clicked_column_number.current, enum_custom_types.text) as fabric.Text & custom_attributes
+
+        if (!existing_text) {
+            const points = hexagon_math.get_fabric_points(edge_length, ref_clicked_row_number.current, ref_clicked_column_number.current)
+            const text = Object.assign(
+                new fabric.Text(
+                    new_text_string,
+                    {"selectable": false, fill: colors.white, fontSize: edge_length/2}
+                ),
+                {row_number: ref_clicked_row_number.current, column_number: ref_clicked_column_number.current, custom_type: enum_custom_types.text}
+            )
+            text.setPositionByOrigin(new fabric.Point(points.center.x, points.center.y), "center", "center")
+            ref_canvas.current.add(text)
+        }
+        else {
+            console.log("setting new text to " + new_text_string)
+            existing_text.set("text", new_text_string)
+            ref_canvas.current.renderAll()
+        }
+
     }
 
     function get_html_stub() {
@@ -159,6 +241,7 @@ export default function useFabric(
         ref_clicked_row_number,
         ref_clicked_column_number,
         add_civ_info,
+        get_civ_info,
     }
 
     return type_fabric_hook

@@ -9,7 +9,8 @@ const colors: {[key: string]: string} = {
     hills: "#d1d2d3",
     white: "#ffffff",
     black: "#000000",
-    road: "#664900"
+    road: "#664900",
+    red: "#a83232"
 }
 
 export default colors
