@@ -5,7 +5,7 @@ export default function Loading(props: {
     set_is_show_loading: Function
 }) {
 
-    console.log("loading screen rendered")
+    // console.log("loading screen rendered")
 
     // useEffect(() => {
     //     console.log("loading screen effect called")
@@ -30,7 +30,7 @@ export default function Loading(props: {
             left: 0,
             right: 0,
             backgroundColor: "rgba(255, 255, 255, .8)",
-            zIndex: 101,
+            zIndex: 9,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

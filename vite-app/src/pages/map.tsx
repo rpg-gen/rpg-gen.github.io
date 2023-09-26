@@ -1,33 +1,33 @@
 import TopBar from "../components/top_bar/top_bar"
 // import PaintContext from "../contexts/paint_context"
 // import MapContext from "../contexts/map_context"
-import { useState, MouseEvent, useCallback, useRef } from "react"
+import { useState, useRef } from "react"
 import PaintPicker from "../pages/paint_picker"
 import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
 import ZoomPickerOption from "../components/zoom_picker_option"
-import HexagonGridContainer from "../components/hexagon/hexagon_grid_container"
 import HexGrid from "../components/hexagon/hex_grid"
-import HamMenu from "../components/top_bar/ham_menu"
+// import HamMenu from "../components/top_bar/ham_menu"
 import EditBrushButton from "../components/top_bar/edit_brush_button"
 import ZoomButton from "../components/top_bar/zoom_button"
-import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
 import type_hexagon_definition from "../types/type_hexagon_definition"
-import build_starting_hexagon_definitions from "../utility/build_starting_hexagon_definitions"
-import enum_grid_type from '../types/enum_grid_type'
 import Loading from "../pages/loading"
-import CivPicker from "../pages/civ_picker"
 // import useFabric from "../hooks/use_fabric"
+import MapSize from "../components/top_bar/map_size"
 
 function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 400
-    const NUM_COLUMNS = NUM_ROWS
+    const DEFAULT_NUM_ROWS = 5
+    const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
     const DEFAULT_BRUSH = "town"
     const DEFAULT_ZOOM = 5
+    const DEFAULT_EDGE_LENGTH = 20
+
+    const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
+    const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
 
     const [zoom_level, set_zoom_level] = useState(DEFAULT_ZOOM);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
@@ -39,22 +39,12 @@ export default function Map () {
     const loading_function_ref = useRef<Function>(noop)
 
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
-    // const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, NUM_ROWS))
+    // const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, DEFAULT_NUM_ROWS))
     const hexagon_definitions_ref = useRef<type_hexagon_definition[]>([])
 
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
 
-    const default_edge_length = 20
-    const zoom_edge_length = default_edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
-
-    // const fabric_hook = useFabric(
-    //     zoom_edge_length,
-    //     hexagon_definitions,
-    //     ref_paint_brush_id,
-    //     set_is_show_civ_picker,
-    // )
-
-    console.log("map rerendered with " + is_show_loading)
+    const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
 
     // function apply_current_paint_to_hex(row_number: string, column_number: string) {
@@ -94,21 +84,28 @@ export default function Map () {
     return (
         <>
 
-        <TopBar>
-            {/* <HamMenu /> */}
-            <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
-            <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
-        </TopBar>
-
         <HexGrid
             edge_length={zoom_edge_length}
-            num_rows={NUM_ROWS}
-            num_columns={NUM_ROWS}
+            num_rows={num_rows}
+            num_columns={num_rows}
             set_is_show_loading={set_is_show_loading}
             loading_function_ref={loading_function_ref}
             hexagon_definitions_ref={hexagon_definitions_ref}
             // fabric_hook={fabric_hook}
         />
+
+        <TopBar>
+            {/* <HamMenu /> */}
+            <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
+            <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
+            <MapSize
+                default_edge_length={DEFAULT_EDGE_LENGTH}
+                default_num_rows={DEFAULT_NUM_ROWS}
+                set_num_rows={set_num_rows}
+                set_edge_length={set_edge_length}
+                is_show_loading={is_show_loading}
+            />
+        </TopBar>
 
         {
             is_show_loading

@@ -1,11 +1,6 @@
 import type_hexagon_definition from "../../types/type_hexagon_definition"
-import HexagonRow from "./hexagon_row"
-import enum_grid_type from "../../types/enum_grid_type"
-import Hexagon from "./hexagon"
-import { MouseEventHandler, useState, useEffect, memo, useRef, MutableRefObject, MouseEvent } from "react"
-import type_fabric_hook from "../../types/type_fabric_hook"
+import { useEffect, memo, useRef, MutableRefObject, MouseEvent } from "react"
 import hexagon_math from "../../utility/hexagon_math"
-import spacing from "../../configs/spacing"
 import worker_url from "../../worker/worker?url"
 
 export default memo(function HexGrid(props: {
@@ -17,6 +12,7 @@ export default memo(function HexGrid(props: {
     hexagon_definitions_ref: MutableRefObject<type_hexagon_definition[]>,
     // fabric_hook: type_fabric_hook
 }) {
+    // console.log("hexgrid rerender")
 
     const canvas_ref = useRef<HTMLCanvasElement>(null)
     const canvas_container_ref = useRef<HTMLDivElement>(null)
@@ -78,14 +74,14 @@ export default memo(function HexGrid(props: {
         draw_map()
         // console.log('starting loading')
         // props.set_is_show_loading(true)
-    },[props.edge_length])
-
-
+    },[props.edge_length, props.num_rows, props.num_columns])
 
     function draw_map() {
         props.set_is_show_loading(true)
         const worker = new Worker(worker_url, {type: "module"})
-        worker.postMessage({edge_length: props.edge_length, num_rows: props.num_rows, num_columns: props.num_columns})
+        setTimeout(() => {
+            worker.postMessage({edge_length: props.edge_length, num_rows: props.num_rows, num_columns: props.num_columns})
+        }, 500)
         worker.onmessage = (message) => {
             // const context = (canvas_ref.current as HTMLCanvasElement).getContext("bitmaprenderer") as ImageBitmapRenderingContext
             // context.transferFromImageBitmap(message.data.bitmap)

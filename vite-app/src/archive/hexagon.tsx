@@ -1,24 +1,24 @@
-import colors from "../../configs/colors"
-import { useState, useContext, MouseEvent, memo, MouseEventHandler } from "react"
-// import PaintContext from "../../contexts/paint_context"
-// import MapContext from "../../contexts/map_context"
-import { paint_category, color_type } from "../../types/type_paint_brush"
-import hex_region_coordinates from "../../types/hex_region_coordinates"
-import { hex_regions } from "../../types/hex_region_coordinates"
-import type_hexagon_definition from "../../types/type_hexagon_definition"
-import paint_brushes from "../../configs/paint_brushes"
-import ClickableHexagon from "./clickable_hexagon"
-import hexagon_math from "../../utility/hexagon_math"
-import enum_grid_type from "../../types/enum_grid_type"
+// import colors from "../../configs/colors"
+// import { useState, useContext, MouseEvent, memo, MouseEventHandler } from "react"
+// // import PaintContext from "../../contexts/paint_context"
+// // import MapContext from "../../contexts/map_context"
+// import { paint_category, color_type } from "../../types/type_paint_brush"
+// import hex_region_coordinates from "../../types/hex_region_coordinates"
+// import { hex_regions } from "../../types/hex_region_coordinates"
+// import type_hexagon_definition from "../../types/type_hexagon_definition"
+// import paint_brushes from "../../configs/paint_brushes"
+// import ClickableHexagon from "./clickable_hexagon"
+// import hexagon_math from "../../utility/hexagon_math"
+// import enum_grid_type from "../../types/enum_grid_type"
 
-function default_handle_hex_click(e: MouseEvent) {e.preventDefault}
+// function default_handle_hex_click(e: MouseEvent) {e.preventDefault}
 
-export default memo(function Hexagon(props: {
-    edge_length: number,
-    row_number: string,
-    column_number: string,
-    hexagon_definition: type_hexagon_definition,
-}) {
+// export default memo(function Hexagon(props: {
+//     edge_length: number,
+//     row_number: string,
+//     column_number: string,
+//     hexagon_definition: type_hexagon_definition,
+// }) {
 
     // function handle_hexagon_click(event: MouseEvent) {
 
@@ -231,47 +231,47 @@ export default memo(function Hexagon(props: {
     //     return (<polygon points={points_array.join(",")} strokeWidth={5} stroke={"black"} strokeLinejoin={"round"} />)
     // }
 
-    const all_points = hexagon_math.get_points(props.edge_length, parseInt(props.row_number), parseInt(props.column_number))
-    const polygon_points = [
-        all_points.top_left,
-        all_points.top_mid,
-        all_points.top_right,
-        all_points.bottom_right,
-        all_points.bottom_mid,
-        all_points.bottom_left,
-    ]
-    const polygon_points_string = polygon_points.join(",")
+    // const all_points = hexagon_math.get_points(props.edge_length, parseInt(props.row_number), parseInt(props.column_number))
+    // const polygon_points = [
+    //     all_points.top_left,
+    //     all_points.top_mid,
+    //     all_points.top_right,
+    //     all_points.bottom_right,
+    //     all_points.bottom_mid,
+    //     all_points.bottom_left,
+    // ]
+    // const polygon_points_string = polygon_points.join(",")
 
-    const polygons_to_render = []
+    // const polygons_to_render = []
 
-    // if (props.type == enum_grid_type.background) {
-    polygons_to_render.push(
-        <polygon
-            key={props.row_number + "_" + props.column_number}
-            points={polygon_points_string}
-            fill={props.hexagon_definition.background_color_hexidecimal}
-            stroke="black"
-            strokeWidth=".2"
-        />
-    )
-    polygons_to_render.push(
-        <polygon
-            key={props.row_number + "_1" + props.column_number}
-            points={polygon_points_string}
-            fill={props.hexagon_definition.background_color_hexidecimal}
-            stroke="black"
-            strokeWidth=".2"
-        />
-    )
-    polygons_to_render.push(
-        <polygon
-            key={props.row_number + "_2" + props.column_number}
-            points={polygon_points_string}
-            fill={props.hexagon_definition.background_color_hexidecimal}
-            stroke="black"
-            strokeWidth=".2"
-        />
-    )
+    // // if (props.type == enum_grid_type.background) {
+    // polygons_to_render.push(
+    //     <polygon
+    //         key={props.row_number + "_" + props.column_number}
+    //         points={polygon_points_string}
+    //         fill={props.hexagon_definition.background_color_hexidecimal}
+    //         stroke="black"
+    //         strokeWidth=".2"
+    //     />
+    // )
+    // polygons_to_render.push(
+    //     <polygon
+    //         key={props.row_number + "_1" + props.column_number}
+    //         points={polygon_points_string}
+    //         fill={props.hexagon_definition.background_color_hexidecimal}
+    //         stroke="black"
+    //         strokeWidth=".2"
+    //     />
+    // )
+    // polygons_to_render.push(
+    //     <polygon
+    //         key={props.row_number + "_2" + props.column_number}
+    //         points={polygon_points_string}
+    //         fill={props.hexagon_definition.background_color_hexidecimal}
+    //         stroke="black"
+    //         strokeWidth=".2"
+    //     />
+    // )
     // }
     // else if (props.type == enum_grid_type.clickable) {
     //     polygons_to_render.push(
@@ -288,17 +288,17 @@ export default memo(function Hexagon(props: {
     //     )
     // }
 
-    return (
+    // return (
 
         // <svg
         //     overflow={"visible"}
         //     height={props.edge_length + hexagon_math.get_peak_height(props.edge_length)}
         //     width={hexagon_math.get_short_diagonal_length(props.edge_length)}
         // >
-            <>{polygons_to_render}</>
+            // <>{polygons_to_render}</>
         // </svg>
 
-    )
+    // )
 
     // return (
     //     <>
@@ -324,7 +324,7 @@ export default memo(function Hexagon(props: {
 
     //     </>
     // )
-})
+// })
 // ,(previous_props: {[index: string]: any}, next_props: {[index: string]: any}) => {
 
 //     let are_props_equal = true

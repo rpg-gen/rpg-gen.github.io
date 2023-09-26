@@ -1,9 +1,5 @@
 import './App.css'
 import { Outlet } from "react-router-dom"
-import usePaintTool from "./hooks/use_paint_tool"
-import useMapContext from "./hooks/use_map_context"
-import PaintContext from "./contexts/paint_context"
-import MapContext from "./contexts/map_context"
 
 function App() {
 
