@@ -15,7 +15,11 @@ type type_hexagon_definition = {
     is_bottom_left_road: boolean,
     is_left_road: boolean,
     town_size: number,
+    affinity: number,
+    race: number,
     points: {x: number, y: number}[]
+    center_x: number,
+    center_y: number
 }
 
 export default type_hexagon_definition

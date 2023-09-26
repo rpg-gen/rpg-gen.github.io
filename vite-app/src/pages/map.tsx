@@ -20,16 +20,16 @@ function noop() {}
 
 export default function Map () {
 
-    const DEFAULT_NUM_ROWS = 5
+    const DEFAULT_NUM_ROWS = 10
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
     const DEFAULT_BRUSH = "town"
-    const DEFAULT_ZOOM = 5
-    const DEFAULT_EDGE_LENGTH = 20
+    const DEFAULT_ZOOM_LEVEL = 10
+    const DEFAULT_EDGE_LENGTH = 40
 
     const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
     const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
 
-    const [zoom_level, set_zoom_level] = useState(DEFAULT_ZOOM);
+    const [zoom_level, set_zoom_level] = useState(DEFAULT_ZOOM_LEVEL);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
 
     const [display_paint_brush_id, set_display_paint_brush_id] = useState(DEFAULT_BRUSH);
@@ -89,8 +89,8 @@ export default function Map () {
             num_rows={num_rows}
             num_columns={num_rows}
             set_is_show_loading={set_is_show_loading}
-            loading_function_ref={loading_function_ref}
             hexagon_definitions_ref={hexagon_definitions_ref}
+            ref_paint_brush_id={ref_paint_brush_id}
             // fabric_hook={fabric_hook}
         />
 
@@ -98,13 +98,13 @@ export default function Map () {
             {/* <HamMenu /> */}
             <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
-            <MapSize
+            {/* <MapSize
                 default_edge_length={DEFAULT_EDGE_LENGTH}
                 default_num_rows={DEFAULT_NUM_ROWS}
                 set_num_rows={set_num_rows}
                 set_edge_length={set_edge_length}
                 is_show_loading={is_show_loading}
-            />
+            /> */}
         </TopBar>
 
         {
@@ -132,8 +132,11 @@ export default function Map () {
                         zoom_level={index+1}
                         set_zoom_level={set_zoom_level}
                         set_is_show_zoom_picker={set_is_show_zoom_picker}
-                        set_is_show_loading={set_is_show_loading}
-                        loading_function_ref={loading_function_ref}
+                        default_edge_length={DEFAULT_EDGE_LENGTH}
+                        default_zoom_level={DEFAULT_ZOOM_LEVEL}
+                        num_rows={num_rows}
+                        // set_is_show_loading={set_is_show_loading}
+                        // loading_function_ref={loading_function_ref}
                     />
                 })}
             </ZoomPicker>

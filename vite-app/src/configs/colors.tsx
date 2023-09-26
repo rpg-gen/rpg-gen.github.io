@@ -10,7 +10,8 @@ const colors: {[key: string]: string} = {
     white: "#ffffff",
     black: "#000000",
     road: "#664900",
-    red: "#a83232"
+    red: "#a83232",
+    disabled: "#c2c2c2"
 }
 
 export default colors

@@ -12,11 +12,18 @@ function get_peak_height(edge_length: number) {
     return edge_length / 2
 }
 
-function get_hexagon_points(row_number: number, column_number: number, edge_length: number) {
+function get_center_point(row_number: number, column_number: number, edge_length: number) {
     const short_diagonal = get_short_diagonal_length(edge_length)
-
     const center_x = (row_number % 2 == 1 ? short_diagonal / 2 : 0) + short_diagonal / 2 + short_diagonal * (column_number - 1) + spacing.hex_grid_side_border
     const center_y = spacing.hex_grid_top_border + edge_length + (edge_length*1.5) * (row_number - 1)
+
+    return [center_x, center_y]
+}
+
+function get_hexagon_points(row_number: number, column_number: number, edge_length: number) {
+
+    const short_diagonal = get_short_diagonal_length(edge_length)
+    const [center_x, center_y] = get_center_point(row_number, column_number, edge_length)
 
     return [
         {x: center_x, y: center_y - edge_length}, // top peak
@@ -25,7 +32,26 @@ function get_hexagon_points(row_number: number, column_number: number, edge_leng
         {x: center_x, y: center_y + edge_length}, // bottom peak
         {x: center_x - (short_diagonal / 2), y: center_y + (edge_length / 2)},
         {x: center_x - (short_diagonal / 2), y: center_y - (edge_length / 2)},
+        // {x: center_x, y: center_y - edge_length}, // top peak
     ]
+}
+
+function get_house_points(row_number: number, column_number: number, edge_length: number) {
+
+    const short_diagonal = get_short_diagonal_length(edge_length)
+    const [center_x, center_y] = get_center_point(row_number, column_number, edge_length)
+
+    return [
+        {x: center_x, y:  (center_y - (edge_length/1.5))}, // peak
+        {x: center_x + short_diagonal / 2.5, y:  (center_y - edge_length / 5)},
+        {x: center_x + short_diagonal / 3, y:  (center_y - edge_length / 5)},
+        {x: center_x + short_diagonal / 3, y:  (center_y + edge_length / 2)},
+        {x: center_x - short_diagonal / 3, y:  (center_y + edge_length / 2)},
+        {x: center_x - short_diagonal / 3, y:  (center_y - edge_length / 5)},
+        {x: center_x - short_diagonal / 2.5, y:  (center_y - edge_length / 5)},
+        // {x: center_x, y:  (center_y - (edge_length/1.5))}, // peak
+    ]
+
 }
 
 function get_canvas_path_2d(points: {x: number, y: number}[]) {
@@ -113,6 +139,8 @@ const hexagon_math = {
     get_canvas_path_2d,
     get_canvas_height,
     get_canvas_width,
+    get_center_point,
+    get_house_points,
 }
 
 export default hexagon_math
