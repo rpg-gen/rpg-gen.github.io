@@ -1,7 +1,7 @@
 import type_hexagon_definition from "../../types/type_hexagon_definition"
 import { useEffect, memo, useRef, MutableRefObject, MouseEvent } from "react"
 import hexagon_math from "../../utility/hexagon_math"
-import worker_url from "../../worker/worker?url"
+import worker_url from "../../worker/worker?worker&url"
 
 export default memo(function HexGrid(props: {
     edge_length: number,
@@ -78,6 +78,7 @@ export default memo(function HexGrid(props: {
 
     function draw_map() {
         props.set_is_show_loading(true)
+        // const worker = new Worker(new URL("../../worker/worker.ts", import.meta.url), {type: "module"})
         const worker = new Worker(worker_url, {type: "module"})
         setTimeout(() => {
             worker.postMessage({edge_length: props.edge_length, num_rows: props.num_rows, num_columns: props.num_columns})
