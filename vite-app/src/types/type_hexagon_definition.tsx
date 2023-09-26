@@ -1,4 +1,6 @@
 type type_hexagon_definition = {
+    row_number: number,
+    column_number: number,
     background_color_hexidecimal: string,
     is_top_left_river: boolean,
     is_top_right_river: boolean,
@@ -12,7 +14,8 @@ type type_hexagon_definition = {
     is_bottom_right_road: boolean,
     is_bottom_left_road: boolean,
     is_left_road: boolean,
-    town_size: number
+    town_size: number,
+    points: {x: number, y: number}[]
 }
 
 export default type_hexagon_definition

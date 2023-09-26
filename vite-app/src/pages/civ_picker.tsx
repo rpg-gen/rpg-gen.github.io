@@ -4,7 +4,10 @@ import colors from "../configs/colors"
 import type_fabric_hook from '../types/type_fabric_hook'
 import { CSSProperties } from "react"
 
-export default function CivPicker(props: {set_is_show_civ_picker: Function, fabric_hook: type_fabric_hook}) {
+export default function CivPicker(props: {
+    set_is_show_civ_picker: Function,
+    fabric_hook: type_fabric_hook
+}) {
 
     const [previous_size, previous_race, previous_affinity] = props.fabric_hook.get_civ_info()
 

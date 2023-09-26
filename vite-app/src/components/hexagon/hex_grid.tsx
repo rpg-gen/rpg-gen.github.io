@@ -1,83 +1,129 @@
-import type_hexagon_definitions from "../../types/type_hexagon_definitions"
+import type_hexagon_definition from "../../types/type_hexagon_definition"
 import HexagonRow from "./hexagon_row"
 import enum_grid_type from "../../types/enum_grid_type"
 import Hexagon from "./hexagon"
-import { MouseEventHandler, useState, useEffect, memo, useRef, MutableRefObject } from "react"
+import { MouseEventHandler, useState, useEffect, memo, useRef, MutableRefObject, MouseEvent } from "react"
 import type_fabric_hook from "../../types/type_fabric_hook"
+import hexagon_math from "../../utility/hexagon_math"
+import spacing from "../../configs/spacing"
+import worker_url from "../../worker/worker?url"
 
 export default memo(function HexGrid(props: {
     edge_length: number,
-    fabric_hook: type_fabric_hook
+    set_is_show_loading: Function,
+    loading_function_ref: MutableRefObject<Function>,
+    num_rows: number,
+    num_columns: number,
+    hexagon_definitions_ref: MutableRefObject<type_hexagon_definition[]>,
+    // fabric_hook: type_fabric_hook
 }) {
 
-    // const hexagon_rows: JSX.Element[] = []
+    const canvas_ref = useRef<HTMLCanvasElement>(null)
+    const canvas_container_ref = useRef<HTMLDivElement>(null)
 
-    // const hexagon_polygons: JSX.Element[] = []
+    const canvas_height = hexagon_math.get_canvas_height(props.edge_length, props.num_rows)
+    const canvas_width = hexagon_math.get_canvas_width(props.edge_length, props.num_columns)
 
-    // for (const row_number in props.hexagon_definitions) {
-    //     const this_row = props.hexagon_definitions[row_number]
-    //     // const row_hexagons: JSX.Element[] = []
+    // function draw_map() {
+        // console.log("drawing_map")
 
-    //     for (const column_number in this_row) {
-    //         hexagon_polygons.push(
-    //             <Hexagon
-    //                 key={row_number + "_" + column_number}
-    //                 row_number={row_number}
-    //                 column_number={column_number}
-    //                 edge_length={props.edge_length}
-    //                 hexagon_definition={this_row[column_number]}
-    //                 // click_function={props.click_function}
-    //             />
-    //         )
-    //     }
+        // context.clearRect(0, 0, canvas.width, canvas.height)
 
-        // hexagon_rows.push(
-        //     <HexagonRow key={row_number} row_number={row_number} edge_length={props.edge_length}>
-        //         {row_hexagons}
-        //     </HexagonRow>
-        // )
+        // const bitmap = offscreen_canvas.transferToImageBitmap()
     // }
 
-    // return (
-    //     <div style={{
-    //         position: "absolute",
-    //         top: "calc(" + (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem + " + hexagon_math.get_peak_height(props.edge_length + 5) + "px)",
-    //         left: 0
-    //     }}>
-    //         {hexagon_rows}
-    //     </div>
-    // )
+    function handle_map_click(event: MouseEvent) {
+        // console.log(canvas_ref.current)
+        // const canvas = (canvas_ref.current as unknown as HTMLCanvasElement)
+        // console.log(context)
 
+        if (!canvas_container_ref.current || !canvas_ref.current) {
+            return
+        }
 
+        const context = canvas_ref.current.getContext("2d") as CanvasRenderingContext2D
 
+        // console.log(event.clientX + " " + event.clientY)
+
+        // console.log(canvas_container_ref.current.offsetTop + " " + canvas_container_ref.current.offsetLeft)
+
+        const offset_x = canvas_container_ref.current.scrollLeft
+        const offset_y = canvas_container_ref.current.scrollTop
+
+        // console.log(offset_x, " ", offset_y)
+
+        // context.beginPath()
+        // context.moveTo(offset_x, offset_y + 100)
+        // context.lineTo(offset_x, offset_y)
+        // context.lineTo(offset_x + 100, offset_y)
+        // context.closePath()
+        // context.fill()
+
+        const clicked_x = event.clientX + offset_x
+        const clicked_y = event.clientY + offset_y
+
+        // console.log(clicked_x + " " + clicked_y)
+
+        for (const hexagon_index in props.hexagon_definitions_ref.current) {
+            const hexagon_definition = props.hexagon_definitions_ref.current[hexagon_index]
+
+            if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_definition.points), clicked_x, clicked_y)) {
+                console.log(hexagon_definition.row_number.toString() + " " + hexagon_definition.column_number.toString())
+            }
+        }
+    }
 
     useEffect(() => {
-        props.fabric_hook.init_canvas()
+        // props.loading_function_ref.current = draw_map
+        draw_map()
+        // console.log('starting loading')
+        // props.set_is_show_loading(true)
     },[props.edge_length])
+
+
+
+    function draw_map() {
+        props.set_is_show_loading(true)
+        const worker = new Worker(worker_url, {type: "module"})
+        worker.postMessage({edge_length: props.edge_length, num_rows: props.num_rows, num_columns: props.num_columns})
+        worker.onmessage = (message) => {
+            // const context = (canvas_ref.current as HTMLCanvasElement).getContext("bitmaprenderer") as ImageBitmapRenderingContext
+            // context.transferFromImageBitmap(message.data.bitmap)
+            const context = (canvas_ref.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
+            context.drawImage(message.data.bitmap, 0, 0)
+            message.data.bitmap.close()
+            props.hexagon_definitions_ref.current = message.data.hexagon_definitions
+            props.set_is_show_loading(false)
+        }
+    }
 
     return (
 
-        <div style={{
-            minWidth: "100%",
-            maxWidth: "100%",
-            overflow: "scroll",
-            maxHeight: "100%",
-            minHeight: "100%",
-            height: "100%",
-            overscrollBehavior: "none",
-            boxSizing: "border-box",
-            position: "relative",
-            // marginTop: (spacing.top_bar_height + spacing.top_bar_margin + .5).toString() + "rem"
-        }}>
-            {/* <div style={{height: (spacing.top_bar_height + spacing.top_bar_margin).toString() + "rem"}}></div> */}
+        <div
+            style={{
+                minWidth: "100%",
+                maxWidth: "100%",
+                overflow: "scroll",
+                maxHeight: "100%",
+                minHeight: "100%",
+                height: "100%",
+                overscrollBehavior: "none",
+                boxSizing: "border-box",
+                position: "relative",
+            }}
+            ref={canvas_container_ref}
+            onClick={handle_map_click}
+        >
+            <canvas
+                // style={{
 
-            {/* <svg style={{
-                height: (props.edge_length + peak_height) * Object.keys(props.hexagon_definitions).length + long_diagonal_length,
-                width: (short_diagonal_length) * Object.keys(props.hexagon_definitions[1]).length + (short_diagonal_length / 2) + (spacing.hex_grid_side_border * 2)
-            }}>
-                {hexagon_polygons}
-            </svg> */}
-            {props.fabric_hook.get_html_stub()}
+                //     overflow: "scroll",
+                // }}
+                ref={canvas_ref}
+                id="canvas"
+                height={canvas_height}
+                width={canvas_width}
+            ></canvas>
         </div>
     )
 })
