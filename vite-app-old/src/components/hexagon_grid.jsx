@@ -16,30 +16,21 @@ export default function HexagonGrid({map_document, hex_edge_px_length}) {
         return <HexRow hex_edge_px_length={hex_edge_px_length} num_hexes={num_hexes_wide} key={index} row_number={index+1}/>
     })
 
-    function Spacer() {
-        const spacer_style = {
-            display: "inline-block",
-            width: "0px"
-        }
-    
-        return <div style={spacer_style} />
-    }
-    
     function HexRow({hex_edge_px_length, num_hexes, row_number}) {
-    
+
         const hex_row_style = {
             fontSize: "0",
             whiteSpace: "nowrap"
         };
-    
+
         if (row_number > 1) {
             hex_row_style.marginTop = "-" + HexagonMath.convert_edge_to_point_height(hex_edge_px_length + 2).toString() + "px"
         }
-    
+
         if (row_number % 2 == 0) {
             hex_row_style.marginLeft = (HexagonMath.convert_edge_to_short_diagonal(hex_edge_px_length) / 2).toString() + "px"
         }
-    
+
         const hexes = Array.from({length: num_hexes}, (_, index) => {
             const column_number = index + 1
             const hexagon_key = row_number.toString().padStart(3,"0") + "_" + column_number.toString().padStart(3,"0")
@@ -51,27 +42,28 @@ export default function HexagonGrid({map_document, hex_edge_px_length}) {
             }
 
             return (
-                <Hexagon 
+                <Hexagon
                     key={hexagon_key}
                     hex_key={hexagon_key}
-                    hex_data={hex_data} 
-                    location_column={index + 1} 
-                    location_row={row_number} 
-                    edge_length={hex_edge_px_length} 
-                    is_show_border={true} 
+                    hex_data={hex_data}
+                    location_column={index + 1}
+                    location_row={row_number}
+                    edge_length={hex_edge_px_length}
+                    is_show_border={true}
                     is_selected={is_selected}
                     set_selected_row={set_selected_row}
                     set_selected_column={set_selected_column}
                 />
             );
         });
-    
+
         return (
-            <div style={hex_row_style}>{hexes}</div>
+            // <div style={hex_row_style}>{hexes}</div>
+            {hexes}
         );
     };
 
     return <>
-        {hex_rows}
+        <svg>{hexes}</svg>
     </>
 };

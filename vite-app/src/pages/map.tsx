@@ -1,101 +1,115 @@
 import TopBar from "../components/top_bar/top_bar"
 // import PaintContext from "../contexts/paint_context"
 // import MapContext from "../contexts/map_context"
-import { useState, MouseEvent, useCallback, useRef } from "react"
+import { useState, useRef } from "react"
 import PaintPicker from "../pages/paint_picker"
 import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
 import ZoomPickerOption from "../components/zoom_picker_option"
-import HexagonGridContainer from "../components/hexagon/hexagon_grid_container"
 import HexGrid from "../components/hexagon/hex_grid"
-import HamMenu from "../components/top_bar/ham_menu"
+// import HamMenu from "../components/top_bar/ham_menu"
 import EditBrushButton from "../components/top_bar/edit_brush_button"
 import ZoomButton from "../components/top_bar/zoom_button"
-import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
-import type_hexagon_definitions from "../types/type_hexagon_definitions"
-import build_starting_hexagon_definitions from "../utility/build_starting_hexagon_definitions"
-import enum_grid_type from '../types/enum_grid_type'
+import type_hexagon_definition from "../types/type_hexagon_definition"
 import Loading from "../pages/loading"
+// import useFabric from "../hooks/use_fabric"
+import MapSize from "../components/top_bar/map_size"
 
 function noop() {}
 
 export default function Map () {
 
-    const NUM_ROWS = 100
-    const NUM_COLUMNS = NUM_ROWS
+    const DEFAULT_NUM_ROWS = 5
+    const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
+    const DEFAULT_BRUSH = "town"
+    const DEFAULT_ZOOM = 5
+    const DEFAULT_EDGE_LENGTH = 20
 
-    const [zoom_level, set_zoom_level] = useState(5);
+    const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
+    const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
+
+    const [zoom_level, set_zoom_level] = useState(DEFAULT_ZOOM);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
 
-    const [display_paint_brush_id, set_display_paint_brush_id] = useState("mountain");
-    const ref_paint_brush_id = useRef<string>("mountain")
+    const [display_paint_brush_id, set_display_paint_brush_id] = useState(DEFAULT_BRUSH);
+    const ref_paint_brush_id = useRef<string>(DEFAULT_BRUSH)
 
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
 
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
-    const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, NUM_ROWS))
+    // const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, DEFAULT_NUM_ROWS))
+    const hexagon_definitions_ref = useRef<type_hexagon_definition[]>([])
 
-    const default_edge_length = 30
-    const zoom_edge_length = default_edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
+    const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
 
-    // console.log(hexagon_definitions)
+    const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
-    // function handle_paint_brush_change(event)
 
-    function apply_current_paint_to_hex(row_number: string, column_number: string) {
-        const current_brush = paint_brushes[ref_paint_brush_id.current]
-        const current_brush_category = current_brush.paint_category
+    // function apply_current_paint_to_hex(row_number: string, column_number: string) {
+    //     const current_brush = paint_brushes[ref_paint_brush_id.current]
+    //     const current_brush_category = current_brush.paint_category
 
-        if (current_brush_category == paint_category.background) {
-            const current_brush_background_color = current_brush.hexidecimal_color
+    //     if (current_brush_category == paint_category.background) {
+    //         const current_brush_background_color = current_brush.hexidecimal_color
 
-            set_hexagon_definitions((previous_definitions) => {
-                const previous_row = previous_definitions[row_number]
-                const previous_hexagon = previous_definitions[row_number][column_number]
+    //         set_hexagon_definitions((previous_definitions) => {
+    //             const previous_row = previous_definitions[row_number]
+    //             const previous_hexagon = previous_definitions[row_number][column_number]
 
-                const new_hexagon_definitions = {
-                    ...previous_definitions,
-                    [row_number]: {
-                        ...previous_row,
-                        [column_number]: {
-                            ...previous_hexagon,
-                            background_color_hexidecimal: current_brush_background_color
-                        }
-                    }
-                }
+    //             const new_hexagon_definitions = {
+    //                 ...previous_definitions,
+    //                 [row_number]: {
+    //                     ...previous_row,
+    //                     [column_number]: {
+    //                         ...previous_hexagon,
+    //                         background_color_hexidecimal: current_brush_background_color
+    //                     }
+    //                 }
+    //             }
 
-                return new_hexagon_definitions
-            })
-        }
-    }
+    //             return new_hexagon_definitions
+    //         })
+    //     }
+    // }
 
-    const handle_hex_click = useCallback(function (event: MouseEvent) {
-        const target = (event.target as HTMLElement).dataset
-        const clicked_row_number = (target.rowNumber as string)
-        const clicked_column_number = (target.columnNumber as string)
-        apply_current_paint_to_hex(clicked_row_number, clicked_column_number)
-    },[])
+    // const handle_hex_click = useCallback(function (event: MouseEvent) {
+    //     const target = (event.target as HTMLElement).dataset
+    //     const clicked_row_number = (target.rowNumber as string)
+    //     const clicked_column_number = (target.columnNumber as string)
+    //     apply_current_paint_to_hex(clicked_row_number, clicked_column_number)
+    // },[])
 
     return (
         <>
+
+        <HexGrid
+            edge_length={zoom_edge_length}
+            num_rows={num_rows}
+            num_columns={num_rows}
+            set_is_show_loading={set_is_show_loading}
+            loading_function_ref={loading_function_ref}
+            hexagon_definitions_ref={hexagon_definitions_ref}
+            // fabric_hook={fabric_hook}
+        />
 
         <TopBar>
             {/* <HamMenu /> */}
             <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
+            <MapSize
+                default_edge_length={DEFAULT_EDGE_LENGTH}
+                default_num_rows={DEFAULT_NUM_ROWS}
+                set_num_rows={set_num_rows}
+                set_edge_length={set_edge_length}
+                is_show_loading={is_show_loading}
+            />
         </TopBar>
-
-        <HexagonGridContainer>
-            <HexGrid type={enum_grid_type.background} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
-            <HexGrid type={enum_grid_type.icons} hexagon_definitions={hexagon_definitions} edge_length={zoom_edge_length} />
-            <HexGrid type={enum_grid_type.clickable} hexagon_definitions={hexagon_definitions} click_function={handle_hex_click} edge_length={zoom_edge_length} />
-        </HexagonGridContainer>
 
         {
             is_show_loading
-            ? <Loading loading_function={loading_function_ref.current} />
+            ? <Loading loading_function_ref={loading_function_ref} set_is_show_loading={set_is_show_loading} />
             : ""
         }
 
@@ -103,7 +117,6 @@ export default function Map () {
             is_show_paint_picker
             ? <PaintPicker>
                 <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} />
-                {/* <PainPickerSection category={paint_category.background}></PainPickerSection> */}
                 <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
                 <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
             </PaintPicker>
@@ -125,6 +138,16 @@ export default function Map () {
                 })}
             </ZoomPicker>
             : ""
+        }
+
+        {
+            // is_show_civ_picker
+            // ?
+                // <CivPicker
+                //     set_is_show_civ_picker={set_is_show_civ_picker}
+                //     fabric_hook={fabric_hook}
+                // />
+            // : ""
         }
 
         </>

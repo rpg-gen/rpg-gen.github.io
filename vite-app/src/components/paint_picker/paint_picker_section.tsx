@@ -8,9 +8,6 @@ export default function Section(props: {this_paint_category: paint_category, set
 
     function handle_paint_brush_click(event: MouseEvent) {
         const clicked_paint_brush_id = (event.target as HTMLElement).dataset.paintBrushId
-        // console.log(clicked_paint_brush_id)
-        // props.set_paint_brush_id(clicked_paint_brush_id)
-        // console.log("clicked")
         props.ref_paint_brush_id.current = (clicked_paint_brush_id as string)
         props.set_display_paint_brush_id(clicked_paint_brush_id)
 

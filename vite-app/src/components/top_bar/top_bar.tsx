@@ -21,7 +21,8 @@ export default function TopBar(props: {children: JSX.Element[]}) {
             paddingRight: spacing.top_bar_padding.toString() + "rem",
             alignItems: "center",
             maxWidth: "100%",
-            minWidth: "100%"
+            minWidth: "100%",
+            zIndex: 10
         }}>
             {props.children}
         </div>
