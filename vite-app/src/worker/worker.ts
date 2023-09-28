@@ -22,6 +22,8 @@ const default_definitions = {
     is_bottom_left_road: false,
     is_left_road: false,
     town_size: 0,
+    affinity: 0,
+    race: 0,
 }
 
 onmessage = (message: MessageEvent) => {
@@ -46,7 +48,7 @@ onmessage = (message: MessageEvent) => {
                 const hexagon_definition = hexagon_definitions[hexagon_definitions_index]
                 if (hexagon_definition.row_number == row_number && hexagon_definition.column_number == column_number) {
                     is_definition_found = true
-                    hexagon_definition.points = hexagon_points
+                    hexagon_definition.corner_points = hexagon_points
                     hexagon_definition.center_x = center_x
                     hexagon_definition.center_y = center_y
                     break
@@ -57,7 +59,7 @@ onmessage = (message: MessageEvent) => {
                 hexagon_definitions.push({
                     row_number: row_number,
                     column_number: column_number,
-                    points: hexagon_math.get_hexagon_points(row_number, column_number, edge_length),
+                    corner_points: hexagon_math.get_hexagon_points(row_number, column_number, edge_length),
                     center_x: center_x,
                     center_y: center_y,
                     ...default_definitions
@@ -72,7 +74,7 @@ onmessage = (message: MessageEvent) => {
     for (let hexagon_index = 0; hexagon_index < hexagon_definitions.length; hexagon_index++) {
         const hexagon_definition: type_hexagon_definition = hexagon_definitions[hexagon_index]
         // console.log("drawing " + hexagon_definition.row_number + " " + hexagon_definition.column_number)
-        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.points)
+        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points)
         offscreen_context.fillStyle = hexagon_definition.background_color_hexidecimal
         offscreen_context.fill(path_2d)
         offscreen_context.lineWidth = spacing.hexagon_stroke_width

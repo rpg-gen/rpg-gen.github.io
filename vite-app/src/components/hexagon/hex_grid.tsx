@@ -13,7 +13,8 @@ export default memo(function HexGrid(props: {
     num_rows: number,
     num_columns: number,
     hexagon_definitions_ref: MutableRefObject<type_hexagon_definition[]>,
-    ref_paint_brush_id: MutableRefObject<string>
+    ref_paint_brush_id: MutableRefObject<string>,
+    set_is_show_civ_picker: Function
 }) {
     const canvas_ref = useRef<HTMLCanvasElement>(null)
     const canvas_container_ref = useRef<HTMLDivElement>(null)
@@ -27,26 +28,27 @@ export default memo(function HexGrid(props: {
         is_too_large = true
     }
 
-    function paint_background(color_hexidecimal: string, hexagon_definition: type_hexagon_definition) {
+    function paint_background(hexagon_definition: type_hexagon_definition) {
         const context = get_canvas_context()
-        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.points)
-        context.fillStyle = color_hexidecimal
+        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points)
+        context.fillStyle = hexagon_definition.background_color_hexidecimal
         context.fill(path_2d)
         context.lineWidth = spacing.hexagon_stroke_width
         context.stroke(path_2d)
-        hexagon_definition.background_color_hexidecimal = color_hexidecimal
     }
 
-    function paint_town(hexagon_definition: type_hexagon_definition) {
-        const context = get_canvas_context()
-        const house_points = hexagon_math.get_house_points(hexagon_definition.row_number, hexagon_definition.column_number, props.edge_length)
-        const path_2d = hexagon_math.get_canvas_path_2d(house_points)
-        // context.fill(path_2d)
-        context.lineJoin = "round"
-        context.lineWidth = 10
-        context.fillStyle = colors.black
-        context.stroke(path_2d)
-        context.fill(path_2d)
+    function paint_icon(hexagon_definition: type_hexagon_definition) {
+        if (hexagon_definition.icon_points) {
+            const context = get_canvas_context()
+            const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.icon_points)
+            // context.fill(path_2d)
+            context.lineJoin = "round"
+            context.lineWidth = 10
+            context.fillStyle = colors.black
+            context.stroke(path_2d)
+            context.fill(path_2d)
+        }
+        
     }
 
     function paint_civ_text(hexagon_definition: type_hexagon_definition) {
@@ -56,7 +58,17 @@ export default memo(function HexGrid(props: {
         context.textBaseline = "middle"
         const font_px = props.edge_length / 2
         context.font = font_px + "px sans-serif"
-        context.fillText("111", hexagon_definition.center_x, hexagon_definition.center_y)
+        context.fillText(
+            hexagon_definition.town_size.toString() + hexagon_definition.race.toString() + hexagon_definition.affinity.toString(), 
+            hexagon_definition.center_x, 
+            hexagon_definition.center_y
+        )
+    }
+
+    function repaint_hexagon(hexagon_definition: type_hexagon_definition) {
+        paint_background(hexagon_definition)
+        paint_icon(hexagon_definition)
+        paint_civ_text(hexagon_definition)
     }
 
     function get_canvas_context() {
@@ -79,18 +91,23 @@ export default memo(function HexGrid(props: {
         for (const hexagon_index in props.hexagon_definitions_ref.current) {
             const hexagon_definition = props.hexagon_definitions_ref.current[hexagon_index]
 
-            if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_definition.points), clicked_x, clicked_y)) {
+            if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points), clicked_x, clicked_y)) {
                 // const row_number = hexagon_definition.row_number
                 // const column_number = hexagon_definition.column_number
                 const paint_brush = paint_brushes[props.ref_paint_brush_id.current]
 
                 if (paint_brush.paint_category == paint_category.background) {
-                    paint_background(paint_brush.hexidecimal_color, hexagon_definition)
+                    hexagon_definition.background_color_hexidecimal = hexagon_definition.background_color_hexidecimal
+                    repaint_hexagon(hexagon_definition)
                 }
 
                 if (paint_brush.paint_category == paint_category.icon && paint_brush.id == "town") {
-                    paint_town(hexagon_definition)
-                    paint_civ_text(hexagon_definition)
+                    const house_points = hexagon_math.get_house_points(hexagon_definition.row_number, hexagon_definition.column_number, props.edge_length)
+                    hexagon_definition.icon_points = house_points
+                    hexagon_definition.affinity = 1
+                    hexagon_definition.race = 1
+                    hexagon_definition.town_size = 1
+                    repaint_hexagon(hexagon_definition)
                 }
                 // console.log(hexagon_definition.row_number.toString() + " " + hexagon_definition.column_number.toString())
                 // console.log(props.ref_paint_brush_id.current)

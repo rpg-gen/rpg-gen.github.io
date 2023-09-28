@@ -91,6 +91,7 @@ export default function Map () {
             set_is_show_loading={set_is_show_loading}
             hexagon_definitions_ref={hexagon_definitions_ref}
             ref_paint_brush_id={ref_paint_brush_id}
+            set_is_show_civ_picker={set_is_show_civ_picker}
             // fabric_hook={fabric_hook}
         />
 
@@ -144,13 +145,12 @@ export default function Map () {
         }
 
         {
-            // is_show_civ_picker
-            // ?
-                // <CivPicker
-                //     set_is_show_civ_picker={set_is_show_civ_picker}
-                //     fabric_hook={fabric_hook}
-                // />
-            // : ""
+            is_show_civ_picker
+            ?
+                <CivPicker
+                    set_is_show_civ_picker={set_is_show_civ_picker}
+                />
+            : ""
         }
 
         </>

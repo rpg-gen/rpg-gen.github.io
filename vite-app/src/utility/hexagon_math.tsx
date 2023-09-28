@@ -55,6 +55,7 @@ function get_house_points(row_number: number, column_number: number, edge_length
 }
 
 function get_canvas_path_2d(points: {x: number, y: number}[]) {
+
     const path = new Path2D()
     path.moveTo(points[0].x, points[0].y)
     for (let index = 1; index < points.length; index++) {

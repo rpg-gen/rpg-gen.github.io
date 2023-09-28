@@ -17,9 +17,10 @@ type type_hexagon_definition = {
     town_size: number,
     affinity: number,
     race: number,
-    points: {x: number, y: number}[]
+    corner_points: {x: number, y: number}[]
+    icon_points?: {x: number, y: number}[]
     center_x: number,
-    center_y: number
+    center_y: number,
 }
 
 export default type_hexagon_definition
