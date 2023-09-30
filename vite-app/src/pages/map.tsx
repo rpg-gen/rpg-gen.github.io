@@ -14,7 +14,8 @@ import { paint_category } from "../types/type_paint_brush"
 import type_hexagon_definition from "../types/type_hexagon_definition"
 import Loading from "../pages/loading"
 // import useFabric from "../hooks/use_fabric"
-import MapSize from "../components/top_bar/map_size"
+// import MapSize from "../components/top_bar/map_size"
+import useCanvas from "../hooks/use_canvas"
 
 function noop() {}
 
@@ -25,6 +26,10 @@ export default function Map () {
     const DEFAULT_BRUSH = "town"
     const DEFAULT_ZOOM_LEVEL = 10
     const DEFAULT_EDGE_LENGTH = 40
+
+    const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
+
+    console.log(canvas)
 
     const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
     const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
@@ -39,13 +44,19 @@ export default function Map () {
     const loading_function_ref = useRef<Function>(noop)
 
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
-    // const [hexagon_definitions, set_hexagon_definitions] = useState<type_hexagon_definitions>(build_starting_hexagon_definitions(NUM_COLUMNS, DEFAULT_NUM_ROWS))
-    const hexagon_definitions_ref = useRef<type_hexagon_definition[]>([])
 
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
 
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
+    const canvas = useCanvas(
+        DEFAULT_EDGE_LENGTH, 
+        DEFAULT_NUM_ROWS, 
+        DEFAULT_NUM_COLUMNS, 
+        ref_hexagon_definitions, 
+        ref_paint_brush_id,
+        set_is_show_loading,
+    )
 
     // function apply_current_paint_to_hex(row_number: string, column_number: string) {
     //     const current_brush = paint_brushes[ref_paint_brush_id.current]
@@ -92,6 +103,7 @@ export default function Map () {
             hexagon_definitions_ref={hexagon_definitions_ref}
             ref_paint_brush_id={ref_paint_brush_id}
             set_is_show_civ_picker={set_is_show_civ_picker}
+            canvas={canvas}
             // fabric_hook={fabric_hook}
         />
 
@@ -145,12 +157,12 @@ export default function Map () {
         }
 
         {
-            is_show_civ_picker
-            ?
-                <CivPicker
-                    set_is_show_civ_picker={set_is_show_civ_picker}
-                />
-            : ""
+            // is_show_civ_picker
+            // ?
+            //     <CivPicker
+            //         set_is_show_civ_picker={set_is_show_civ_picker}
+            //     />
+            // : ""
         }
 
         </>
