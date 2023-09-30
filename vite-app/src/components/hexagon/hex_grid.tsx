@@ -1,20 +1,15 @@
-import type_hexagon_definition from "../../types/type_hexagon_definition"
-import { useEffect, memo, useRef, MutableRefObject, MouseEvent } from "react"
+import { useEffect, memo, MutableRefObject } from "react"
 import type_canvas_hook from "../../types/type_canvas_hook"
 
 export default memo(function HexGrid(props: {
     edge_length: number,
-    set_is_show_loading: Function,
     num_rows: number,
     num_columns: number,
-    hexagon_definitions_ref: MutableRefObject<type_hexagon_definition[]>,
-    ref_paint_brush_id: MutableRefObject<string>,
-    set_is_show_civ_picker: Function,
     canvas: type_canvas_hook
 }) {    
 
     useEffect(() => {
-        if (!is_too_large) {draw_map()}
+        if (!props.canvas.is_too_large) {props.canvas.draw_map()}
     },[props.edge_length, props.num_rows, props.num_columns])
 
 
@@ -33,8 +28,8 @@ export default memo(function HexGrid(props: {
                 boxSizing: "border-box",
                 position: "relative",
             }}
-            ref={canvas.ref_canvas_container}
-            onClick={canvashandle_map_click}
+            ref={props.canvas.ref_canvas_container}
+            onClick={props.canvas.handle_map_click}
         >
             {props.canvas.get_canvas_html()}
 

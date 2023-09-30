@@ -16,6 +16,7 @@ import Loading from "../pages/loading"
 // import useFabric from "../hooks/use_fabric"
 // import MapSize from "../components/top_bar/map_size"
 import useCanvas from "../hooks/use_canvas"
+import CivPicker from "./civ_picker"
 
 function noop() {}
 
@@ -24,12 +25,10 @@ export default function Map () {
     const DEFAULT_NUM_ROWS = 10
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
     const DEFAULT_BRUSH = "town"
-    const DEFAULT_ZOOM_LEVEL = 10
+    const DEFAULT_ZOOM_LEVEL = 5
     const DEFAULT_EDGE_LENGTH = 40
 
     const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
-
-    console.log(canvas)
 
     const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
     const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
@@ -56,6 +55,7 @@ export default function Map () {
         ref_hexagon_definitions, 
         ref_paint_brush_id,
         set_is_show_loading,
+        set_is_show_civ_picker,
     )
 
     // function apply_current_paint_to_hex(row_number: string, column_number: string) {
@@ -99,12 +99,7 @@ export default function Map () {
             edge_length={zoom_edge_length}
             num_rows={num_rows}
             num_columns={num_rows}
-            set_is_show_loading={set_is_show_loading}
-            hexagon_definitions_ref={hexagon_definitions_ref}
-            ref_paint_brush_id={ref_paint_brush_id}
-            set_is_show_civ_picker={set_is_show_civ_picker}
             canvas={canvas}
-            // fabric_hook={fabric_hook}
         />
 
         <TopBar>
@@ -157,12 +152,14 @@ export default function Map () {
         }
 
         {
-            // is_show_civ_picker
-            // ?
-            //     <CivPicker
-            //         set_is_show_civ_picker={set_is_show_civ_picker}
-            //     />
-            // : ""
+            is_show_civ_picker
+            ?
+                <CivPicker
+                    set_is_show_civ_picker={set_is_show_civ_picker}
+                    canvas={canvas}
+                    ref_hexagon_definitions={ref_hexagon_definitions}
+                />
+            : ""
         }
 
         </>

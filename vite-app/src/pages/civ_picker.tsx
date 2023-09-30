@@ -1,22 +1,24 @@
 import spacing from "../configs/spacing"
-import { useState } from "react"
+import { useState, MutableRefObject } from "react"
 import colors from "../configs/colors"
 import { CSSProperties } from "react"
+import type_canvas_hook from "../types/type_canvas_hook"
+import type_hexagon_definition from "../types/type_hexagon_definition"
 
 export default function CivPicker(props: {
     set_is_show_civ_picker: Function,
-    // fabric_hook: type_fabric_hook
+    canvas: type_canvas_hook,
+    ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>
 }) {
 
-    // const [previous_size, previous_race, previous_affinity] = props.fabric_hook.get_civ_info()
+    const editing_hex_definition = (props.ref_hexagon_definitions.current.find((e) =>  {
+        return e.row_number == props.canvas.ref_clicked_row_number.current 
+        && e.column_number == props.canvas.ref_clicked_column_number.current
+    }) as type_hexagon_definition)
 
-    const [selected_size, set_selected_size] = useState(previous_size)
-    const [selected_race, set_selected_race] = useState(previous_race)
-    const [selected_affinity, set_selected_affinity] = useState(previous_affinity)
-
-    // console.log(selected_size)
-    // console.log(selected_race)
-    // console.log(selected_affinity)
+    const [selected_size, set_selected_size] = useState(editing_hex_definition.town_size.toString())
+    const [selected_race, set_selected_race] = useState(editing_hex_definition.race.toString())
+    const [selected_affinity, set_selected_affinity] = useState(editing_hex_definition.affinity.toString())
 
     function CivPickerSection(props: {title?: string, children: JSX.Element[] | JSX.Element}) {
         return (
@@ -55,7 +57,10 @@ export default function CivPicker(props: {
     }
 
     function handle_submit() {
-        props.fabric_hook.add_civ_info(selected_size, selected_race, selected_affinity)
+        editing_hex_definition.town_size = parseInt(selected_size)
+        editing_hex_definition.race = parseInt(selected_race)
+        editing_hex_definition.affinity = parseInt(selected_affinity)
+        props.canvas.repaint_hexagon(editing_hex_definition)
         props.set_is_show_civ_picker(false)
     }
 
