@@ -49,7 +49,7 @@ export default function Map () {
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
     const canvas = useCanvas(
-        DEFAULT_EDGE_LENGTH, 
+        zoom_edge_length, 
         DEFAULT_NUM_ROWS, 
         DEFAULT_NUM_COLUMNS, 
         ref_hexagon_definitions, 

@@ -1,7 +1,7 @@
 import { RefObject, MouseEventHandler, MutableRefObject } from "react"
 
 type type_canvas_hook = {
-    set_edge_length: Function
+    // set_edge_length: Function
     set_num_rows: Function,
     set_num_columns: Function,
     is_too_large: Boolean,

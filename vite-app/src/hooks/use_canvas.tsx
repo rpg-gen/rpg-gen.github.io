@@ -17,12 +17,14 @@ export default function useCanvas(
     set_is_show_loading: Function,
     set_is_show_civ_picker: Function
 ) {
+
     const ref_canvas = useRef<HTMLCanvasElement>(null)
     const ref_canvas_container = useRef<HTMLDivElement>(null)
 
     const CANVAS_ID = "canvas"
 
-    const [edge_length, set_edge_length] = useState<number>(param_edge_length)
+    // const [edge_length, set_edge_length] = useState<number>(param_edge_length)
+    const edge_length = param_edge_length
     const [num_rows, set_num_rows] = useState<number>(param_num_rows)
     const [num_columns, set_num_columns] = useState<number>(param_num_columns)
 
@@ -160,7 +162,7 @@ export default function useCanvas(
     }
 
     const canvas_hook: type_canvas_hook = {
-        set_edge_length,
+        // set_edge_length,
         set_num_rows,
         set_num_columns,
         is_too_large,
