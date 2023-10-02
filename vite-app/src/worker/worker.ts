@@ -24,6 +24,7 @@ const default_definitions = {
     town_size: 0,
     affinity: 0,
     race: 0,
+    icon_name: "",
 }
 
 onmessage = (message: MessageEvent) => {
@@ -41,16 +42,10 @@ onmessage = (message: MessageEvent) => {
 
             let is_definition_found = false
 
-            const hexagon_points = hexagon_math.get_hexagon_points(row_number, column_number, edge_length)
-            const [center_x, center_y] = hexagon_math.get_center_point(row_number, column_number, edge_length)
-
             for (let hexagon_definitions_index = 0; hexagon_definitions_index < hexagon_definitions.length; hexagon_definitions_index++) {
                 const hexagon_definition = hexagon_definitions[hexagon_definitions_index]
                 if (hexagon_definition.row_number == row_number && hexagon_definition.column_number == column_number) {
                     is_definition_found = true
-                    hexagon_definition.corner_points = hexagon_points
-                    hexagon_definition.center_x = center_x
-                    hexagon_definition.center_y = center_y
                     break
                 }
             }
@@ -59,9 +54,6 @@ onmessage = (message: MessageEvent) => {
                 hexagon_definitions.push({
                     row_number: row_number,
                     column_number: column_number,
-                    corner_points: hexagon_math.get_hexagon_points(row_number, column_number, edge_length),
-                    center_x: center_x,
-                    center_y: center_y,
                     ...default_definitions
                 })
             }
@@ -73,12 +65,7 @@ onmessage = (message: MessageEvent) => {
 
     for (let hexagon_index = 0; hexagon_index < hexagon_definitions.length; hexagon_index++) {
         const hexagon_definition: type_hexagon_definition = hexagon_definitions[hexagon_index]
-        // console.log("drawing " + hexagon_definition.row_number + " " + hexagon_definition.column_number)
-        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points)
-        offscreen_context.fillStyle = hexagon_definition.background_color_hexidecimal
-        offscreen_context.fill(path_2d)
-        offscreen_context.lineWidth = spacing.hexagon_stroke_width
-        offscreen_context.stroke(path_2d)
+        hexagon_math.paint_hexagon(hexagon_definition, offscreen_context, edge_length)
     }
 
     postMessage({

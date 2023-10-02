@@ -4,11 +4,13 @@ import colors from "../configs/colors"
 import { CSSProperties } from "react"
 import type_canvas_hook from "../types/type_canvas_hook"
 import type_hexagon_definition from "../types/type_hexagon_definition"
+import hexagon_math from "../utility/hexagon_math"
 
 export default function CivPicker(props: {
     set_is_show_civ_picker: Function,
     canvas: type_canvas_hook,
-    ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>
+    ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>,
+    edge_length: number,
 }) {
 
     const editing_hex_definition = (props.ref_hexagon_definitions.current.find((e) =>  {
@@ -57,10 +59,11 @@ export default function CivPicker(props: {
     }
 
     function handle_submit() {
+        console.log(props.edge_length)
         editing_hex_definition.town_size = parseInt(selected_size)
         editing_hex_definition.race = parseInt(selected_race)
         editing_hex_definition.affinity = parseInt(selected_affinity)
-        props.canvas.repaint_hexagon(editing_hex_definition)
+        hexagon_math.paint_hexagon(editing_hex_definition, props.canvas.get_canvas_context(), props.edge_length)
         props.set_is_show_civ_picker(false)
     }
 

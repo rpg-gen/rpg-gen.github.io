@@ -1,3 +1,5 @@
+// Use this for information we need to remember about the canvas, such as what was clicked, etc
+
 import { useRef, useState, MutableRefObject, MouseEventHandler, MouseEvent} from "react"
 import type_hexagon_definition from "../types/type_hexagon_definition"
 import hexagon_math from "../utility/hexagon_math"
@@ -39,53 +41,8 @@ export default function useCanvas(
         is_too_large = true
     }
 
-    function paint_background(hexagon_definition: type_hexagon_definition) {
-        const context = get_canvas_context()
-        const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points)
-        context.fillStyle = hexagon_definition.background_color_hexidecimal
-        context.fill(path_2d)
-        context.lineWidth = spacing.hexagon_stroke_width
-        context.stroke(path_2d)
-    }
-
-    function paint_icon(hexagon_definition: type_hexagon_definition) {
-        if (hexagon_definition.icon_points) {
-            const context = get_canvas_context()
-            const path_2d = hexagon_math.get_canvas_path_2d(hexagon_definition.icon_points)
-            // context.fill(path_2d)
-            context.lineJoin = "round"
-            context.lineWidth = 10
-            context.fillStyle = colors.black
-            context.stroke(path_2d)
-            context.fill(path_2d)
-        }
-        
-    }
-
-    function paint_civ_text(hexagon_definition: type_hexagon_definition) {
-        if (hexagon_definition.town_size > 0) {
-            const context = get_canvas_context()
-            context.fillStyle = colors.white
-            context.textAlign = "center"
-            context.textBaseline = "middle"
-            const font_px = edge_length / 2
-            context.font = font_px + "px sans-serif"
-            context.fillText(
-                hexagon_definition.town_size.toString() + hexagon_definition.race.toString() + hexagon_definition.affinity.toString(), 
-                hexagon_definition.center_x, 
-                hexagon_definition.center_y
-            )
-        }
-    }
-
     function get_canvas_context() {
         return (ref_canvas.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
-    }
-
-    function repaint_hexagon(hexagon_definition: type_hexagon_definition) {
-        paint_background(hexagon_definition)
-        paint_icon(hexagon_definition)
-        paint_civ_text(hexagon_definition)
     }
 
     function get_canvas_html() {
@@ -120,19 +77,18 @@ export default function useCanvas(
         for (const hexagon_index in param_ref_hexagon_definitions.current) {
             const hexagon_definition = param_ref_hexagon_definitions.current[hexagon_index]
 
-            if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_definition.corner_points), clicked_x, clicked_y)) {
+            if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_math.get_hexagon_points(hexagon_definition, edge_length)), clicked_x, clicked_y)) {
                 ref_clicked_row_number.current = hexagon_definition.row_number
                 ref_clicked_column_number.current = hexagon_definition.column_number
                 const paint_brush = paint_brushes[param_ref_paint_brush_id.current]
 
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
-                    repaint_hexagon(hexagon_definition)
+                    hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
                 }
 
                 if (paint_brush.paint_category == paint_category.icon && paint_brush.id == "town") {
-                    const house_points = hexagon_math.get_house_points(hexagon_definition.row_number, hexagon_definition.column_number, edge_length)
-                    hexagon_definition.icon_points = house_points
+                    hexagon_definition.icon_name = "town"
                     set_is_show_civ_picker(true)
                 }
                 // console.log(hexagon_definition.row_number.toString() + " " + hexagon_definition.column_number.toString())
@@ -162,7 +118,6 @@ export default function useCanvas(
     }
 
     const canvas_hook: type_canvas_hook = {
-        // set_edge_length,
         set_num_rows,
         set_num_columns,
         is_too_large,
@@ -175,8 +130,7 @@ export default function useCanvas(
         draw_map,
         ref_clicked_row_number,
         ref_clicked_column_number,
-        paint_civ_text,
-        repaint_hexagon,
+        get_canvas_context,
     }
 
     return canvas_hook

@@ -1,3 +1,5 @@
+// Keep this draw-agnostic, meaning nothing that depends on the zoom etc. This is just the information we'd need to re-draw the same hexagon in whatever context
+
 type type_hexagon_definition = {
     row_number: number,
     column_number: number,
@@ -17,10 +19,7 @@ type type_hexagon_definition = {
     town_size: number,
     affinity: number,
     race: number,
-    corner_points: {x: number, y: number}[]
-    icon_points?: {x: number, y: number}[]
-    center_x: number,
-    center_y: number,
+    icon_name: string,
 }
 
 export default type_hexagon_definition

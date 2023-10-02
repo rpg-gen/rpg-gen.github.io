@@ -22,7 +22,7 @@ function noop() {}
 
 export default function Map () {
 
-    const DEFAULT_NUM_ROWS = 10
+    const DEFAULT_NUM_ROWS = 2
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
     const DEFAULT_BRUSH = "town"
     const DEFAULT_ZOOM_LEVEL = 5
@@ -158,6 +158,7 @@ export default function Map () {
                     set_is_show_civ_picker={set_is_show_civ_picker}
                     canvas={canvas}
                     ref_hexagon_definitions={ref_hexagon_definitions}
+                    edge_length={zoom_edge_length}
                 />
             : ""
         }

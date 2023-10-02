@@ -14,8 +14,7 @@ type type_canvas_hook = {
     draw_map: Function,
     ref_clicked_row_number: MutableRefObject<number>,
     ref_clicked_column_number: MutableRefObject<number>,
-    paint_civ_text: Function,
-    repaint_hexagon: Function,
+    get_canvas_context: Function
 }
 
 export default type_canvas_hook
