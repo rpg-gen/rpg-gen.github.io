@@ -1,4 +1,5 @@
 import { RefObject, MouseEventHandler, MutableRefObject } from "react"
+import type_hexagon_definition from "../types/type_hexagon_definition"
 
 type type_canvas_hook = {
     // set_edge_length: Function
@@ -12,8 +13,7 @@ type type_canvas_hook = {
     get_canvas_html: Function,
     handle_map_click: MouseEventHandler,
     draw_map: Function,
-    ref_clicked_row_number: MutableRefObject<number>,
-    ref_clicked_column_number: MutableRefObject<number>,
+    ref_clicked_hex_def: MutableRefObject<type_hexagon_definition | undefined>,
     get_canvas_context: Function
 }
 

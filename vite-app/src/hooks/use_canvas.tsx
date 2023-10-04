@@ -11,8 +11,8 @@ import paint_brushes from "../configs/paint_brushes"
 import worker_url from "../worker/worker?worker&url"
 
 export default function useCanvas(
-    param_edge_length: number, 
-    param_num_rows: number, 
+    param_edge_length: number,
+    param_num_rows: number,
     param_num_columns: number,
     param_ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>,
     param_ref_paint_brush_id: MutableRefObject<string>,
@@ -30,13 +30,19 @@ export default function useCanvas(
     const [num_rows, set_num_rows] = useState<number>(param_num_rows)
     const [num_columns, set_num_columns] = useState<number>(param_num_columns)
 
-    const ref_clicked_row_number = useRef<number>(0)
-    const ref_clicked_column_number = useRef<number>(0)
+    // const ref_previous_clicked_row_number = useRef<number>(0)
+    // const ref_previous_clicked_column_number = useRef<number>(0)
+
+    // const ref_clicked_row_number = useRef<number>(0)
+    // const ref_clicked_column_number = useRef<number>(0)
+
+    const ref_clicked_hex_def = useRef<type_hexagon_definition>()
+    const ref_previous_clicked_hex_def = useRef<type_hexagon_definition>()
 
     const canvas_height = hexagon_math.get_canvas_height(edge_length, num_rows)
     const canvas_width = hexagon_math.get_canvas_width(edge_length, num_columns)
     let is_too_large: boolean = false
-    
+
     if (canvas_height > spacing.canvas_pixel_limit || canvas_width > spacing.canvas_pixel_limit) {
         is_too_large = true
     }
@@ -78,21 +84,42 @@ export default function useCanvas(
             const hexagon_definition = param_ref_hexagon_definitions.current[hexagon_index]
 
             if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_math.get_hexagon_points(hexagon_definition, edge_length)), clicked_x, clicked_y)) {
-                ref_clicked_row_number.current = hexagon_definition.row_number
-                ref_clicked_column_number.current = hexagon_definition.column_number
+
+                if (ref_clicked_hex_def.current) {
+                    ref_previous_clicked_hex_def.current = {...ref_clicked_hex_def.current}
+                }
+                else {
+                    ref_previous_clicked_hex_def.current = {...hexagon_definition}
+                }
+
+                ref_clicked_hex_def.current = {...hexagon_definition}
+
                 const paint_brush = paint_brushes[param_ref_paint_brush_id.current]
 
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
                     hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
                 }
-
-                if (paint_brush.paint_category == paint_category.icon && paint_brush.id == "town") {
+                else if (paint_brush.paint_category == paint_category.icon && paint_brush.id == "town") {
                     hexagon_definition.icon_name = "town"
                     set_is_show_civ_picker(true)
                 }
-                // console.log(hexagon_definition.row_number.toString() + " " + hexagon_definition.column_number.toString())
-                // console.log(props.ref_paint_brush_id.current)
+                else if (paint_brush.paint_category == paint_category.path) {
+
+                    const is_neighbor = hexagon_math.is_neighboring_hex(
+                        ref_previous_clicked_hex_def.current as type_hexagon_definition,
+                        ref_clicked_hex_def.current as type_hexagon_definition,
+                    )
+
+                    if (is_neighbor) {
+                        hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
+                        hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
+                    }
+                    else {
+                        // Reset the last clicked so we are still at the previous spot
+                        ref_clicked_hex_def.current = {...ref_previous_clicked_hex_def.current}
+                    }
+                }
             }
         }
     }
@@ -128,8 +155,7 @@ export default function useCanvas(
         get_canvas_html,
         handle_map_click,
         draw_map,
-        ref_clicked_row_number,
-        ref_clicked_column_number,
+        ref_clicked_hex_def,
         get_canvas_context,
     }
 

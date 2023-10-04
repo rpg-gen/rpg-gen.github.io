@@ -22,9 +22,9 @@ function noop() {}
 
 export default function Map () {
 
-    const DEFAULT_NUM_ROWS = 2
+    const DEFAULT_NUM_ROWS = 4
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
-    const DEFAULT_BRUSH = "town"
+    const DEFAULT_BRUSH = "river"
     const DEFAULT_ZOOM_LEVEL = 5
     const DEFAULT_EDGE_LENGTH = 40
 
@@ -49,10 +49,10 @@ export default function Map () {
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
     const canvas = useCanvas(
-        zoom_edge_length, 
-        DEFAULT_NUM_ROWS, 
-        DEFAULT_NUM_COLUMNS, 
-        ref_hexagon_definitions, 
+        zoom_edge_length,
+        DEFAULT_NUM_ROWS,
+        DEFAULT_NUM_COLUMNS,
+        ref_hexagon_definitions,
         ref_paint_brush_id,
         set_is_show_loading,
         set_is_show_civ_picker,

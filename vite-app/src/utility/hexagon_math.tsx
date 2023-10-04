@@ -141,12 +141,16 @@ function get_icon_points(hexagon_definition: type_hexagon_definition, edge_lengt
     }
 }
 
+// function get_circle_points(hexagon_definition: type_hexagon_definition, edge_length: number) {
+
+// }
+
 // =============================================================================
 // Canvas painting Functions
 // =============================================================================
 
 function paint_background(
-    hexagon_definition: type_hexagon_definition, 
+    hexagon_definition: type_hexagon_definition,
     context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
     edge_length: number,
 ) {
@@ -159,7 +163,7 @@ function paint_background(
 }
 
 function paint_icon(
-    hexagon_definition: type_hexagon_definition, 
+    hexagon_definition: type_hexagon_definition,
     context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
     edge_length: number,
 ) {
@@ -171,11 +175,10 @@ function paint_icon(
         context.stroke(path_2d)
         context.fill(path_2d)
     }
-    
 }
 
 function paint_civ_text(
-    hexagon_definition: type_hexagon_definition, 
+    hexagon_definition: type_hexagon_definition,
     context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
     edge_length: number,
 ) {
@@ -187,21 +190,64 @@ function paint_civ_text(
         context.font = font_px + "px sans-serif"
         const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
         context.fillText(
-            hexagon_definition.town_size.toString() + hexagon_definition.race.toString() + hexagon_definition.affinity.toString(), 
-            center_x, 
+            hexagon_definition.town_size.toString() + hexagon_definition.race.toString() + hexagon_definition.affinity.toString(),
+            center_x,
             center_y
         )
     }
 }
 
+function paint_circle(
+    hexagon_definition: type_hexagon_definition,
+    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+    edge_length: number,
+) {
+    context.fillStyle = colors.ocean
+    const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
+    context.beginPath()
+    context.arc(center_x, center_y, edge_length/2, 0, 2*Math.PI)
+    context.fill()
+}
+
 function paint_hexagon(
-    hexagon_definition: type_hexagon_definition, 
+    hexagon_definition: type_hexagon_definition,
     context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     edge_length: number,
 ) {
     paint_background(hexagon_definition, context, edge_length)
+    // paint_circle(hexagon_definition, context, edge_length)
     paint_icon(hexagon_definition, context, edge_length)
     paint_civ_text(hexagon_definition, context, edge_length)
+}
+
+// =============================================================================
+// Neighboring hexes
+// =============================================================================
+
+function is_neighboring_hex(start_hex_def: type_hexagon_definition, target_hex_def: type_hexagon_definition) {
+
+    const neighboring_columns = [start_hex_def.column_number]
+
+    if (start_hex_def.row_number == target_hex_def.row_number || start_hex_def.row_number % 2 == 1) {
+        neighboring_columns.push(start_hex_def.column_number + 1)
+    }
+
+    if (start_hex_def.row_number == target_hex_def.row_number || start_hex_def.row_number % 2 == 0) {
+        neighboring_columns.push(start_hex_def.column_number - 1)
+    }
+
+    if (
+        // (start_hex_def.row_number != target_hex_def.row_number || start_hex_def.column_number != target_hex_def.column_number) // Not the same hex
+        Math.abs(start_hex_def.row_number - target_hex_def.row_number) < 2 // in a neighboring or same row
+        && (
+            neighboring_columns.includes(target_hex_def.column_number) // Neighboring column, adjusted for row offsets
+        )
+    ) {
+        return true
+    }
+    else {
+        return false
+    }
 }
 
 // =============================================================================
@@ -219,6 +265,8 @@ const hexagon_math = {
     get_center_point,
     get_house_points,
     paint_hexagon,
+    is_neighboring_hex,
+    paint_circle,
 }
 
 export default hexagon_math
