@@ -86,13 +86,13 @@ export default function useCanvas(
             if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_math.get_hexagon_points(hexagon_definition, edge_length)), clicked_x, clicked_y)) {
 
                 if (ref_clicked_hex_def.current) {
-                    ref_previous_clicked_hex_def.current = {...ref_clicked_hex_def.current}
+                    ref_previous_clicked_hex_def.current = ref_clicked_hex_def.current
                 }
                 else {
-                    ref_previous_clicked_hex_def.current = {...hexagon_definition}
+                    ref_previous_clicked_hex_def.current = hexagon_definition
                 }
 
-                ref_clicked_hex_def.current = {...hexagon_definition}
+                ref_clicked_hex_def.current = hexagon_definition
 
                 const paint_brush = paint_brushes[param_ref_paint_brush_id.current]
 
@@ -100,11 +100,37 @@ export default function useCanvas(
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
                     hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
                 }
-                else if (paint_brush.paint_category == paint_category.icon && paint_brush.id == "town") {
-                    hexagon_definition.icon_name = "town"
+                else if (paint_brush.paint_category == paint_category.icon) {
+                    if (paint_brush.id == "clear_icon") {
+                        hexagon_definition.icon_name = ""
+                        hexagon_definition.town_size = 0
+                        hexagon_definition.affinity = 0
+                        hexagon_definition.race = 0
+                        hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
+                        return
+                    }
+
+                    hexagon_definition.icon_name = paint_brush.id
                     set_is_show_civ_picker(true)
                 }
                 else if (paint_brush.paint_category == paint_category.path) {
+
+                    if (paint_brush.id == "clear_path") {
+                        ref_clicked_hex_def.current.is_top_left_river = false
+                        ref_clicked_hex_def.current.is_top_right_river = false
+                        ref_clicked_hex_def.current.is_right_river = false
+                        ref_clicked_hex_def.current.is_bottom_right_river = false
+                        ref_clicked_hex_def.current.is_bottom_left_river = false
+                        ref_clicked_hex_def.current.is_left_river = false
+                        ref_clicked_hex_def.current.is_top_left_road = false
+                        ref_clicked_hex_def.current.is_top_right_road = false
+                        ref_clicked_hex_def.current.is_right_road = false
+                        ref_clicked_hex_def.current.is_bottom_right_road = false
+                        ref_clicked_hex_def.current.is_bottom_left_road = false
+                        ref_clicked_hex_def.current.is_left_road = false
+                        hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
+                        return
+                    }
 
                     const is_neighbor = hexagon_math.is_neighboring_hex(
                         ref_previous_clicked_hex_def.current as type_hexagon_definition,
@@ -112,8 +138,10 @@ export default function useCanvas(
                     )
 
                     if (is_neighbor) {
+                        hexagon_math.add_path_definition(ref_previous_clicked_hex_def.current, ref_clicked_hex_def.current, paint_brush.id)
                         hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
-                        hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
+                        hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
+                        hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length, paint_brush.hexidecimal_color)
                     }
                     else {
                         // Reset the last clicked so we are still at the previous spot
@@ -156,6 +184,7 @@ export default function useCanvas(
         handle_map_click,
         draw_map,
         ref_clicked_hex_def,
+        ref_previous_clicked_hex_def,
         get_canvas_context,
     }
 

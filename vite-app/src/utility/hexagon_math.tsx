@@ -27,9 +27,6 @@ function get_center_point(hexagon_definition: type_hexagon_definition, edge_leng
 }
 
 function get_hexagon_points(hexagon_definition: type_hexagon_definition, edge_length: number) {
-    const row_number = hexagon_definition.row_number
-    const column_number = hexagon_definition.column_number
-
     const short_diagonal = get_short_diagonal_length(edge_length)
     const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
 
@@ -41,6 +38,20 @@ function get_hexagon_points(hexagon_definition: type_hexagon_definition, edge_le
         {x: center_x - (short_diagonal / 2), y: center_y + (edge_length / 2)},
         {x: center_x - (short_diagonal / 2), y: center_y - (edge_length / 2)},
     ]
+}
+
+function get_hexagon_edge_points(hexagon_definition: type_hexagon_definition, edge_length: number) {
+    const short_diagonal = get_short_diagonal_length(edge_length)
+    const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
+
+    return {
+        top_left: {x: center_x - (short_diagonal / 4), y: center_y - edge_length*.75},
+        top_right: {x: center_x + (short_diagonal / 4), y: center_y - (edge_length*.75)},
+        right: {x: center_x + (short_diagonal / 2), y: center_y},
+        bottom_right: {x: center_x + (short_diagonal / 4), y: center_y + edge_length*.75},
+        bottom_left: {x: center_x - (short_diagonal / 4), y: center_y + (edge_length*.75)},
+        left: {x: center_x - (short_diagonal / 2), y: center_y},
+    }
 }
 
 function get_house_points(hexagon_definition: type_hexagon_definition, edge_length: number) {
@@ -154,11 +165,11 @@ function paint_background(
     context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
     edge_length: number,
 ) {
-    const corner_points = get_hexagon_points(hexagon_definition, edge_length)
     const path_2d = hexagon_math.get_canvas_path_2d(get_hexagon_points(hexagon_definition, edge_length))
     context.fillStyle = hexagon_definition.background_color_hexidecimal
     context.fill(path_2d)
     context.lineWidth = spacing.hexagon_stroke_width
+    context.strokeStyle = colors.black
     context.stroke(path_2d)
 }
 
@@ -172,6 +183,8 @@ function paint_icon(
         context.lineJoin = "round"
         context.lineWidth = 10
         context.fillStyle = colors.black
+        context.strokeStyle = colors.black
+        context.setLineDash([])
         context.stroke(path_2d)
         context.fill(path_2d)
     }
@@ -197,12 +210,63 @@ function paint_civ_text(
     }
 }
 
+function paint_line(
+    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+    start_x:number,
+    start_y:number,
+    end_x:number,
+    end_y:number,
+    color: string,
+    is_dashed: boolean,
+    edge_length: number
+) {
+    context.setLineDash([])
+    if (is_dashed) {
+        context.setLineDash([edge_length/4])
+    }
+    context.strokeStyle = color
+    context.lineCap = "butt"
+    context.lineWidth = 10
+    context.fillStyle = color
+    context.beginPath()
+    context.arc(start_x, start_y, 5, 0, 2*Math.PI)
+    context.fill()
+    context.beginPath()
+    context.moveTo(start_x, start_y)
+    context.lineTo(end_x, end_y)
+    context.stroke()
+
+}
+
+function paint_paths(
+    hexagon_definition: type_hexagon_definition,
+    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+    edge_length: number
+) {
+    const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
+    const edge_points = get_hexagon_edge_points(hexagon_definition, edge_length)
+    if (hexagon_definition.is_top_left_river) {paint_line(context, center_x, center_y, edge_points.top_left.x, edge_points.top_left.y, colors.ocean, false, edge_length)}
+    if (hexagon_definition.is_top_right_river) {paint_line(context, center_x, center_y, edge_points.top_right.x, edge_points.top_right.y, colors.ocean, false, edge_length)}
+    if (hexagon_definition.is_right_river) {paint_line(context, center_x, center_y, edge_points.right.x, edge_points.right.y, colors.ocean, false, edge_length)}
+    if (hexagon_definition.is_bottom_right_river) {paint_line(context, center_x, center_y, edge_points.bottom_right.x, edge_points.bottom_right.y, colors.ocean, false, edge_length)}
+    if (hexagon_definition.is_bottom_left_river) {paint_line(context, center_x, center_y, edge_points.bottom_left.x, edge_points.bottom_left.y, colors.ocean, false, edge_length)}
+    if (hexagon_definition.is_left_river) {paint_line(context, center_x, center_y, edge_points.left.x, edge_points.left.y, colors.ocean, false, edge_length)}
+
+    if (hexagon_definition.is_top_left_road) {paint_line(context, center_x, center_y, edge_points.top_left.x, edge_points.top_left.y, colors.road, (hexagon_definition.is_top_left_river ? true : false), edge_length)}
+    if (hexagon_definition.is_top_right_road) {paint_line(context, center_x, center_y, edge_points.top_right.x, edge_points.top_right.y, colors.road, (hexagon_definition.is_top_right_river ? true : false), edge_length)}
+    if (hexagon_definition.is_right_road) {paint_line(context, center_x, center_y, edge_points.right.x, edge_points.right.y, colors.road, (hexagon_definition.is_right_river ? true : false), edge_length)}
+    if (hexagon_definition.is_bottom_right_road) {paint_line(context, center_x, center_y, edge_points.bottom_right.x, edge_points.bottom_right.y, colors.road, (hexagon_definition.is_bottom_right_river ? true : false), edge_length)}
+    if (hexagon_definition.is_bottom_left_road) {paint_line(context, center_x, center_y, edge_points.bottom_left.x, edge_points.bottom_left.y, colors.road, (hexagon_definition.is_bottom_left_river ? true : false), edge_length)}
+    if (hexagon_definition.is_left_road) {paint_line(context, center_x, center_y, edge_points.left.x, edge_points.left.y, colors.road, (hexagon_definition.is_left_river ? true : false), edge_length)}
+}
+
 function paint_circle(
     hexagon_definition: type_hexagon_definition,
     context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
     edge_length: number,
+    color: string,
 ) {
-    context.fillStyle = colors.ocean
+    context.fillStyle = color
     const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
     context.beginPath()
     context.arc(center_x, center_y, edge_length/2, 0, 2*Math.PI)
@@ -215,7 +279,7 @@ function paint_hexagon(
     edge_length: number,
 ) {
     paint_background(hexagon_definition, context, edge_length)
-    // paint_circle(hexagon_definition, context, edge_length)
+    paint_paths(hexagon_definition, context, edge_length)
     paint_icon(hexagon_definition, context, edge_length)
     paint_civ_text(hexagon_definition, context, edge_length)
 }
@@ -250,6 +314,138 @@ function is_neighboring_hex(start_hex_def: type_hexagon_definition, target_hex_d
     }
 }
 
+function add_path_definition(start_hex_def: type_hexagon_definition, target_hex_def: type_hexagon_definition, path_id: string) {
+    if (start_hex_def.row_number == target_hex_def.row_number && start_hex_def.column_number == target_hex_def.column_number) {
+        return
+    }
+
+    // Left and Right Neighbors
+    if (start_hex_def.row_number == target_hex_def.row_number) {
+        if (target_hex_def.column_number > start_hex_def.column_number) {
+            if (path_id == "river") {
+                start_hex_def.is_right_river = true
+                target_hex_def.is_left_river = true
+            }
+            else if (path_id == "road") {
+                start_hex_def.is_right_road = true
+                target_hex_def.is_left_road = true
+            }
+        }
+        else {
+            if (path_id == "river") {
+                start_hex_def.is_left_river = true
+                target_hex_def.is_right_river = true
+            }
+            else if (path_id == "road") {
+                start_hex_def.is_left_road = true
+                target_hex_def.is_right_road = true
+            }
+        }
+    }
+    // Upwards neighbors
+    else if (target_hex_def.row_number < start_hex_def.row_number) {
+        if (start_hex_def.row_number % 2 == 1) {
+            // Top Left Neighbor of odd rows
+            if (target_hex_def.column_number == start_hex_def.column_number) {
+                if (path_id == "river") {
+                    start_hex_def.is_top_left_river = true
+                    target_hex_def.is_bottom_right_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_top_left_road = true
+                    target_hex_def.is_bottom_right_road = true
+                }
+            }
+            // Top right of odd rows
+            else {
+                if (path_id == "river") {
+                    start_hex_def.is_top_right_river = true
+                    target_hex_def.is_bottom_left_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_top_right_road = true
+                    target_hex_def.is_bottom_left_road = true
+                }
+            }
+        }
+        else {
+            // Top Right Neighbor of even rows
+            if (target_hex_def.column_number == start_hex_def.column_number) {
+                if (path_id == "river") {
+                    start_hex_def.is_top_right_river = true
+                    target_hex_def.is_bottom_left_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_top_right_road = true
+                    target_hex_def.is_bottom_left_road = true
+                }
+            }
+            // top left of even rows
+            else {
+                if (path_id == "river") {
+                    start_hex_def.is_top_left_river = true
+                    target_hex_def.is_bottom_right_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_top_left_road = true
+                    target_hex_def.is_bottom_right_road = true
+                }
+            }
+        }
+    }
+    // Downwards neighbors
+    else {
+        if (start_hex_def.row_number % 2 == 1) {
+            // Bottom Left Neighbor of odd rows
+            if (target_hex_def.column_number == start_hex_def.column_number) {
+                if (path_id == "river") {
+                    start_hex_def.is_bottom_left_river = true
+                    target_hex_def.is_top_right_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_bottom_left_road = true
+                    target_hex_def.is_top_right_road = true
+                }
+            }
+            // Bottom right of odd rows
+            else {
+                if (path_id == "river") {
+                    start_hex_def.is_bottom_right_river = true
+                    target_hex_def.is_top_left_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_bottom_right_road = true
+                    target_hex_def.is_top_left_road = true
+                }
+            }
+        }
+        else {
+            // Bottom Right Neighbor of even rows
+            if (target_hex_def.column_number == start_hex_def.column_number) {
+                if (path_id == "river") {
+                    start_hex_def.is_bottom_right_river = true
+                    target_hex_def.is_top_left_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_bottom_right_road = true
+                    target_hex_def.is_top_left_road = true
+                }
+            }
+            // Bottom left of even rows
+            else {
+                if (path_id == "river") {
+                    start_hex_def.is_bottom_left_river = true
+                    target_hex_def.is_top_right_river = true
+                }
+                else if (path_id == "road") {
+                    start_hex_def.is_bottom_left_road = true
+                    target_hex_def.is_top_right_road = true
+                }
+            }
+        }
+    }
+}
+
 // =============================================================================
 // Final Return
 // =============================================================================
@@ -267,6 +463,7 @@ const hexagon_math = {
     paint_hexagon,
     is_neighboring_hex,
     paint_circle,
+    add_path_definition,
 }
 
 export default hexagon_math

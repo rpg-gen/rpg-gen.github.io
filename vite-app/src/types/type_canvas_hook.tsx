@@ -14,6 +14,7 @@ type type_canvas_hook = {
     handle_map_click: MouseEventHandler,
     draw_map: Function,
     ref_clicked_hex_def: MutableRefObject<type_hexagon_definition | undefined>,
+    ref_previous_clicked_hex_def: MutableRefObject<type_hexagon_definition | undefined>,
     get_canvas_context: Function
 }
 

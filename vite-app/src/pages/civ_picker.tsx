@@ -13,10 +13,7 @@ export default function CivPicker(props: {
     edge_length: number,
 }) {
 
-    const editing_hex_definition = (props.ref_hexagon_definitions.current.find((e) =>  {
-        return e.row_number == props.canvas.ref_clicked_row_number.current 
-        && e.column_number == props.canvas.ref_clicked_column_number.current
-    }) as type_hexagon_definition)
+    const editing_hex_definition = props.canvas.ref_clicked_hex_def.current as type_hexagon_definition
 
     const [selected_size, set_selected_size] = useState(editing_hex_definition.town_size.toString())
     const [selected_race, set_selected_race] = useState(editing_hex_definition.race.toString())
@@ -59,7 +56,6 @@ export default function CivPicker(props: {
     }
 
     function handle_submit() {
-        console.log(props.edge_length)
         editing_hex_definition.town_size = parseInt(selected_size)
         editing_hex_definition.race = parseInt(selected_race)
         editing_hex_definition.affinity = parseInt(selected_affinity)

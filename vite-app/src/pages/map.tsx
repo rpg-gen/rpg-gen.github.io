@@ -104,7 +104,12 @@ export default function Map () {
 
         <TopBar>
             {/* <HamMenu /> */}
-            <EditBrushButton paint_brush_id={display_paint_brush_id} set_is_show_paint_picker={set_is_show_paint_picker} />
+            <EditBrushButton
+                paint_brush_id={display_paint_brush_id}
+                set_is_show_paint_picker={set_is_show_paint_picker}
+                edge_length={zoom_edge_length}
+                canvas={canvas}
+            />
             <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
             {/* <MapSize
                 default_edge_length={DEFAULT_EDGE_LENGTH}
