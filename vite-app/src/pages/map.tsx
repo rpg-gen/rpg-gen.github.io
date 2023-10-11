@@ -24,7 +24,7 @@ export default function Map () {
 
     const DEFAULT_NUM_ROWS = 4
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
-    const DEFAULT_BRUSH = "river"
+    const DEFAULT_BRUSH = "mountain"
     const DEFAULT_ZOOM_LEVEL = 5
     const DEFAULT_EDGE_LENGTH = 40
 
