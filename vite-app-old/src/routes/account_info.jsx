@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
 import GlobalContext from "../contexts/global_context.jsx";
-import useFirebaseAuth from "../hooks/use_firebase_auth.jsx";
 
 export default function AccountInfo() {
 

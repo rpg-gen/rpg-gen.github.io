@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, AuthError } from "firebase/auth";
 import useFirebaseProject from "./use_firebase_project.jsx";
 import type_firebase_auth_hook from "../types/type_firebase_auth_hook.js"
 
@@ -22,12 +22,9 @@ export default function useFirebaseAuth() {
         return false;
     }
 
-    function login_firebase_user(username: string, password: string) {
-        return signInWithEmailAndPassword(firebase_auth, username, password).catch(function(error) {
-            console.log(error)
-            console.log(error.code)
-            console.log(error.message)
-        });
+    async function login_firebase_user(username: string, password: string) {
+
+        return signInWithEmailAndPassword(firebase_auth, username, password);
     }
 
     function logout_firebase_user() {
@@ -40,11 +37,16 @@ export default function useFirebaseAuth() {
         });
     }
 
+    function get_current_firebase_user() {
+        return firebase_auth.currentUser
+    }
+
     const firebase_auth_hook: type_firebase_auth_hook = {
         set_user_listener,
         delete_firebase_user,
         login_firebase_user,
         logout_firebase_user,
+        get_current_firebase_user,
     }
 
     return firebase_auth_hook
