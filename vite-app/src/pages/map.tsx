@@ -1,7 +1,7 @@
 import TopBar from "../components/top_bar/top_bar"
 // import PaintContext from "../contexts/paint_context"
 // import MapContext from "../contexts/map_context"
-import { useState, useRef } from "react"
+import { useState, useRef, useContext, useEffect } from "react"
 import PaintPicker from "../pages/paint_picker"
 import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
@@ -17,6 +17,9 @@ import Loading from "../pages/loading"
 // import MapSize from "../components/top_bar/map_size"
 import useCanvas from "../hooks/use_canvas"
 import CivPicker from "./civ_picker"
+import hexagon_math from "../utility/hexagon_math"
+import UserContext from "../contexts/user_context"
+import useFirebaseMap from "../hooks/use_firebase_map"
 
 function noop() {}
 
@@ -28,7 +31,12 @@ export default function Map () {
     const DEFAULT_ZOOM_LEVEL = 5
     const DEFAULT_EDGE_LENGTH = 40
 
+    const user_context = useContext(UserContext)
+    // console.log("map user_context", user_context)
+
     const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
+
+    const [firebase_map_data, set_firebase_map_data] = useState([hexagon_math.get_default_hexagon_definition()])
 
     const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
     const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
@@ -48,6 +56,21 @@ export default function Map () {
 
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
+    function handle_click() {
+        const firebase_map_hook = useFirebaseMap()
+        const definition_to_save = hexagon_math.get_default_hexagon_definition()
+        firebase_map_hook.save_hexagon_definition(definition_to_save)
+    }
+
+    useEffect(function(){
+        if (user_context.username) {
+            const firebase_map_hook = useFirebaseMap()
+            firebase_map_hook.get_map_document().then(function(data: any) {
+                console.log("firebase data fetched", data)
+            })
+        }
+    }, [user_context])
+
     const canvas = useCanvas(
         zoom_edge_length,
         DEFAULT_NUM_ROWS,
@@ -58,42 +81,10 @@ export default function Map () {
         set_is_show_civ_picker,
     )
 
-    // function apply_current_paint_to_hex(row_number: string, column_number: string) {
-    //     const current_brush = paint_brushes[ref_paint_brush_id.current]
-    //     const current_brush_category = current_brush.paint_category
-
-    //     if (current_brush_category == paint_category.background) {
-    //         const current_brush_background_color = current_brush.hexidecimal_color
-
-    //         set_hexagon_definitions((previous_definitions) => {
-    //             const previous_row = previous_definitions[row_number]
-    //             const previous_hexagon = previous_definitions[row_number][column_number]
-
-    //             const new_hexagon_definitions = {
-    //                 ...previous_definitions,
-    //                 [row_number]: {
-    //                     ...previous_row,
-    //                     [column_number]: {
-    //                         ...previous_hexagon,
-    //                         background_color_hexidecimal: current_brush_background_color
-    //                     }
-    //                 }
-    //             }
-
-    //             return new_hexagon_definitions
-    //         })
-    //     }
-    // }
-
-    // const handle_hex_click = useCallback(function (event: MouseEvent) {
-    //     const target = (event.target as HTMLElement).dataset
-    //     const clicked_row_number = (target.rowNumber as string)
-    //     const clicked_column_number = (target.columnNumber as string)
-    //     apply_current_paint_to_hex(clicked_row_number, clicked_column_number)
-    // },[])
-
     return (
         <>
+
+        <button onClick={handle_click}>save</button>
 
         <HexGrid
             edge_length={zoom_edge_length}

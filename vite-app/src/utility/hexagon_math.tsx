@@ -446,6 +446,32 @@ function add_path_definition(start_hex_def: type_hexagon_definition, target_hex_
     }
 }
 
+function get_default_hexagon_definition() {
+    const default_definition: type_hexagon_definition = {
+        row_number: 1,
+        column_number: 1,
+        background_color_hexidecimal: colors.white,
+        is_top_left_river: false,
+        is_top_right_river: false,
+        is_right_river: false,
+        is_bottom_right_river: false,
+        is_bottom_left_river: false,
+        is_left_river: false,
+        is_top_left_road: false,
+        is_top_right_road: false,
+        is_right_road: false,
+        is_bottom_right_road: false,
+        is_bottom_left_road: false,
+        is_left_road: false,
+        town_size: 0,
+        affinity: 0,
+        race: 0,
+        icon_name: "",
+    }
+
+    return default_definition
+}
+
 // =============================================================================
 // Final Return
 // =============================================================================
@@ -464,6 +490,7 @@ const hexagon_math = {
     is_neighboring_hex,
     paint_circle,
     add_path_definition,
+    get_default_hexagon_definition,
 }
 
 export default hexagon_math
