@@ -20,10 +20,14 @@ import CivPicker from "./civ_picker"
 import hexagon_math from "../utility/hexagon_math"
 import UserContext from "../contexts/user_context"
 import useFirebaseMap from "../hooks/use_firebase_map"
+import Account from "../pages/account"
+import feature_flags from "../configs/feature_flags"
 
 function noop() {}
 
 export default function Map () {
+
+    console.log("map rerendered")
 
     const DEFAULT_NUM_ROWS = 4
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
@@ -32,14 +36,14 @@ export default function Map () {
     const DEFAULT_EDGE_LENGTH = 40
 
     const user_context = useContext(UserContext)
-    // console.log("map user_context", user_context)
 
-    const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
-
-    const [firebase_map_data, set_firebase_map_data] = useState([hexagon_math.get_default_hexagon_definition()])
+    const firebase_map_data = useRef<{[index: string]: string}>({})
+    const firebase_listener_unsub_function = useRef<Function>(noop)
 
     const [num_rows, set_num_rows] = useState(DEFAULT_NUM_ROWS)
     const [edge_length, set_edge_length] = useState(DEFAULT_EDGE_LENGTH)
+
+    const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
 
     const [zoom_level, set_zoom_level] = useState(DEFAULT_ZOOM_LEVEL);
     const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
@@ -51,22 +55,30 @@ export default function Map () {
     const loading_function_ref = useRef<Function>(noop)
 
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
-
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
+    const [is_show_account, set_is_show_account] = useState(true)
 
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
-    function handle_click() {
-        const firebase_map_hook = useFirebaseMap()
-        const definition_to_save = hexagon_math.get_default_hexagon_definition()
-        firebase_map_hook.save_hexagon_definition(definition_to_save)
-    }
-
     useEffect(function(){
-        if (user_context.username) {
+        if (user_context.username && feature_flags.is_persist_to_firebase) {
             const firebase_map_hook = useFirebaseMap()
             firebase_map_hook.get_map_document().then(function(data: any) {
-                console.log("firebase data fetched", data)
+                const previous_length = ref_hexagon_definitions.current.length
+                firebase_map_data.current = data
+                if (previous_length == 0) {
+                    // Draw the whole map async if this is the first load
+                    ref_hexagon_definitions.current = hexagon_math.get_starting_hexagon_definitions(firebase_map_data.current)
+                    canvas.draw_map()
+
+                    firebase_listener_unsub_function.current()
+                    firebase_listener_unsub_function.current = firebase_map_hook.create_listener(function(data: any) {
+                        const changed_hexagon_definitions = hexagon_math.get_changed_hexagon_definitions(ref_hexagon_definitions.current, data)
+                        for (let i = 0; i < changed_hexagon_definitions.length; i++) {
+                            hexagon_math.paint_hexagon(changed_hexagon_definitions[i], canvas.get_canvas_context(), zoom_edge_length)
+                        }
+                    })
+                }
             })
         }
     }, [user_context])
@@ -83,8 +95,6 @@ export default function Map () {
 
     return (
         <>
-
-        <button onClick={handle_click}>save</button>
 
         <HexGrid
             edge_length={zoom_edge_length}
@@ -110,6 +120,12 @@ export default function Map () {
                 is_show_loading={is_show_loading}
             /> */}
         </TopBar>
+
+        {
+            is_show_account
+            ? <Account />
+            : ""
+        }
 
         {
             is_show_loading

@@ -5,6 +5,7 @@ import { CSSProperties } from "react"
 import type_canvas_hook from "../types/type_canvas_hook"
 import type_hexagon_definition from "../types/type_hexagon_definition"
 import hexagon_math from "../utility/hexagon_math"
+import useFirebaseMap from "../hooks/use_firebase_map"
 
 export default function CivPicker(props: {
     set_is_show_civ_picker: Function,
@@ -13,6 +14,7 @@ export default function CivPicker(props: {
     edge_length: number,
 }) {
 
+    const firebase_map_hook = useFirebaseMap()
     const editing_hex_definition = props.canvas.ref_clicked_hex_def.current as type_hexagon_definition
 
     const [selected_size, set_selected_size] = useState(editing_hex_definition.town_size.toString())
@@ -61,6 +63,7 @@ export default function CivPicker(props: {
         editing_hex_definition.affinity = parseInt(selected_affinity)
         hexagon_math.paint_hexagon(editing_hex_definition, props.canvas.get_canvas_context(), props.edge_length)
         props.set_is_show_civ_picker(false)
+        firebase_map_hook.save_hexagon_definition(editing_hex_definition)
     }
 
     return (

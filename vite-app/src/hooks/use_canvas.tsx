@@ -9,6 +9,7 @@ import colors from "../configs/colors"
 import { paint_category } from "../types/type_paint_brush"
 import paint_brushes from "../configs/paint_brushes"
 import worker_url from "../worker/worker?worker&url"
+import useFirebaseMap from "../hooks/use_firebase_map"
 
 export default function useCanvas(
     param_edge_length: number,
@@ -19,6 +20,8 @@ export default function useCanvas(
     set_is_show_loading: Function,
     set_is_show_civ_picker: Function
 ) {
+
+    const firebase_map_hook = useFirebaseMap()
 
     const ref_canvas = useRef<HTMLCanvasElement>(null)
     const ref_canvas_container = useRef<HTMLDivElement>(null)
@@ -99,6 +102,7 @@ export default function useCanvas(
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
                     hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
+                    firebase_map_hook.save_hexagon_definition(hexagon_definition)
                 }
                 else if (paint_brush.paint_category == paint_category.icon) {
                     if (paint_brush.id == "clear_icon") {
@@ -107,10 +111,12 @@ export default function useCanvas(
                         hexagon_definition.affinity = 0
                         hexagon_definition.race = 0
                         hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
+                        firebase_map_hook.save_hexagon_definition(hexagon_definition)
                         return
                     }
 
                     hexagon_definition.icon_name = paint_brush.id
+                    firebase_map_hook.save_hexagon_definition(hexagon_definition)
                     set_is_show_civ_picker(true)
                 }
                 else if (paint_brush.paint_category == paint_category.path) {
@@ -129,6 +135,7 @@ export default function useCanvas(
                         ref_clicked_hex_def.current.is_bottom_left_road = false
                         ref_clicked_hex_def.current.is_left_road = false
                         hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
+                        firebase_map_hook.save_hexagon_definition(ref_clicked_hex_def.current)
                         return
                     }
 
@@ -142,6 +149,8 @@ export default function useCanvas(
                         hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length, paint_brush.hexidecimal_color)
+                        firebase_map_hook.save_hexagon_definition(ref_clicked_hex_def.current)
+                        firebase_map_hook.save_hexagon_definition(ref_previous_clicked_hex_def.current)
                     }
                     else {
                         // Reset the last clicked so we are still at the previous spot
