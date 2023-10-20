@@ -74,8 +74,10 @@ export default function Map () {
                     firebase_listener_unsub_function.current()
                     firebase_listener_unsub_function.current = firebase_map_hook.create_listener(function(data: any) {
                         const changed_hexagon_definitions = hexagon_math.get_changed_hexagon_definitions(ref_hexagon_definitions.current, data)
+                        console.log("change detected", changed_hexagon_definitions)
                         for (let i = 0; i < changed_hexagon_definitions.length; i++) {
                             hexagon_math.paint_hexagon(changed_hexagon_definitions[i], canvas.get_canvas_context(), zoom_edge_length)
+                            ref_hexagon_definitions
                         }
                     })
                 // }

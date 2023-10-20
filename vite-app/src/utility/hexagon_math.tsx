@@ -496,19 +496,17 @@ function get_starting_hexagon_definitions(firebase_map_data: {[index: string]: s
 
             const encoded_hexagon_definition = firebase_map_data[field_key]
 
+            const hexagon_definition = get_default_hexagon_definition()
+
             if (encoded_hexagon_definition != undefined) {
-                hexagon_definitions.push({
-                    ...get_default_hexagon_definition(),
-                    ...get_decoded_hexagon_definition(field_key, encoded_hexagon_definition),
-                })
+                replace_with_decoded_hexagon_definition(field_key, encoded_hexagon_definition, hexagon_definition)
             }
             else {
-                hexagon_definitions.push({
-                    ...get_default_hexagon_definition(),
-                    row_number: row_number,
-                    column_number: column_number,
-                })
+                hexagon_definition.row_number = row_number
+                hexagon_definition.column_number = column_number
             }
+
+            hexagon_definitions.push(hexagon_definition)
         }
     }
 
@@ -535,9 +533,9 @@ function get_encoded_hexagon_definition(decoded_hexagon_definition: type_hexagon
         + decoded_hexagon_definition.icon_name
 }
 
-function get_decoded_hexagon_definition(definition_key: string, encoded_hexagon_definition: string) {
+function replace_with_decoded_hexagon_definition(definition_key: string, encoded_hexagon_definition: string, hexagon_definition: type_hexagon_definition) {
     const split_array = encoded_hexagon_definition.split("_")
-    const hexagon_definition = hexagon_math.get_default_hexagon_definition()
+    // const hexagon_definition = hexagon_math.get_default_hexagon_definition()
     const row_number = parseInt(definition_key.split("_")[0])
     const column_number = parseInt(definition_key.split("_")[1])
     hexagon_definition.row_number = row_number
@@ -571,8 +569,9 @@ function get_changed_hexagon_definitions(hexagon_definitions: type_hexagon_defin
         const remote_string = firebase_map_document[remote_key]
 
         if (remote_string != undefined && local_string != remote_string) {
-            const remote_hexagon_definition = get_decoded_hexagon_definition(remote_key, remote_string)
-            modified_hexagons.push(remote_hexagon_definition)
+            // const remote_hexagon_definition = get_decoded_hexagon_definition(remote_key, remote_string)
+            replace_with_decoded_hexagon_definition(remote_key, remote_string, hexagon_definition)
+            modified_hexagons.push(hexagon_definition)
         }
     }
 
@@ -600,7 +599,6 @@ const hexagon_math = {
     get_default_hexagon_definition,
     get_starting_hexagon_definitions,
     get_hexagon_definition_key,
-    get_decoded_hexagon_definition,
     get_encoded_hexagon_definition,
     get_changed_hexagon_definitions,
 }
