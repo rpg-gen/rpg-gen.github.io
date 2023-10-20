@@ -63,7 +63,7 @@ export default function CivPicker(props: {
         editing_hex_definition.affinity = parseInt(selected_affinity)
         hexagon_math.paint_hexagon(editing_hex_definition, props.canvas.get_canvas_context(), props.edge_length)
         props.set_is_show_civ_picker(false)
-        firebase_map_hook.save_hexagon_definition(editing_hex_definition)
+        firebase_map_hook.save_hexagon_definitions([editing_hex_definition])
     }
 
     return (

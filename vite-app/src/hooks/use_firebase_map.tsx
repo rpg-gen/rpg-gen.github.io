@@ -17,11 +17,18 @@ export default function useFirebaseMap() {
         return data
     }
 
-    function save_hexagon_definition(hexagon_definition: type_hexagon_definition) {
-            const doc_ref = doc(FIRESTORE_DATABASE, MAP_COLLECTION_NAME, MAP_DOCUMENT_KEY)
+    function save_hexagon_definitions(hexagon_definitions: type_hexagon_definition[]) {
+        const doc_ref = doc(FIRESTORE_DATABASE, MAP_COLLECTION_NAME, MAP_DOCUMENT_KEY)
+        const definitions_to_update: {[index: string]: string} = {}
+
+        for (let i = 0; i < hexagon_definitions.length; i++) {
+            const hexagon_definition = hexagon_definitions[i]
             const field_key = hexagon_math.get_hexagon_definition_key(hexagon_definition.row_number, hexagon_definition.column_number)
             const encoded_hexagon_definition = hexagon_math.get_encoded_hexagon_definition(hexagon_definition)
-            setDoc(doc_ref, {[field_key]: encoded_hexagon_definition}, {merge: true})
+            definitions_to_update[field_key] = encoded_hexagon_definition
+        }
+
+        setDoc(doc_ref, {...definitions_to_update}, {merge: true})
     }
 
     function create_listener(listen_action: Function) {
@@ -33,7 +40,7 @@ export default function useFirebaseMap() {
 
     return {
         get_map_document,
-        save_hexagon_definition,
+        save_hexagon_definitions,
         create_listener,
     }
 }

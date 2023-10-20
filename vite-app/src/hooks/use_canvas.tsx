@@ -58,9 +58,16 @@ export default function useCanvas(
 
     function save_to_firebase(hexagon_definition: type_hexagon_definition) {
         if (param_is_logged_in && feature_flags.is_persist_to_firebase) {
-            firebase_map_hook.save_hexagon_definition(hexagon_definition)
+            firebase_map_hook.save_hexagon_definitions([hexagon_definition])
         }
     }
+
+    function multi_save_to_firebase(hexagon_definitions: type_hexagon_definition[]) {
+        if (param_is_logged_in && feature_flags.is_persist_to_firebase) {
+            firebase_map_hook.save_hexagon_definitions(hexagon_definitions)
+        }
+    }
+
 
     function get_canvas_html() {
         return (
@@ -157,8 +164,7 @@ export default function useCanvas(
                         hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length, paint_brush.hexidecimal_color)
-                        save_to_firebase(ref_clicked_hex_def.current)
-                        save_to_firebase(ref_previous_clicked_hex_def.current)
+                        multi_save_to_firebase([ref_clicked_hex_def.current,ref_previous_clicked_hex_def.current])
                     }
                     else {
                         // Reset the last clicked so we are still at the previous spot

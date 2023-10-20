@@ -85,7 +85,7 @@ export default function Map () {
             ref_hexagon_definitions.current = hexagon_math.get_starting_hexagon_definitions({})
             canvas.draw_map()
         }
-    }, [user_context])
+    }, [user_context.is_logged_in])
 
     const canvas = useCanvas(
         zoom_edge_length,
