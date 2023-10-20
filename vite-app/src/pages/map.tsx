@@ -61,12 +61,12 @@ export default function Map () {
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
     useEffect(function(){
-        if (user_context.username && feature_flags.is_persist_to_firebase) {
+        if (user_context.is_logged_in && feature_flags.is_persist_to_firebase) {
             const firebase_map_hook = useFirebaseMap()
             firebase_map_hook.get_map_document().then(function(data: any) {
                 const previous_length = ref_hexagon_definitions.current.length
                 firebase_map_data.current = data
-                if (previous_length == 0) {
+                // if (previous_length == 0) {
                     // Draw the whole map async if this is the first load
                     ref_hexagon_definitions.current = hexagon_math.get_starting_hexagon_definitions(firebase_map_data.current)
                     canvas.draw_map()
@@ -78,8 +78,12 @@ export default function Map () {
                             hexagon_math.paint_hexagon(changed_hexagon_definitions[i], canvas.get_canvas_context(), zoom_edge_length)
                         }
                     })
-                }
+                // }
             })
+        }
+        else {
+            ref_hexagon_definitions.current = hexagon_math.get_starting_hexagon_definitions({})
+            canvas.draw_map()
         }
     }, [user_context])
 
@@ -91,6 +95,7 @@ export default function Map () {
         ref_paint_brush_id,
         set_is_show_loading,
         set_is_show_civ_picker,
+        user_context.is_logged_in
     )
 
     return (
@@ -132,7 +137,7 @@ export default function Map () {
 
         {
             is_show_account
-            ? <Account set_is_show_account={set_is_show_account} />
+            ? <Account set_is_show_account={set_is_show_account} set_is_show_loading={set_is_show_loading} />
             : ""
         }
 

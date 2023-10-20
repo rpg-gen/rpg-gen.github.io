@@ -23,7 +23,8 @@ function App() {
             set_user_context({
                 is_logged_in: (user != null ? true : false),
                 is_auth_checked: true,
-                username: user?.email
+                username: user?.email,
+                set_user_context: set_user_context,
             })
         })
 

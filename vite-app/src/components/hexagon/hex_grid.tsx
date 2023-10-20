@@ -1,6 +1,7 @@
-import { useEffect, memo, MutableRefObject } from "react"
+import { useEffect, memo, useContext } from "react"
 import type_canvas_hook from "../../types/type_canvas_hook"
 import feature_flags from "../../configs/feature_flags"
+import userContext from "../../contexts/user_context"
 
 export default memo(function HexGrid(props: {
     edge_length: number,
@@ -9,8 +10,10 @@ export default memo(function HexGrid(props: {
     canvas: type_canvas_hook
 }) {
 
+    const user_context = useContext(userContext)
+
     useEffect(() => {
-        if (!props.canvas.is_too_large && !feature_flags.is_persist_to_firebase) {
+        if (!props.canvas.is_too_large && (!feature_flags.is_persist_to_firebase || !user_context.is_logged_in)) {
             props.canvas.draw_map()
         }
     },[props.edge_length, props.num_rows, props.num_columns])

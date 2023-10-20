@@ -486,8 +486,8 @@ function get_hexagon_definition_key(row_number: number, column_number: number) {
 
 function get_starting_hexagon_definitions(firebase_map_data: {[index: string]: string}) {
     const hexagon_definitions = []
-    const num_rows = (feature_flags.is_persist_to_firebase ? parseInt(firebase_map_data.height) : defaults.num_rows)
-    const num_columns = (feature_flags.is_persist_to_firebase ? parseInt(firebase_map_data.width) : defaults.num_columns)
+    const num_rows = parseInt(firebase_map_data.height)
+    const num_columns = parseInt(firebase_map_data.width)
 
     for (let row_number = 1; row_number <= num_rows; row_number++) {
         for (let column_number = 1; column_number <= num_columns; column_number++) {

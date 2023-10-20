@@ -10,6 +10,7 @@ import { paint_category } from "../types/type_paint_brush"
 import paint_brushes from "../configs/paint_brushes"
 import worker_url from "../worker/worker?worker&url"
 import useFirebaseMap from "../hooks/use_firebase_map"
+import feature_flags from "../configs/feature_flags"
 
 export default function useCanvas(
     param_edge_length: number,
@@ -18,7 +19,8 @@ export default function useCanvas(
     param_ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>,
     param_ref_paint_brush_id: MutableRefObject<string>,
     set_is_show_loading: Function,
-    set_is_show_civ_picker: Function
+    set_is_show_civ_picker: Function,
+    param_is_logged_in: boolean,
 ) {
 
     const firebase_map_hook = useFirebaseMap()
@@ -52,6 +54,12 @@ export default function useCanvas(
 
     function get_canvas_context() {
         return (ref_canvas.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
+    }
+
+    function save_to_firebase(hexagon_definition: type_hexagon_definition) {
+        if (param_is_logged_in && feature_flags.is_persist_to_firebase) {
+            firebase_map_hook.save_hexagon_definition(hexagon_definition)
+        }
     }
 
     function get_canvas_html() {
@@ -102,7 +110,7 @@ export default function useCanvas(
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
                     hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
-                    firebase_map_hook.save_hexagon_definition(hexagon_definition)
+                    save_to_firebase(hexagon_definition)
                 }
                 else if (paint_brush.paint_category == paint_category.icon) {
                     if (paint_brush.id == "clear_icon") {
@@ -111,12 +119,12 @@ export default function useCanvas(
                         hexagon_definition.affinity = 0
                         hexagon_definition.race = 0
                         hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
-                        firebase_map_hook.save_hexagon_definition(hexagon_definition)
+                        save_to_firebase(hexagon_definition)
                         return
                     }
 
                     hexagon_definition.icon_name = paint_brush.id
-                    firebase_map_hook.save_hexagon_definition(hexagon_definition)
+                   save_to_firebase(hexagon_definition)
                     set_is_show_civ_picker(true)
                 }
                 else if (paint_brush.paint_category == paint_category.path) {
@@ -135,7 +143,7 @@ export default function useCanvas(
                         ref_clicked_hex_def.current.is_bottom_left_road = false
                         ref_clicked_hex_def.current.is_left_road = false
                         hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
-                        firebase_map_hook.save_hexagon_definition(ref_clicked_hex_def.current)
+                        save_to_firebase(ref_clicked_hex_def.current)
                         return
                     }
 
@@ -149,8 +157,8 @@ export default function useCanvas(
                         hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
                         hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length, paint_brush.hexidecimal_color)
-                        firebase_map_hook.save_hexagon_definition(ref_clicked_hex_def.current)
-                        firebase_map_hook.save_hexagon_definition(ref_previous_clicked_hex_def.current)
+                        save_to_firebase(ref_clicked_hex_def.current)
+                        save_to_firebase(ref_previous_clicked_hex_def.current)
                     }
                     else {
                         // Reset the last clicked so we are still at the previous spot
