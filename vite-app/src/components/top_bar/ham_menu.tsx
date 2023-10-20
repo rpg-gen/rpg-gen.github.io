@@ -2,7 +2,11 @@ import ham_menu_black from "../../assets/ham_menu_black.svg"
 import top_bar_button_style from "./top_bar_button_style"
 import { memo } from "react"
 
-export default memo(function HamMenu() {
+export default memo(function HamMenu(props: {ham_menu_action: Function}) {
+
+    function click_action() {
+        props.ham_menu_action()
+    }
 
     return (
         <>
@@ -15,6 +19,8 @@ export default memo(function HamMenu() {
             }}
 
             className="hover-element"
+
+            onClick={click_action}
         >
 
                 <img

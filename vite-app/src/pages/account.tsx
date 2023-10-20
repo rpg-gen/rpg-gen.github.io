@@ -1,9 +1,27 @@
 import colors from "../configs/colors"
 import { useContext, useState, FormEvent} from "react"
 import userContext from "../contexts/user_context"
+import useFirebaseAuth from "../hooks/use_firebase_auth"
 
-export default function Account() {
+export default function Account(props: {set_is_show_account: Function}) {
     const user_context = useContext(userContext)
+    const [is_logging_out, set_is_logging_out] = useState(false)
+
+    function successful_login_action() {
+        props.set_is_show_account(false)
+    }
+
+    function cancel_action() {
+        props.set_is_show_account(false)
+    }
+
+    function logout_action() {
+        set_is_logging_out(true)
+        const firebase_auth_hook = useFirebaseAuth()
+        firebase_auth_hook.logout_firebase_user().then(function() {
+            set_is_logging_out(false)
+        })
+    }
 
     return (
         <>
@@ -23,7 +41,24 @@ export default function Account() {
             color: colors.white,
         }}>
             <div>
-                <LoginForm />
+                {
+                    user_context.is_logged_in
+                    ? (
+                        is_logging_out
+                        ? <p>Logging Out...</p>
+                        : <>
+                            <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                <p>You are logged in as {user_context.username}</p>
+                                <button style={{width: "100px"}} onClick={logout_action}>Logout</button>
+                            </div>
+                        </>
+
+                    )
+                    :<LoginForm successful_login_action={successful_login_action} />
+                }
+                <div style={{display: "flex", justifyContent: "center", marginTop: "10px"}}>
+                    <button onClick={cancel_action}>Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -31,9 +66,12 @@ export default function Account() {
     )
 }
 
-function LoginForm() {
+function LoginForm(props: {successful_login_action: Function}) {
+    const firebase_auth_hook = useFirebaseAuth()
     const [username, set_username] = useState("")
     const [password, set_password] = useState("")
+    const [is_loading, set_is_loading] = useState(false)
+    const [error_message, set_error_message] = useState("")
 
     function handle_username_input(event: FormEvent<HTMLInputElement>) {
         set_username((event.target as HTMLInputElement).value)
@@ -45,6 +83,21 @@ function LoginForm() {
 
     function handle_submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        set_is_loading(true)
+        set_error_message("")
+        firebase_auth_hook.login_firebase_user(username, password).then(
+            function() {
+                props.successful_login_action()
+            }
+        ).catch(
+            function() {
+                set_error_message("Incorrect login credentials")
+            }
+        ).finally(
+            function() {
+                set_is_loading(false)
+            }
+        )
     }
 
     return (
@@ -58,7 +111,26 @@ function LoginForm() {
                     <label htmlFor="password">password: </label>
                     <input id="password" type="password" value={password} onChange={handle_password_input}/>
                 </div>
-                <div style={{display: "flex", justifyContent: "center"}}><button style={{marginTop: "10px", width: "100px"}}>Login</button></div>
+                {
+                    is_loading
+                    ?
+                    <div style={{display: "flex", justifyContent: "center"}}>
+                        Logging in...
+                    </div>
+                    :
+                    <div style={{display: "flex", justifyContent: "center"}}>
+                        <button style={{marginTop: "10px", width: "100px"}}>Login</button>
+                    </div>
+                }
+                {
+                    error_message != ""
+                    ?
+                    <div style={{display: "flex", justifyContent: "center"}}>
+                        {error_message}
+                    </div>
+                    :
+                    ""
+                }
             </div>
         </form>
     )

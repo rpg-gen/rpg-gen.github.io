@@ -7,7 +7,7 @@ import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
 import ZoomPickerOption from "../components/zoom_picker_option"
 import HexGrid from "../components/hexagon/hex_grid"
-// import HamMenu from "../components/top_bar/ham_menu"
+import HamMenu from "../components/top_bar/ham_menu"
 import EditBrushButton from "../components/top_bar/edit_brush_button"
 import ZoomButton from "../components/top_bar/zoom_button"
 import { paint_category } from "../types/type_paint_brush"
@@ -22,12 +22,11 @@ import UserContext from "../contexts/user_context"
 import useFirebaseMap from "../hooks/use_firebase_map"
 import Account from "../pages/account"
 import feature_flags from "../configs/feature_flags"
+import MainMenu from "../pages/main_menu"
 
 function noop() {}
 
 export default function Map () {
-
-    console.log("map rerendered")
 
     const DEFAULT_NUM_ROWS = 4
     const DEFAULT_NUM_COLUMNS = DEFAULT_NUM_ROWS
@@ -54,9 +53,10 @@ export default function Map () {
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
 
+    const [is_show_main_menu, set_is_show_main_menu] = useState(false)
     const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
-    const [is_show_account, set_is_show_account] = useState(true)
+    const [is_show_account, set_is_show_account] = useState(false)
 
     const zoom_edge_length = edge_length * (zoom_level / 5) // Sets zoom "5" to have the default edge length
 
@@ -104,7 +104,7 @@ export default function Map () {
         />
 
         <TopBar>
-            {/* <HamMenu /> */}
+            <HamMenu ham_menu_action={() => {set_is_show_main_menu(true)}} />
             <EditBrushButton
                 paint_brush_id={display_paint_brush_id}
                 set_is_show_paint_picker={set_is_show_paint_picker}
@@ -122,8 +122,17 @@ export default function Map () {
         </TopBar>
 
         {
+            is_show_main_menu
+            ? <MainMenu
+                set_is_show_main_menu={set_is_show_main_menu}
+                set_is_show_account={set_is_show_account}
+            />
+            : ""
+        }
+
+        {
             is_show_account
-            ? <Account />
+            ? <Account set_is_show_account={set_is_show_account} />
             : ""
         }
 
