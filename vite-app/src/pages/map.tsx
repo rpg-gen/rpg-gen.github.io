@@ -1,5 +1,4 @@
 import TopBar from "../components/top_bar/top_bar"
-// import PaintContext from "../contexts/paint_context"
 // import MapContext from "../contexts/map_context"
 import { useState, useRef, useContext, useEffect } from "react"
 import PaintPicker from "../pages/paint_picker"

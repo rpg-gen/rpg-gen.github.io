@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import paint_brushes from "../configs/paint_brushes"
-import paint_brush from "../types/type_paint_brush"
+import paint_brushes from "../vite-app/src/configs/paint_brushes"
+import paint_brush from "../vite-app/src/types/type_paint_brush"
 
 function noop() {}
 
