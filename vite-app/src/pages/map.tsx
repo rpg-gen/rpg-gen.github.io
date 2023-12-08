@@ -4,7 +4,6 @@ import { useState, useRef, useContext, useEffect } from "react"
 import PaintPicker from "../pages/paint_picker"
 import PaintPickerSection from "../components/paint_picker/paint_picker_section"
 import ZoomPicker from "../pages/zoom_picker"
-import ZoomPickerOption from "../components/zoom_picker_option"
 import HexGrid from "../components/hexagon/hex_grid"
 import HamMenu from "../components/top_bar/ham_menu"
 import EditBrushButton from "../components/top_bar/edit_brush_button"
@@ -22,6 +21,7 @@ import useFirebaseMap from "../hooks/use_firebase_map"
 import Account from "../pages/account"
 import feature_flags from "../configs/feature_flags"
 import MainMenu from "../pages/main_menu"
+import { useParams, Link } from "react-router-dom"
 
 function noop() {}
 
@@ -32,6 +32,8 @@ export default function Map () {
     const DEFAULT_BRUSH = "mountain"
     const DEFAULT_ZOOM_LEVEL = 5
     const DEFAULT_EDGE_LENGTH = 40
+
+    const { subpage } = useParams()
 
     const user_context = useContext(UserContext)
 
@@ -116,7 +118,7 @@ export default function Map () {
                 edge_length={zoom_edge_length}
                 canvas={canvas}
             />
-            <ZoomButton zoom_level={zoom_level} set_is_show_zoom_picker={set_is_show_zoom_picker} />
+            <ZoomButton zoom_level={zoom_level} />
             {/* <MapSize
                 default_edge_length={DEFAULT_EDGE_LENGTH}
                 default_num_rows={DEFAULT_NUM_ROWS}
@@ -125,6 +127,7 @@ export default function Map () {
                 is_show_loading={is_show_loading}
             /> */}
         </TopBar>
+
 
         {
             is_show_main_menu
@@ -158,22 +161,8 @@ export default function Map () {
         }
 
         {
-            is_show_zoom_picker
-            ? <ZoomPicker>
-                {Array.from({length: 10}, (_, index) => {
-                    return <ZoomPickerOption
-                        key={index}
-                        zoom_level={index+1}
-                        set_zoom_level={set_zoom_level}
-                        set_is_show_zoom_picker={set_is_show_zoom_picker}
-                        default_edge_length={DEFAULT_EDGE_LENGTH}
-                        default_zoom_level={DEFAULT_ZOOM_LEVEL}
-                        num_rows={num_rows}
-                        // set_is_show_loading={set_is_show_loading}
-                        // loading_function_ref={loading_function_ref}
-                    />
-                })}
-            </ZoomPicker>
+            subpage == "zoom"
+            ? <ZoomPicker />
             : ""
         }
 

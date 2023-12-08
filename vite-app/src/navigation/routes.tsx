@@ -13,6 +13,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Map />
+            },
+            {
+                path: "/:subpage",
+                element: <Map />
             }
             
             // {

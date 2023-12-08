@@ -11,6 +11,7 @@ import paint_brushes from "../configs/paint_brushes"
 import worker_url from "../worker/worker?worker&url"
 import useFirebaseMap from "../hooks/use_firebase_map"
 import feature_flags from "../configs/feature_flags"
+import limits from "../configs/limits"
 
 export default function useCanvas(
     param_edge_length: number,
@@ -48,7 +49,7 @@ export default function useCanvas(
     const canvas_width = hexagon_math.get_canvas_width(edge_length, num_columns)
     let is_too_large: boolean = false
 
-    if (canvas_height > spacing.canvas_pixel_limit || canvas_width > spacing.canvas_pixel_limit) {
+    if (canvas_height > limits.canvas_width_pixels || canvas_width > limits.canvas_width_pixels) {
         is_too_large = true
     }
 

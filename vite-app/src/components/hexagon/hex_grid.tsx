@@ -18,8 +18,6 @@ export default memo(function HexGrid(props: {
         }
     },[props.edge_length, props.num_rows, props.num_columns])
 
-
-
     return (
 
         <div

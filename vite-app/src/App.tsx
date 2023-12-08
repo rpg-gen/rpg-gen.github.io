@@ -2,6 +2,7 @@ import './App.css'
 import { Outlet } from "react-router-dom"
 import { useContext, useState, useEffect } from "react"
 import UserContext from "./contexts/user_context"
+import scale_context from './contexts/scale_context'
 import hexagon_math from "./utility/hexagon_math"
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
@@ -10,6 +11,9 @@ import useFirebaseMap from "./hooks/use_firebase_map"
 function App() {
 
     const [user_context, set_user_context] = useState(useContext(UserContext))
+    const [app_scale_context, set_scale_context] = useState(useContext(scale_context))
+
+    app_scale_context.set_scale_context = set_scale_context
 
     // =========================================================================
     // Firebase user authentication
@@ -44,17 +48,14 @@ function App() {
 
     return (
         <>
-        {/* <MapContext.Provider value={map_context}> */}
-        {/* <PaintContext.Provider value={paint_context}> */}
 
         <UserContext.Provider value={user_context}>
+        <scale_context.Provider value={app_scale_context}>
 
             { user_context.is_auth_checked ? <Outlet /> : ""}
 
+        </scale_context.Provider>
         </UserContext.Provider>
-
-        {/* </PaintContext.Provider> */}
-        {/* </MapContext.Provider> */}
 
         </>
     )

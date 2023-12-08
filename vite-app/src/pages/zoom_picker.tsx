@@ -1,6 +1,13 @@
 import spacing from "../configs/spacing"
+import limits from "../configs/limits"
+import defaults from "../configs/defaults"
+import { useNavigate } from "react-router-dom"
+import colors from "../configs/colors"
+import hexagon_math from "../utility/hexagon_math"
+import scale_context from "../contexts/scale_context"
+import { useContext} from "react"
 
-export default function ZoomPicker(props: {children: JSX.Element[]}) {
+export default function ZoomPicker() {
 
     return (
         <>
@@ -27,7 +34,12 @@ export default function ZoomPicker(props: {children: JSX.Element[]}) {
                     maxWidth: ((spacing.top_bar_height * 2.5 + spacing.top_bar_margin * 2) * 3) + "rem",
                     flexWrap: "wrap",
                 }}>
-                    {props.children}
+                    {Array.from({length: 10}, (_, index) => {
+                        return <ZoomOption
+                            key={index}
+                            zoom_level={index+1}
+                        />
+                    })}
                 </div>
             </div>
 
@@ -37,3 +49,54 @@ export default function ZoomPicker(props: {children: JSX.Element[]}) {
     )
 }
 
+function ZoomOption(props: {zoom_level: number}) {
+
+    const current_scale_context = useContext(scale_context)
+    const navigate = useNavigate()
+
+    function handle_click() {
+        current_scale_context.set_scale_context((previous_context) => {
+            return {
+                ...previous_context,
+                hexagon_edge_pixels: new_edge_length
+            }
+        })
+        navigate("/")
+    }
+
+    const new_edge_length = props.zoom_level * (defaults.hexagon_edge_pixels / defaults.zoom_level)
+    const new_height = hexagon_math.get_canvas_height(new_edge_length, current_scale_context.num_hexes_tall)
+    const new_width = hexagon_math.get_canvas_width(new_edge_length, current_scale_context.num_hexes_wide)
+    const is_valid_zoom = (new_height < limits.canvas_width_pixels && new_width < limits.canvas_width_pixels)
+
+    return (
+        <>
+
+        <div
+            style={{
+                width: (spacing.top_bar_height * 2.5).toString() + "rem",
+                height: spacing.top_bar_height.toString() + "rem",
+                backgroundColor: is_valid_zoom ? colors.white : colors.disabled,
+                margin: spacing.top_bar_margin.toString() + "rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid black",
+                borderRadius: "10%",
+                color: "black",
+                boxSizing: "border-box",
+                flexShrink: 0
+            }}
+
+
+
+            className={is_valid_zoom ? "hover-element" : "not-allowed"}
+
+            onClick={handle_click}
+        >
+            {props.zoom_level}
+        </div>
+
+        </>
+    )
+}
