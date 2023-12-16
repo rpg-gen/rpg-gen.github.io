@@ -151,31 +151,28 @@ export default function Map () {
         }
 
         {
-            is_show_paint_picker
-            ? <PaintPicker>
-                <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} />
-                <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
-                <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
-            </PaintPicker>
-            : ""
+            // is_show_paint_picker
+            // ? <PaintPicker>
+            //     <PaintPickerSection this_paint_category={paint_category.background} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} />
+            //     <PaintPickerSection this_paint_category={paint_category.icon} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
+            //     <PaintPickerSection this_paint_category={paint_category.path} set_is_show_paint_picker={set_is_show_paint_picker} set_display_paint_brush_id={set_display_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id}  />
+            // </PaintPicker>
+            // : ""
         }
 
-        {
-            subpage == "zoom"
-            ? <ZoomPicker />
-            : ""
-        }
+        { subpage == "brush_picker" ? <PaintPicker /> : "" }
+        { subpage == "zoom" ? <ZoomPicker /> : "" }
 
         {
-            is_show_civ_picker
-            ?
-                <CivPicker
-                    set_is_show_civ_picker={set_is_show_civ_picker}
-                    canvas={canvas}
-                    ref_hexagon_definitions={ref_hexagon_definitions}
-                    edge_length={zoom_edge_length}
-                />
-            : ""
+            // is_show_civ_picker
+            // ?
+                // <CivPicker
+                //     set_is_show_civ_picker={set_is_show_civ_picker}
+                //     canvas={canvas}
+                //     ref_hexagon_definitions={ref_hexagon_definitions}
+                //     edge_length={zoom_edge_length}
+                // />
+            // : ""
         }
 
         </>
