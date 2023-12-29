@@ -1,6 +1,6 @@
-import { paint_category } from "../../types/type_paint_brush"
-import paint_brushes from "../../configs/paint_brushes"
-import spacing from "../../configs/spacing"
+import { paint_category } from "../types/type_paint_brush"
+import paint_brushes from "../configs/paint_brushes"
+import spacing from "../configs/spacing"
 import { MouseEvent, MutableRefObject } from "react"
 
 
