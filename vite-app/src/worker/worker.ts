@@ -37,6 +37,8 @@ onmessage = (message: MessageEvent) => {
     const canvas_height = hexagon_math.get_canvas_height(edge_length, num_rows)
     const canvas_width = hexagon_math.get_canvas_width(edge_length, num_columns)
 
+    // Take the expected row and column counts and build out a full matrix
+    // For any missing hexagon definitions, just use the default values defined in this file
     for (let row_number = 1; row_number <= num_rows; row_number++) {
         for (let column_number = 1; column_number <= num_rows; column_number++) {
 
@@ -70,6 +72,6 @@ onmessage = (message: MessageEvent) => {
 
     postMessage({
         bitmap: offscreen_canvas.transferToImageBitmap(),
-        hexagon_definitions: hexagon_definitions
+        hexagon_definitions: hexagon_definitions // Return full matrix so editing each hex works, even if there were not data for them to start
     })
 }

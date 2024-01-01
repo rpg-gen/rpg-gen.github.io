@@ -171,8 +171,8 @@ function paint_background(
     const path_2d = hexagon_math.get_canvas_path_2d(get_hexagon_points(hexagon_definition, edge_length))
     context.fillStyle = hexagon_definition.background_color_hexidecimal
     context.fill(path_2d)
-    context.lineWidth = spacing.hexagon_stroke_width
-    context.strokeStyle = colors.black
+    context.lineWidth = defaults.hexagon_stroke_width
+    context.strokeStyle = colors.disabled
     context.stroke(path_2d)
 }
 
