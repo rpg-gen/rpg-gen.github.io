@@ -4,7 +4,7 @@ import scale_context from "../../contexts/scale_context"
 import { useNavigate } from "react-router-dom"
 import defaults from "../../configs/defaults"
 
-export default memo(function ZoomButton(props: {zoom_level: number}) {
+export default memo(function ZoomButton() {
 
     const navigate = useNavigate()
     const current_scale_context = useContext(scale_context)
@@ -34,7 +34,7 @@ export default memo(function ZoomButton(props: {zoom_level: number}) {
         >
 
             x{current_zoom_level}
-        
+
         </div>
 
         </>

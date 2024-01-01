@@ -486,6 +486,7 @@ function get_hexagon_definition_key(row_number: number, column_number: number) {
 
 function get_starting_hexagon_definitions(firebase_map_data: {[index: string]: string}) {
     const hexagon_definitions = []
+
     const num_rows = parseInt(firebase_map_data.height)
     const num_columns = parseInt(firebase_map_data.width)
 

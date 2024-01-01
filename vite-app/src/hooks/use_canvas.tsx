@@ -178,7 +178,10 @@ export default function useCanvas(
 
     function draw_map() {
         set_is_show_loading(true)
+
         const worker = new Worker(worker_url, {type: "module"})
+
+        // Ensure at least a half-second delay while drawing map, to prevent un-readable flicker
         setTimeout(() => {
             worker.postMessage({
                 edge_length: edge_length,
@@ -186,7 +189,8 @@ export default function useCanvas(
                 num_columns: num_columns,
                 hexagon_definitions: param_ref_hexagon_definitions.current
             })
-        }, 500)
+        }, 500 /* milliseconds */)
+
         worker.onmessage = (message) => {
             const context = get_canvas_context()
             context.drawImage(message.data.bitmap, 0, 0)

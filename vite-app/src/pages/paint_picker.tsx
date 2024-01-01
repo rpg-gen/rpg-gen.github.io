@@ -3,8 +3,7 @@ import paint_brushes from "../configs/paint_brushes"
 import spacing from "../configs/spacing"
 import { MouseEvent, MutableRefObject } from "react"
 
-
-export default function PaintPicker(props: {children: JSX.Element[]}) {
+export default function PaintPicker() {
 
     return (
         <div style={{
@@ -20,13 +19,15 @@ export default function PaintPicker(props: {children: JSX.Element[]}) {
             flexDirection: "column"
         }}>
 
-            {props.children}
+            <Section this_paint_category={paint_category.background} ref_paint_brush_id={ref_paint_brush_id} />
+            <Section this_paint_category={paint_category.icon} ref_paint_brush_id={ref_paint_brush_id}  />
+            <Section this_paint_category={paint_category.path} ref_paint_brush_id={ref_paint_brush_id}  />
 
         </div>
     )
 }
 
-function Section(props: {this_paint_category: paint_category, set_is_show_paint_picker: Function, set_display_paint_brush_id: Function, ref_paint_brush_id: MutableRefObject<string>}) {
+function Section(props: {this_paint_category: paint_category, ref_paint_brush_id: MutableRefObject<string>}) {
     const brush_buttons = []
 
     function handle_paint_brush_click(event: MouseEvent) {
