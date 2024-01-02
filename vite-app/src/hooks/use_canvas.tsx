@@ -18,7 +18,7 @@ export default function useCanvas(
     param_num_rows: number,
     param_num_columns: number,
     param_ref_hexagon_definitions: MutableRefObject<type_hexagon_definition[]>,
-    param_ref_paint_brush_id: MutableRefObject<string>,
+    param_ref_paint_brush_id: string,
     set_is_show_loading: Function,
     set_is_show_civ_picker: Function,
     param_is_logged_in: boolean,
@@ -113,7 +113,7 @@ export default function useCanvas(
 
                 ref_clicked_hex_def.current = hexagon_definition
 
-                const paint_brush = paint_brushes[param_ref_paint_brush_id.current]
+                const paint_brush = paint_brushes[param_ref_paint_brush_id]
 
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color

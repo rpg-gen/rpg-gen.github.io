@@ -1,19 +1,22 @@
+import { memo, useContext } from "react"
+import { useNavigate } from "react-router-dom"
+
 import top_bar_button_style from "./top_bar_button_style"
 import paint_brushes from "../../configs/paint_brushes"
-import { memo, useContext } from "react"
 import type_canvas_hook from "../../types/type_canvas_hook"
 import hexagon_math from "../../utility/hexagon_math"
 import type_hexagon_definition from "../../types/type_hexagon_definition"
+
 
 import scale_context from "../../contexts/scale_context"
 
 export default memo(function EditBrushButton(props: {
     paint_brush_id: string,
-    set_is_show_paint_picker: Function,
     canvas: type_canvas_hook,
 }) {
 
     const current_scale_context = useContext(scale_context)
+    const navigate = useNavigate()
 
     const this_paint_brush = paint_brushes[props.paint_brush_id]
 
@@ -25,7 +28,7 @@ export default memo(function EditBrushButton(props: {
             props.canvas.ref_clicked_hex_def.current = undefined
             props.canvas.ref_previous_clicked_hex_def.current = undefined
         }
-        props.set_is_show_paint_picker(true)
+        navigate("brush_picker")
     }
 
     return (

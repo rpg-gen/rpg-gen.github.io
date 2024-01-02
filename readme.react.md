@@ -3,3 +3,9 @@ Learn by reading
 
 Learn by doing
     - https://beta.reactjs.org/learn/tutorial-tic-tac-toe
+
+Typescript for state setter
+
+```typescript
+Dispatch<SetStateAction<string>>
+```

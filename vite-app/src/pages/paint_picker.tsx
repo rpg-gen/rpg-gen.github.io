@@ -1,9 +1,13 @@
+import { MouseEvent, MutableRefObject, Dispatch, SetStateAction } from "react"
+import { useNavigate } from "react-router-dom"
+
 import { paint_category } from "../types/type_paint_brush"
 import paint_brushes from "../configs/paint_brushes"
 import spacing from "../configs/spacing"
-import { MouseEvent, MutableRefObject } from "react"
 
-export default function PaintPicker() {
+export default function PaintPicker(props: {
+    set_paint_brush_id: Dispatch<SetStateAction<string>>
+}) {
 
     return (
         <div style={{
@@ -19,23 +23,25 @@ export default function PaintPicker() {
             flexDirection: "column"
         }}>
 
-            <Section this_paint_category={paint_category.background} ref_paint_brush_id={ref_paint_brush_id} />
-            <Section this_paint_category={paint_category.icon} ref_paint_brush_id={ref_paint_brush_id}  />
-            <Section this_paint_category={paint_category.path} ref_paint_brush_id={ref_paint_brush_id}  />
+            <Section this_paint_category={paint_category.background} set_paint_brush_id={props.set_paint_brush_id} />
+            <Section this_paint_category={paint_category.icon} set_paint_brush_id={props.set_paint_brush_id}  />
+            <Section this_paint_category={paint_category.path} set_paint_brush_id={props.set_paint_brush_id}  />
 
         </div>
     )
 }
 
-function Section(props: {this_paint_category: paint_category, ref_paint_brush_id: MutableRefObject<string>}) {
+function Section(props: {
+    this_paint_category: paint_category, 
+    set_paint_brush_id: Dispatch<SetStateAction<string>>
+}) {
     const brush_buttons = []
+    const navigate = useNavigate()
 
     function handle_paint_brush_click(event: MouseEvent) {
-        const clicked_paint_brush_id = (event.target as HTMLElement).dataset.paintBrushId
-        props.ref_paint_brush_id.current = (clicked_paint_brush_id as string)
-        props.set_display_paint_brush_id(clicked_paint_brush_id)
-
-        props.set_is_show_paint_picker(false)
+        const clicked_paint_brush_id = ((event.target as HTMLElement).dataset.paintBrushId as string)
+        props.set_paint_brush_id(clicked_paint_brush_id)
+        navigate("/")
     }
 
     const PaintOption = function (props: {paint_brush_id: string}) {

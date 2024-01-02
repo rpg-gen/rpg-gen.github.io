@@ -30,8 +30,6 @@ function noop() {}
 
 export default function Map () {
 
-    const DEFAULT_BRUSH = "mountain"
-
     const { subpage } = useParams()
 
     const user_context = useContext(UserContext)
@@ -40,20 +38,16 @@ export default function Map () {
     const firebase_map_data = useRef<{[index: string]: string}>({})
     const firebase_listener_unsub_function = useRef<Function>(noop)
 
-    const [num_rows, set_num_rows] = useState(defaults.num_hexes_tall)
-
     const ref_hexagon_definitions = useRef<type_hexagon_definition[]>([])
 
-    const [is_show_zoom_picker, set_is_show_zoom_picker] = useState(false)
+    const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id)
 
-    const [display_paint_brush_id, set_display_paint_brush_id] = useState(defaults.brush_id);
-    const ref_paint_brush_id = useRef<string>(defaults.brush_id)
+    console.log("map rerender with ", paint_brush_id) /*debuggery*/
 
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
 
     const [is_show_main_menu, set_is_show_main_menu] = useState(false)
-    const [is_show_paint_picker, set_is_show_paint_picker] = useState(false)
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
     const [is_show_account, set_is_show_account] = useState(false)
 
@@ -90,7 +84,7 @@ export default function Map () {
         defaults.num_hexes_tall,
         defaults.num_hexes_wide,
         ref_hexagon_definitions,
-        ref_paint_brush_id,
+        paint_brush_id,
         set_is_show_loading,
         set_is_show_civ_picker,
         user_context.is_logged_in
@@ -106,8 +100,7 @@ export default function Map () {
         <TopBar>
             <HamMenu ham_menu_action={() => {set_is_show_main_menu(true)}} />
             <EditBrushButton
-                paint_brush_id={display_paint_brush_id}
-                set_is_show_paint_picker={set_is_show_paint_picker}
+                paint_brush_id={paint_brush_id}
                 canvas={canvas}
             />
             <ZoomButton />
@@ -150,7 +143,7 @@ export default function Map () {
             // : ""
         }
 
-        { subpage == "brush_picker" ? <PaintPicker /> : "" }
+        { subpage == "brush_picker" ? <PaintPicker set_paint_brush_id={set_paint_brush_id} /> : "" }
         { subpage == "zoom" ? <ZoomPicker /> : "" }
 
         {
