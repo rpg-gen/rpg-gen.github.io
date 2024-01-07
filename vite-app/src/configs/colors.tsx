@@ -9,7 +9,7 @@ const colors: {[key: string]: string} = {
     hills: "#d1d2d3",
     white: "#ffffff",
     black: "#000000",
-    road: "#664900",
+    road: "#dc9e00",
     red: "#a83232",
     disabled: "#c2c2c2"
 }

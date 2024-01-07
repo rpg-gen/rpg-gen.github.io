@@ -1,7 +1,8 @@
 import { memo, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
-import top_bar_button_style from "./top_bar_button_style"
+// import top_bar_button_style from "./top_bar_button_style"
+import spacing from "../../configs/spacing"
 import paint_brushes from "../../configs/paint_brushes"
 import type_canvas_hook from "../../types/type_canvas_hook"
 import hexagon_math from "../../utility/hexagon_math"
@@ -28,14 +29,24 @@ export default memo(function EditBrushButton(props: {
             props.canvas.ref_clicked_hex_def.current = undefined
             props.canvas.ref_previous_clicked_hex_def.current = undefined
         }
-        navigate("brush_picker")
+
+        navigate("/brush_picker")
     }
 
-    return (
+    return (<>
         <div
             style={{
-                ...top_bar_button_style,
+                // ...top_bar_button_style,
                 backgroundColor: this_paint_brush.hexidecimal_color,
+                height: spacing.top_bar_height.toString() + "rem",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginRight: spacing.top_bar_margin.toString() + "rem",
+                paddingLeft: ".5rem",
+                paddingRight: ".5rem",
+                border: "1px solid black",
+                borderRadius: "5px"
             }}
 
             onClick={handle_click}
@@ -43,12 +54,14 @@ export default memo(function EditBrushButton(props: {
             className="hover-element"
 
         >
-            {
-               this_paint_brush.icon
+            {/* {
+                this_paint_brush.icon
                 ? <img src={this_paint_brush.icon} style={{height: "100%", width: "100%"}} />
                 : ""
-            }
+            } */}
+
+            {this_paint_brush.display_name}
 
         </div>
-    )
+    </>)
 })

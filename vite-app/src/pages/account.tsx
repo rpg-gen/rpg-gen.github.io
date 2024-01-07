@@ -1,19 +1,22 @@
-import colors from "../configs/colors"
 import { useContext, useState, FormEvent} from "react"
+import { useNavigate } from "react-router-dom"
+
+import colors from "../configs/colors"
 import userContext from "../contexts/user_context"
 import useFirebaseAuth from "../hooks/use_firebase_auth"
 
-export default function Account(props: {set_is_show_account: Function, set_is_show_loading: Function}) {
+export default function Account(props: {set_is_show_loading: Function}) {
     const user_context = useContext(userContext)
+    const navigate = useNavigate()
     const [is_logging_out, set_is_logging_out] = useState(false)
 
     function successful_login_action() {
         props.set_is_show_loading(true)
-        props.set_is_show_account(false)
+        navigate("/")
     }
 
     function cancel_action() {
-        props.set_is_show_account(false)
+        navigate("/")
     }
 
     function logout_action() {
@@ -21,7 +24,7 @@ export default function Account(props: {set_is_show_account: Function, set_is_sh
         set_is_logging_out(true)
         const firebase_auth_hook = useFirebaseAuth()
         firebase_auth_hook.logout_firebase_user().then(function() {
-            props.set_is_show_account(false)
+            navigate("/")
             set_is_logging_out(false)
         })
     }

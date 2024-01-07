@@ -42,12 +42,9 @@ export default function Map () {
 
     const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id)
 
-    console.log("map rerender with ", paint_brush_id) /*debuggery*/
-
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
 
-    const [is_show_main_menu, set_is_show_main_menu] = useState(false)
     const [is_show_civ_picker, set_is_show_civ_picker] = useState(false)
     const [is_show_account, set_is_show_account] = useState(false)
 
@@ -98,36 +95,13 @@ export default function Map () {
         />
 
         <TopBar>
-            <HamMenu ham_menu_action={() => {set_is_show_main_menu(true)}} />
+            <HamMenu />
             <EditBrushButton
                 paint_brush_id={paint_brush_id}
                 canvas={canvas}
             />
             <ZoomButton />
-            {/* <MapSize
-                default_edge_length={DEFAULT_EDGE_LENGTH}
-                default_num_rows={DEFAULT_NUM_ROWS}
-                set_num_rows={set_num_rows}
-                set_edge_length={set_edge_length}
-                is_show_loading={is_show_loading}
-            /> */}
         </TopBar>
-
-
-        {
-            is_show_main_menu
-            ? <MainMenu
-                set_is_show_main_menu={set_is_show_main_menu}
-                set_is_show_account={set_is_show_account}
-            />
-            : ""
-        }
-
-        {
-            is_show_account
-            ? <Account set_is_show_account={set_is_show_account} set_is_show_loading={set_is_show_loading} />
-            : ""
-        }
 
         {
             is_show_loading
@@ -135,28 +109,10 @@ export default function Map () {
             : ""
         }
 
-        {
-            // is_show_paint_picker
-            // ? <PaintPicker>
-
-            // </PaintPicker>
-            // : ""
-        }
-
+        { subpage == "account" ? <Account set_is_show_loading={set_is_show_loading} /> : "" }
+        { subpage == "main_menu" ? <MainMenu /> : "" }
         { subpage == "brush_picker" ? <PaintPicker set_paint_brush_id={set_paint_brush_id} /> : "" }
         { subpage == "zoom" ? <ZoomPicker /> : "" }
-
-        {
-            // is_show_civ_picker
-            // ?
-                // <CivPicker
-                //     set_is_show_civ_picker={set_is_show_civ_picker}
-                //     canvas={canvas}
-                //     ref_hexagon_definitions={ref_hexagon_definitions}
-                //     edge_length={zoom_edge_length}
-                // />
-            // : ""
-        }
 
         </>
     )

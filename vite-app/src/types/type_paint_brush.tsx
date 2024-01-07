@@ -1,6 +1,7 @@
 type type_paint_brush = {
     id: string,
     display_name: string,
+    description: string,
     paint_category: paint_category,
     hotkey: string,
     hexidecimal_color: string,

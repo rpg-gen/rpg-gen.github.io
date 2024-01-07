@@ -1,30 +1,20 @@
+import { useContext} from "react"
+import { useNavigate } from "react-router-dom"
+
 import spacing from "../configs/spacing"
 import limits from "../configs/limits"
 import defaults from "../configs/defaults"
-import { useNavigate } from "react-router-dom"
 import colors from "../configs/colors"
 import hexagon_math from "../utility/hexagon_math"
 import scale_context from "../contexts/scale_context"
-import { useContext} from "react"
+import class_names from "../configs/class_names"
+import FullPageOverlay from "../components/full_page_overlay"
 
 export default function ZoomPicker() {
 
     return (
-        <>
 
-        <div style={{
-            position: "fixed",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "rgba(0, 0, 0, .75)",
-            zIndex: 100,
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column"
-        }}>
-
+        <FullPageOverlay>
             <div style={{
                 display: "flex",
                 justifyContent: "center",
@@ -43,9 +33,24 @@ export default function ZoomPicker() {
                 </div>
             </div>
 
-        </div>
+        </FullPageOverlay>
 
-        </>
+        // <div style={{
+        //     position: "fixed",
+        //     top: 0,
+        //     bottom: 0,
+        //     left: 0,
+        //     right: 0,
+        //     backgroundColor: "rgba(0, 0, 0, .75)",
+        //     zIndex: 100,
+        //     display: "flex",
+        //     justifyContent: "center",
+        //     flexDirection: "column"
+        // }}>
+
+
+        // </div>
+
     )
 }
 

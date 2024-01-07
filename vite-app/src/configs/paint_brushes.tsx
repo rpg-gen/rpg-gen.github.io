@@ -1,4 +1,4 @@
-import paint_brush from "../types/type_paint_brush"
+import type_paint_brush from "../types/type_paint_brush"
 import { paint_category, color_type } from "../types/type_paint_brush"
 import colors from "../configs/colors"
 
@@ -21,10 +21,11 @@ import svg_url_city from "../assets/city.svg"
 import svg_url_river from "../assets/river.svg"
 import svg_url_road from "../assets/road.svg"
 
-const paint_brushes: {[key: string]: paint_brush} = {
+const paint_brushes: {[key: string]: type_paint_brush} = {
     query: {
         id: "query",
         display_name: "Query",
+        description: "",
         paint_category: paint_category.action,
         hotkey: "u",
         hexidecimal_color: colors.white,
@@ -36,6 +37,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     unset: {
         id: "unset",
         display_name: "Unset",
+        description: "Remove the biome background",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.unset,
@@ -47,6 +49,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     ocean: {
         id: "ocean",
         display_name: "Ocean",
+        description: "Large body of water",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.ocean,
@@ -58,6 +61,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     mountain: {
         id: "mountain",
         display_name: "Mountain",
+        description: "Tall Peaks, steep slopes",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.mountain,
@@ -69,6 +73,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     bog: {
         id: "bog",
         display_name: "Bog",
+        description: "Wetlands, marshes, swamp",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.bog,
@@ -80,6 +85,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     plains: {
         id: "plains",
         display_name: "Plains",
+        description: "Flatlands, prairie, fields, open areas",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.plains,
@@ -91,6 +97,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     forest: {
         id: "forest",
         display_name: "Forest",
+        description: "High tree density or plant growth",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.forest,
@@ -102,6 +109,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     desert: {
         id: "desert",
         display_name: "Desert",
+        description: "Barren, dry, wasteland, or minimal vegetation",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.desert,
@@ -113,6 +121,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     hills: {
         id: "hills",
         display_name: "Hills",
+        description: "Mellow slopes, rolling hills, highlands",
         paint_category: paint_category.background,
         hotkey: "u",
         hexidecimal_color: colors.hills,
@@ -124,6 +133,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     town: {
         id: "town",
         display_name: "Town",
+        description: "Mid-sized settlement",
         paint_category: paint_category.icon,
         hotkey: "u",
         hexidecimal_color: colors.white,
@@ -157,6 +167,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     clear_icon: {
         id: "clear_icon",
         display_name: "Clear",
+        description: "Remove icon",
         paint_category: paint_category.icon,
         hotkey: "u",
         hexidecimal_color: colors.white,
@@ -168,6 +179,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     river: {
         id: "river",
         display_name: "River",
+        description: "Click successive hexes to draw waterways",
         paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.ocean,
@@ -179,6 +191,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     road: {
         id: "road",
         display_name: "Road",
+        description: "Click successive hexes to draw roads",
         paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.road,
@@ -190,6 +203,7 @@ const paint_brushes: {[key: string]: paint_brush} = {
     clear_path: {
         id: "clear_path",
         display_name: "Clear",
+        description: "Remove all paths from this hex",
         paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.white,

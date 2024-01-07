@@ -7,9 +7,9 @@ const top_bar_button_style: CSS.Properties = {
     border: "1px solid black",
     padding: ".1rem",
     boxSizing: "border-box",
-    borderRadius: "20%",
+    borderRadius: "5px",
     marginRight: spacing.top_bar_margin.toString() + "rem",
-    zIndex: 20
+    zIndex: 20,
 }
 
 export default top_bar_button_style

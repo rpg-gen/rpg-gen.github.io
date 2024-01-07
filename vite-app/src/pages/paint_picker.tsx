@@ -4,30 +4,26 @@ import { useNavigate } from "react-router-dom"
 import { paint_category } from "../types/type_paint_brush"
 import paint_brushes from "../configs/paint_brushes"
 import spacing from "../configs/spacing"
+import colors from "../configs/colors"
+import FullPageOverlay from "../components/full_page_overlay"
+import class_names from "../configs/class_names"
 
 export default function PaintPicker(props: {
     set_paint_brush_id: Dispatch<SetStateAction<string>>
 }) {
 
-    return (
-        <div style={{
-            position: "fixed",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "rgba(0, 0, 0, .75)",
-            zIndex: 100,
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column"
-        }}>
+    const navigate = useNavigate()
 
+    function handle_off_click(event: MouseEvent) {
+        navigate("/")
+    }
+
+    return (
+        <FullPageOverlay>
             <Section this_paint_category={paint_category.background} set_paint_brush_id={props.set_paint_brush_id} />
             <Section this_paint_category={paint_category.icon} set_paint_brush_id={props.set_paint_brush_id}  />
             <Section this_paint_category={paint_category.path} set_paint_brush_id={props.set_paint_brush_id}  />
-
-        </div>
+        </FullPageOverlay>
     )
 }
 
@@ -41,34 +37,52 @@ function Section(props: {
     function handle_paint_brush_click(event: MouseEvent) {
         const clicked_paint_brush_id = ((event.target as HTMLElement).dataset.paintBrushId as string)
         props.set_paint_brush_id(clicked_paint_brush_id)
-        navigate("/")
+        // navigate("/")
     }
 
     const PaintOption = function (props: {paint_brush_id: string}) {
         const this_paint_brush = paint_brushes[props.paint_brush_id]
         return (
-            <div
+            <div 
                 style={{
-                    width: (spacing.top_bar_height * 2.5).toString() + "rem",
-                    height: spacing.top_bar_height.toString() + "rem",
-                    backgroundColor: this_paint_brush.hexidecimal_color,
-                    margin: spacing.top_bar_margin.toString() + "rem",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid black",
-                    borderRadius: "10%",
-                    boxSizing: "border-box",
-                    flexShrink: 0
+                    alignItems: "Center",
+                    marginTop: spacing.top_bar_margin.toString() + "rem",
                 }}
 
-                data-paint-brush-id={props.paint_brush_id}
-
-                className="hover-element"
-
-                onClick={handle_paint_brush_click}
+                className={class_names.count_as_off_click}
             >
-                {this_paint_brush.display_name}
+                <div
+                    style={{
+                        width: (spacing.top_bar_height * 2.5).toString() + "rem",
+                        height: spacing.top_bar_height.toString() + "rem",
+                        backgroundColor: this_paint_brush.hexidecimal_color,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid black",
+                        borderRadius: "10%",
+                        boxSizing: "border-box",
+                        flexShrink: 0,
+                        marginRight: spacing.top_bar_margin + "rem"
+                    }}
+
+                    data-paint-brush-id={props.paint_brush_id}
+
+                    className="hover-element"
+
+                    onClick={handle_paint_brush_click}
+                >
+                    {this_paint_brush.display_name}
+                </div>
+
+                <div 
+                    style={{
+                        color: colors.white
+                    }}
+                >
+                    {this_paint_brush.description}
+                </div>
             </div>
         )
     }
@@ -83,19 +97,15 @@ function Section(props: {
     return (
         <>
 
-        <div style={{
-                display: "flex",
-                justifyContent: "center",
-                margin: (spacing.top_bar_margin * 2) + "rem"
-            }}>
-                <div style={{
-                    display: "flex",
-                    maxWidth: ((spacing.top_bar_height * 2.5 + spacing.top_bar_margin * 2) * 3) + "rem",
-                    flexWrap: "wrap",
-                }}>
-                    {brush_buttons}
-                </div>
-            </div>
+        <div 
+            style={{
+                margin: spacing.top_bar_margin + "rem"
+            }}
+
+            className={class_names.count_as_off_click}
+        >
+            {brush_buttons}
+        </div>
 
         </>
     )

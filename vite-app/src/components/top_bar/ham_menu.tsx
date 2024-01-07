@@ -1,11 +1,16 @@
+import { memo } from "react"
+import { useNavigate } from "react-router-dom"
+
+import spacing from "../../configs/spacing"
 import ham_menu_black from "../../assets/ham_menu_black.svg"
 import top_bar_button_style from "./top_bar_button_style"
-import { memo } from "react"
 
-export default memo(function HamMenu(props: {ham_menu_action: Function}) {
+export default memo(function HamMenu(props: {}) {
+
+    const navigate = useNavigate()
 
     function click_action() {
-        props.ham_menu_action()
+        navigate("/main_menu")
     }
 
     return (
@@ -16,6 +21,7 @@ export default memo(function HamMenu(props: {ham_menu_action: Function}) {
             style={{
                 ...top_bar_button_style,
                 backgroundColor: "white",
+                marginLeft: spacing.top_bar_margin.toString() + "rem",
             }}
 
             className="hover-element"
