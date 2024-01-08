@@ -1,7 +1,7 @@
 import TopBar from "../components/top_bar/top_bar"
 // import MapContext from "../contexts/map_context"
 import { useState, useRef, useContext, useEffect } from "react"
-import PaintPicker from "../pages/paint_picker"
+import BrushPicker from "./brush_picker"
 import ZoomPicker from "../pages/zoom_picker"
 import HexGrid from "../components/hex_grid"
 import HamMenu from "../components/top_bar/ham_menu"
@@ -111,7 +111,7 @@ export default function Map () {
 
         { subpage == "account" ? <Account set_is_show_loading={set_is_show_loading} /> : "" }
         { subpage == "main_menu" ? <MainMenu /> : "" }
-        { subpage == "brush_picker" ? <PaintPicker set_paint_brush_id={set_paint_brush_id} /> : "" }
+        { subpage == "brush_picker" ? <BrushPicker set_paint_brush_id={set_paint_brush_id} /> : "" }
         { subpage == "zoom" ? <ZoomPicker /> : "" }
 
         </>

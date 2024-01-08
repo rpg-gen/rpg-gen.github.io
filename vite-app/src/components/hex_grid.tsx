@@ -31,10 +31,10 @@ export default memo(function HexGrid(props: {
             style={{
                 minWidth: "100%",
                 maxWidth: "100%",
-                overflow: "scroll",
-                maxHeight: "100%",
+                overflow: "auto", // or "scroll"?
+                maxHeight: "100%", //
                 minHeight: "100%",
-                height: "100%",
+                height: "100%", // These three commented-out settings, not sure effect of leaving out, but done to allow full-page-overlay to scroll on grid instead of below it
                 overscrollBehavior: "none",
                 boxSizing: "border-box",
                 position: "relative",

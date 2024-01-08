@@ -15,24 +15,23 @@ export default function ZoomPicker() {
     return (
 
         <FullPageOverlay>
-            <div style={{
+            {/* <div style={{
                 display: "flex",
                 justifyContent: "center",
-            }}>
-                <div style={{
+            }}> */}
+                {/* <div style={{
                     display: "flex",
                     maxWidth: ((spacing.top_bar_height * 2.5 + spacing.top_bar_margin * 2) * 3) + "rem",
                     flexWrap: "wrap",
-                }}>
+                }}> */}
                     {Array.from({length: 10}, (_, index) => {
                         return <ZoomOption
                             key={index}
                             zoom_level={index+1}
                         />
                     })}
-                </div>
-            </div>
-
+                {/* </div> */}
+            {/* </div> */}
         </FullPageOverlay>
 
         // <div style={{
@@ -74,33 +73,47 @@ function ZoomOption(props: {zoom_level: number}) {
     const new_width = hexagon_math.get_canvas_width(new_edge_length, current_scale_context.num_hexes_wide)
     const is_valid_zoom = (new_height < limits.canvas_width_pixels && new_width < limits.canvas_width_pixels)
 
+    const HexagonSvg = hexagon_math.get_hexagon_svg(new_edge_length, colors.white)
+
     return (
         <>
 
         <div
             style={{
-                width: (spacing.top_bar_height * 2.5).toString() + "rem",
-                height: spacing.top_bar_height.toString() + "rem",
-                backgroundColor: is_valid_zoom ? colors.white : colors.disabled,
-                margin: spacing.top_bar_margin.toString() + "rem",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid black",
-                borderRadius: "10%",
-                color: "black",
-                boxSizing: "border-box",
-                flexShrink: 0
+                marginBottom: spacing.top_bar_margin + "rem"
             }}
 
-
-
-            className={is_valid_zoom ? "hover-element" : "not-allowed"}
-
-            onClick={handle_click}
+            className={class_names.count_as_off_click}
         >
-            {props.zoom_level}
+            <div
+                style={{
+                    width: (spacing.top_bar_height * 2.5).toString() + "rem",
+                    height: spacing.top_bar_height.toString() + "rem",
+                    backgroundColor: is_valid_zoom ? colors.white : colors.disabled,
+                    margin: spacing.top_bar_margin.toString() + "rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid black",
+                    borderRadius: "10%",
+                    color: "black",
+                    boxSizing: "border-box",
+                    flexShrink: 0
+                }}
+
+                className={is_valid_zoom ? "hover-element" : "not-allowed"}
+
+                onClick={handle_click}
+            >
+                {props.zoom_level}
+            </div>
+
+            {HexagonSvg}
+
         </div>
+
 
         </>
     )

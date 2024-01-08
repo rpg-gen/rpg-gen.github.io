@@ -29,6 +29,31 @@ function get_center_point(hexagon_definition: type_hexagon_definition, edge_leng
     return [center_x, center_y]
 }
 
+function get_hexagon_svg(hexagon_edge_pixels: number, stroke_color: string) {
+    const edge = hexagon_edge_pixels
+    const short_diagonal = get_short_diagonal_length(hexagon_edge_pixels)
+    const height = edge * 2
+    const width = short_diagonal
+    const points_string = [
+        (width / 2).toString() + "," + "0",
+        width.toString() + "," + (edge / 2).toString(),
+        width.toString() + "," + (edge * 1.5).toString(),
+        (width / 2).toString() + "," + height.toString(),
+        "0" + "," + (edge * 1.5).toString(),
+        "0" + "," + (edge / 2).toString(),
+
+    ].join(" ")
+
+    return <svg height={height} width={width}>
+        <polygon
+            points={points_string}
+            stroke={stroke_color}
+            strokeWidth="2"
+            fillOpacity="0%"
+        />
+    </svg>
+}
+
 function get_hexagon_points(hexagon_definition: type_hexagon_definition, edge_length: number) {
     const short_diagonal = get_short_diagonal_length(edge_length)
     const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
@@ -602,6 +627,7 @@ const hexagon_math = {
     get_hexagon_definition_key,
     get_encoded_hexagon_definition,
     get_changed_hexagon_definitions,
+    get_hexagon_svg,
 }
 
 export default hexagon_math

@@ -1,4 +1,4 @@
-import { MouseEvent, MutableRefObject, Dispatch, SetStateAction } from "react"
+import { MouseEvent, Dispatch, SetStateAction } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { paint_category } from "../types/type_paint_brush"
@@ -8,15 +8,10 @@ import colors from "../configs/colors"
 import FullPageOverlay from "../components/full_page_overlay"
 import class_names from "../configs/class_names"
 
-export default function PaintPicker(props: {
+export default function BrushPicker(props: {
     set_paint_brush_id: Dispatch<SetStateAction<string>>
 }) {
 
-    const navigate = useNavigate()
-
-    function handle_off_click(event: MouseEvent) {
-        navigate("/")
-    }
 
     return (
         <FullPageOverlay>
@@ -28,7 +23,7 @@ export default function PaintPicker(props: {
 }
 
 function Section(props: {
-    this_paint_category: paint_category, 
+    this_paint_category: paint_category,
     set_paint_brush_id: Dispatch<SetStateAction<string>>
 }) {
     const brush_buttons = []
@@ -37,13 +32,13 @@ function Section(props: {
     function handle_paint_brush_click(event: MouseEvent) {
         const clicked_paint_brush_id = ((event.target as HTMLElement).dataset.paintBrushId as string)
         props.set_paint_brush_id(clicked_paint_brush_id)
-        // navigate("/")
+        navigate("/")
     }
 
     const PaintOption = function (props: {paint_brush_id: string}) {
         const this_paint_brush = paint_brushes[props.paint_brush_id]
         return (
-            <div 
+            <div
                 style={{
                     display: "flex",
                     alignItems: "Center",
@@ -76,7 +71,7 @@ function Section(props: {
                     {this_paint_brush.display_name}
                 </div>
 
-                <div 
+                <div
                     style={{
                         color: colors.white
                     }}
@@ -97,7 +92,7 @@ function Section(props: {
     return (
         <>
 
-        <div 
+        <div
             style={{
                 margin: spacing.top_bar_margin + "rem"
             }}
