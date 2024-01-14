@@ -5,10 +5,11 @@ import spacing from "../configs/spacing"
 import limits from "../configs/limits"
 import defaults from "../configs/defaults"
 import colors from "../configs/colors"
-import hexagon_math from "../utility/hexagon_math"
+import { get_hexagon_svg } from "../helpers/geometry"
 import scale_context from "../contexts/scale_context"
 import class_names from "../configs/class_names"
 import FullPageOverlay from "../components/full_page_overlay"
+import { calculate_canvas_height, calculate_canvas_width } from "../helpers/sizing"
 
 export default function ZoomPicker() {
 
@@ -69,11 +70,11 @@ function ZoomOption(props: {zoom_level: number}) {
     }
 
     const new_edge_length = props.zoom_level * (defaults.hexagon_edge_pixels / defaults.zoom_level)
-    const new_height = hexagon_math.get_canvas_height(new_edge_length, current_scale_context.num_hexes_tall)
-    const new_width = hexagon_math.get_canvas_width(new_edge_length, current_scale_context.num_hexes_wide)
+    const new_height = calculate_canvas_height(new_edge_length, current_scale_context.num_hexes_tall)
+    const new_width = calculate_canvas_width(new_edge_length, current_scale_context.num_hexes_wide)
     const is_valid_zoom = (new_height < limits.canvas_width_pixels && new_width < limits.canvas_width_pixels)
 
-    const HexagonSvg = hexagon_math.get_hexagon_svg(new_edge_length, colors.white)
+    const HexagonSvg = get_hexagon_svg(new_edge_length, colors.white)
 
     return (
         <>

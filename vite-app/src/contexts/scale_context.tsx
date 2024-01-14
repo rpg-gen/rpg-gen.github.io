@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import type_scale_context from "../types/type_scale_context"
+import type_scale_context from "../types/ScaleContext"
 import defaults from "../configs/defaults"
 
 const noop: React.Dispatch<React.SetStateAction<type_scale_context>> = function (){}

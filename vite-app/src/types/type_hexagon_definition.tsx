@@ -16,9 +16,7 @@ type type_hexagon_definition = {
     is_bottom_right_road: boolean,
     is_bottom_left_road: boolean,
     is_left_road: boolean,
-    town_size: number,
-    affinity: number,
-    race: number,
+    text: string,
     icon_name: string,
 }
 

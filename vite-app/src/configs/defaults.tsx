@@ -4,7 +4,7 @@ const defaults = {
     hexagon_edge_pixels: 80,
     zoom_level: 5,
     brush_id: "mountain",
-    hexagon_stroke_width: 1
+    hexagon_stroke_width: 1,
 }
 
 export default defaults
