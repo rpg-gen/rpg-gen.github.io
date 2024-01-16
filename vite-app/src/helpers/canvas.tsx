@@ -1,3 +1,7 @@
+/*
+  For logic related to using the HTML canvas element to draw
+*/
+
 import { get_hexagon_corner_points } from "./geometry"
 import defaults from "../configs/defaults"
 import colors from "../configs/colors"
@@ -62,4 +66,8 @@ function paint_line(
   context.stroke()
 }
 
-export { paint_hexagon, paint_line }
+export {
+  paint_hexagon,
+  paint_line,
+  get_2d_path
+}

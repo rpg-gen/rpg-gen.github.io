@@ -66,6 +66,7 @@ export default function Map () {
 
         <HexGrid
             set_is_show_loading={set_is_show_loading}
+            paint_brush_id={paint_brush_id}
         />
 
         <TopBar>

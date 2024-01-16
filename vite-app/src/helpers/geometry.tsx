@@ -1,3 +1,7 @@
+/*
+  For logic related to geometry and figuring out where a shape's points are
+*/
+
 function get_hexagon_short_diagonal_length(edge_length: number) {
   return Math.round(Math.sqrt(3) * edge_length)
 }

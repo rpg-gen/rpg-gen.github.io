@@ -3,6 +3,7 @@ import { useEffect, memo, useContext, useRef, MouseEvent, MouseEventHandler } fr
 import { get_hexagon_short_diagonal_length } from "../helpers/geometry"
 import feature_flags from "../configs/feature_flags"
 
+import Hexagon from "../classes/Hexagon"
 import userContext from "../contexts/user_context"
 import scale_context from "../contexts/scale_context"
 import spacing from "../configs/spacing"
@@ -11,18 +12,21 @@ import worker_url from "../worker/worker?worker&url"
 import useFirebaseMap from "../hooks/use_firebase_map"
 import Matrix from "../classes/Matrix"
 import { calculate_canvas_height, calculate_canvas_width } from "../helpers/sizing"
+import paint_brushes from "../configs/paint_brushes"
+import { paint_category } from "../types/type_paint_brush"
 
 export default memo(function HexGrid(props: {
     set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
+    paint_brush_id: string
 }) {
+
+    const firebase_map_hook = useFirebaseMap()
 
     const CANVAS_ID = "canvas_id"
     let is_canvas_too_large = false
 
     const user_context = useContext(userContext)
     const current_scale_context = useContext(scale_context)
-
-    const matrix = new Matrix()
 
     const short_diagonal_pixels = get_hexagon_short_diagonal_length(current_scale_context.hexagon_edge_pixels)
 
@@ -35,99 +39,96 @@ export default memo(function HexGrid(props: {
 
     const ref_html_canvas = useRef<HTMLCanvasElement>(null)
     const ref_html_canvas_container = useRef<HTMLDivElement>(null)
+    const ref_clicked_hexagon = useRef<Hexagon>()
+    const ref_previous_clicked_hexagon = useRef<Hexagon>()
 
     function get_context() {
         return (ref_html_canvas.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
     }
 
-    // function handle_map_click(event: MouseEvent) {
-    //     if (!ref_html_canvas_container.current || !ref_html_canvas.current) {
-    //         return
-    //     }
+    const matrix = new Matrix(current_scale_context.hexagon_edge_pixels)
 
-    //     const context = get_context()
-    //     const offset_x = ref_html_canvas_container.current.scrollLeft
-    //     const offset_y = ref_html_canvas_container.current.scrollTop
-    //     const clicked_x = event.clientX + offset_x
-    //     const clicked_y = event.clientY + offset_y
+    function handle_map_click(event: MouseEvent) {
+        if (!ref_html_canvas_container.current || !ref_html_canvas.current) {
+            return
+        }
 
+        const context = get_context()
+        const offset_x = ref_html_canvas_container.current.scrollLeft
+        const offset_y = ref_html_canvas_container.current.scrollTop
+        const clicked_x = event.clientX + offset_x
+        const clicked_y = event.clientY + offset_y
 
-    //     for (const hexagon_index in param_ref_hexagon_definitions.current) {
-    //         const hexagon_definition = param_ref_hexagon_definitions.current[hexagon_index]
+        matrix.hexagons.forEach((hexagon) => {
+            if (hexagon.contains_point(clicked_x, clicked_y)) {
+               if (ref_clicked_hexagon.current) {
+                    ref_previous_clicked_hexagon.current = ref_clicked_hexagon.current
+                }
+                // else {
+                //     ref_previous_clicked_hexagon.current = hexagon
+                // }
 
-    //         if (context.isPointInPath(hexagon_math.get_canvas_path_2d(hexagon_math.get_hexagon_points(hexagon_definition, edge_length)), clicked_x, clicked_y)) {
+                ref_clicked_hexagon.current = hexagon
 
-    //             if (ref_clicked_hex_def.current) {
-    //                 ref_previous_clicked_hex_def.current = ref_clicked_hex_def.current
-    //             }
-    //             else {
-    //                 ref_previous_clicked_hex_def.current = hexagon_definition
-    //             }
+                const paint_brush = paint_brushes[props.paint_brush_id]
 
-    //             ref_clicked_hex_def.current = hexagon_definition
+                if (paint_brush.paint_category == paint_category.background) {
+                    hexagon.background_color_hexidecimal = paint_brush.hexidecimal_color
+                    firebase_map_hook.save_hexagon_definitions([hexagon])
+                    hexagon.paint()
+                }
+                else if (paint_brush.paint_category == paint_category.icon) {
+                    if (paint_brush.id == "clear_icon") {
+                        hexagon.icon_name = ""
+                    }
+                    else {
+                        hexagon.icon_name = paint_brush.id
+                    }
 
-    //             const paint_brush = paint_brushes[param_ref_paint_brush_id]
+                    hexagon.paint()
+                    firebase_map_hook.save_hexagon_definitions([hexagon])
+                }
+                else if (paint_brush.paint_category == paint_category.path) {
 
-    //             if (paint_brush.paint_category == paint_category.background) {
-    //                 hexagon_definition.background_color_hexidecimal = paint_brush.hexidecimal_color
-    //                 hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
-    //                 save_to_firebase(hexagon_definition)
-    //             }
-    //             else if (paint_brush.paint_category == paint_category.icon) {
-    //                 if (paint_brush.id == "clear_icon") {
-    //                     hexagon_definition.icon_name = ""
-    //                     hexagon_definition.town_size = 0
-    //                     hexagon_definition.affinity = 0
-    //                     hexagon_definition.race = 0
-    //                     hexagon_math.paint_hexagon(hexagon_definition, get_canvas_context(), edge_length)
-    //                     save_to_firebase(hexagon_definition)
-    //                     return
-    //                 }
+                    if (paint_brush.id == "clear_path") {
+                        ref_clicked_hexagon.current.is_top_left_river = false
+                        ref_clicked_hexagon.current.is_top_right_river = false
+                        ref_clicked_hexagon.current.is_right_river = false
+                        ref_clicked_hexagon.current.is_bottom_right_river = false
+                        ref_clicked_hexagon.current.is_bottom_left_river = false
+                        ref_clicked_hexagon.current.is_left_river = false
+                        ref_clicked_hexagon.current.is_top_left_road = false
+                        ref_clicked_hexagon.current.is_top_right_road = false
+                        ref_clicked_hexagon.current.is_right_road = false
+                        ref_clicked_hexagon.current.is_bottom_right_road = false
+                        ref_clicked_hexagon.current.is_bottom_left_road = false
+                        ref_clicked_hexagon.current.is_left_road = false
 
-    //                 hexagon_definition.icon_name = paint_brush.id
-    //                save_to_firebase(hexagon_definition)
-    //                 set_is_show_civ_picker(true)
-    //             }
-    //             else if (paint_brush.paint_category == paint_category.path) {
+                        firebase_map_hook.save_hexagon_definitions([hexagon])
+                        hexagon.paint()
+                        return
+                    }
 
-    //                 if (paint_brush.id == "clear_path") {
-    //                     ref_clicked_hex_def.current.is_top_left_river = false
-    //                     ref_clicked_hex_def.current.is_top_right_river = false
-    //                     ref_clicked_hex_def.current.is_right_river = false
-    //                     ref_clicked_hex_def.current.is_bottom_right_river = false
-    //                     ref_clicked_hex_def.current.is_bottom_left_river = false
-    //                     ref_clicked_hex_def.current.is_left_river = false
-    //                     ref_clicked_hex_def.current.is_top_left_road = false
-    //                     ref_clicked_hex_def.current.is_top_right_road = false
-    //                     ref_clicked_hex_def.current.is_right_road = false
-    //                     ref_clicked_hex_def.current.is_bottom_right_road = false
-    //                     ref_clicked_hex_def.current.is_bottom_left_road = false
-    //                     ref_clicked_hex_def.current.is_left_road = false
-    //                     hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
-    //                     save_to_firebase(ref_clicked_hex_def.current)
-    //                     return
-    //                 }
+                    if (ref_previous_clicked_hexagon.current && ref_clicked_hexagon.current) {
+                        const are_neighbors = matrix.are_neighbors(hexagon, ref_previous_clicked_hexagon.current as Hexagon)
 
-    //                 const is_neighbor = hexagon_math.is_neighboring_hex(
-    //                     ref_previous_clicked_hex_def.current as type_hexagon_definition,
-    //                     ref_clicked_hex_def.current as type_hexagon_definition,
-    //                 )
-
-    //                 if (is_neighbor) {
-    //                     hexagon_math.add_path_definition(ref_previous_clicked_hex_def.current, ref_clicked_hex_def.current, paint_brush.id)
-    //                     hexagon_math.paint_hexagon(ref_previous_clicked_hex_def.current, get_canvas_context(), edge_length)
-    //                     hexagon_math.paint_hexagon(ref_clicked_hex_def.current, get_canvas_context(), edge_length)
-    //                     hexagon_math.paint_circle(ref_clicked_hex_def.current, get_canvas_context(), edge_length, paint_brush.hexidecimal_color)
-    //                     multi_save_to_firebase([ref_clicked_hex_def.current,ref_previous_clicked_hex_def.current])
-    //                 }
-    //                 else {
-    //                     // Reset the last clicked so we are still at the previous spot
-    //                     ref_clicked_hex_def.current = {...ref_previous_clicked_hex_def.current}
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+                        if (are_neighbors) {
+                            matrix.add_path(ref_previous_clicked_hexagon.current, ref_clicked_hexagon.current, paint_brush.id)
+                            
+                            hexagon_math.paint_hexagon(ref_previous_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels)
+                            hexagon_math.paint_hexagon(ref_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels)
+                            hexagon_math.paint_circle(ref_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels, paint_brush.hexidecimal_color)
+                            // multi_save_to_firebase([ref_clicked_hexagon.current,ref_previous_clicked_hexagon.current])
+                        }
+                        else {
+                            // Reset the last clicked so we are still at the previous spot
+                            ref_clicked_hexagon.current = ref_previous_clicked_hexagon.current
+                        }
+                    }
+                }
+            }
+        })
+    }
 
     async function draw_map() {
         props.set_is_show_loading(true)
@@ -154,7 +155,7 @@ export default memo(function HexGrid(props: {
     }
 
     useEffect(() => {
-        const firebase_map_hook = useFirebaseMap()
+        matrix.set_context(get_context())
 
         firebase_map_hook.get_map_doc().then((data: any) => {
             matrix.populate_matrix(data)
@@ -180,7 +181,7 @@ export default memo(function HexGrid(props: {
                 position: "relative",
             }}
             ref={ref_html_canvas_container}
-            // onClick={handle_map_click}
+            onClick={handle_map_click}
         >
             {
                 !is_canvas_too_large
@@ -198,4 +199,10 @@ export default memo(function HexGrid(props: {
 
         </div>
     )
-})
+},
+
+// Memo arePropsEqual function
+function (previous_props, new_props) {
+    return true
+}
+)
