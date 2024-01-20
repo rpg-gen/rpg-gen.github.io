@@ -3,6 +3,10 @@
 <style>
 
 MindmapDiagram {
+  node {
+    MaximumWidth: 200
+  }
+
   .b {
     BackgroundColor: Crimson
     FontColor: White
@@ -30,9 +34,18 @@ MindmapDiagram {
 *** peak
 
 * text
+** hidden text
+*** icon when there is hidden text
 ** editor full page view
 ** visible text on page
-** icon when there is hidden text
-** size
+** pick text size
+** delete text
+** support links to google doc bookmark
+*** text link
+*** bookmark location
+*** more than one link?
+
+* hexagon links (to support putting notes in another tool)
+* Menu link to take to top of google doc
 
 @endmindmap
