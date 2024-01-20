@@ -28,7 +28,8 @@ export default function Map () {
     const firebase_map_data = useRef<{[index: string]: string}>({})
     const firebase_listener_unsub_function = useRef<Function>(noop)
 
-    const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id)
+    const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id) // This is used for changing the display to show the current paint brush
+    const ref_paint_brush_id = useRef(paint_brush_id)// This is using so processes can know what the current paint brush is without having to re-render every time the paint brush changes
 
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
@@ -66,7 +67,7 @@ export default function Map () {
 
         <HexGrid
             set_is_show_loading={set_is_show_loading}
-            paint_brush_id={paint_brush_id}
+            ref_paint_brush_id={ref_paint_brush_id}
         />
 
         <TopBar>
@@ -86,7 +87,7 @@ export default function Map () {
 
         { subpage == "account" ? <Account set_is_show_loading={set_is_show_loading} /> : "" }
         { subpage == "main_menu" ? <MainMenu /> : "" }
-        { subpage == "brush_picker" ? <BrushPicker set_paint_brush_id={set_paint_brush_id} /> : "" }
+        { subpage == "brush_picker" ? <BrushPicker set_paint_brush_id={set_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} /> : "" }
         { subpage == "zoom" ? <ZoomPicker /> : "" }
 
         </>

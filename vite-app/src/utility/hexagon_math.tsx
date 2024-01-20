@@ -134,20 +134,6 @@ function paint_text(
     // if (hexagon_definition.text)
 }
 
-
-function paint_circle(
-    hexagon_definition: type_hexagon_definition,
-    context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
-    edge_length: number,
-    color: string,
-) {
-    context.fillStyle = color
-    const [center_x, center_y] = get_center_point(hexagon_definition, edge_length)
-    context.beginPath()
-    context.arc(center_x, center_y, edge_length/2, 0, 2*Math.PI)
-    context.fill()
-}
-
 function paint_hexagon(
     hexagon_definition: type_hexagon_definition,
     context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -158,16 +144,6 @@ function paint_hexagon(
     // paint_icon(hexagon_definition, context, edge_length)
     paint_text(hexagon_definition, context, edge_length)
 }
-
-// =============================================================================
-// Neighboring hexes
-// =============================================================================
-
-function is_neighboring_hex(start_hex_def: type_hexagon_definition, target_hex_def: type_hexagon_definition) {
-
-
-}
-
 
 function get_changed_hexagon_definitions(hexagon_definitions: type_hexagon_definition[], firebase_map_document: {[index: string]: string}) {
     const modified_hexagons = []

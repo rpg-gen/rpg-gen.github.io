@@ -66,8 +66,22 @@ function paint_line(
   context.stroke()
 }
 
+function paint_circle(
+  context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+  radius_pixels: number,
+  center_x: number,
+  center_y: number,
+  color: string
+) {
+  context.fillStyle = color
+  context.beginPath()
+  context.arc(center_x, center_y, radius_pixels, 0, 2*Math.PI)
+  context.fill()
+}
+
 export {
   paint_hexagon,
   paint_line,
-  get_2d_path
+  get_2d_path,
+  paint_circle
 }

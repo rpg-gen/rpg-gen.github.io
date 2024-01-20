@@ -1,4 +1,4 @@
-import { useEffect, memo, useContext, useRef, MouseEvent, MouseEventHandler } from "react"
+import { useEffect, memo, useContext, useRef, MouseEvent, MouseEventHandler, MutableRefObject } from "react"
 
 import { get_hexagon_short_diagonal_length } from "../helpers/geometry"
 import feature_flags from "../configs/feature_flags"
@@ -17,7 +17,7 @@ import { paint_category } from "../types/type_paint_brush"
 
 export default memo(function HexGrid(props: {
     set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
-    paint_brush_id: string
+    ref_paint_brush_id: MutableRefObject<string>
 }) {
 
     const firebase_map_hook = useFirebaseMap()
@@ -53,7 +53,8 @@ export default memo(function HexGrid(props: {
             return
         }
 
-        const context = get_context()
+        console.log(props.ref_paint_brush_id.current)
+
         const offset_x = ref_html_canvas_container.current.scrollLeft
         const offset_y = ref_html_canvas_container.current.scrollTop
         const clicked_x = event.clientX + offset_x
@@ -70,7 +71,7 @@ export default memo(function HexGrid(props: {
 
                 ref_clicked_hexagon.current = hexagon
 
-                const paint_brush = paint_brushes[props.paint_brush_id]
+                const paint_brush = paint_brushes[props.ref_paint_brush_id.current]
 
                 if (paint_brush.paint_category == paint_category.background) {
                     hexagon.background_color_hexidecimal = paint_brush.hexidecimal_color
@@ -114,11 +115,11 @@ export default memo(function HexGrid(props: {
 
                         if (are_neighbors) {
                             matrix.add_path(ref_previous_clicked_hexagon.current, ref_clicked_hexagon.current, paint_brush.id)
-                            
-                            hexagon_math.paint_hexagon(ref_previous_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels)
-                            hexagon_math.paint_hexagon(ref_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels)
-                            hexagon_math.paint_circle(ref_clicked_hexagon.current, get_context(), current_scale_context.hexagon_edge_pixels, paint_brush.hexidecimal_color)
-                            // multi_save_to_firebase([ref_clicked_hexagon.current,ref_previous_clicked_hexagon.current])
+
+                            ref_previous_clicked_hexagon.current.paint()
+                            ref_clicked_hexagon.current.paint()
+                            ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
+                            firebase_map_hook.save_hexagon_definitions([ref_previous_clicked_hexagon.current, ref_clicked_hexagon.current])
                         }
                         else {
                             // Reset the last clicked so we are still at the previous spot

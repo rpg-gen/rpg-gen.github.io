@@ -1,7 +1,7 @@
 import colors from "../configs/colors"
 import { get_hexagon_short_diagonal_length, get_hexagon_edge_points, get_hexagon_corner_points } from "../helpers/geometry"
 import spacing from "../configs/spacing"
-import { paint_hexagon, paint_line, get_2d_path} from "../helpers/canvas"
+import { paint_hexagon, paint_line, get_2d_path, paint_circle } from "../helpers/canvas"
 
 class Hexagon {
   row_number: number
@@ -161,6 +161,20 @@ class Hexagon {
     if (this.is_bottom_left_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.bottom_left.x, edge_points.bottom_left.y, colors.road, (this.is_bottom_left_river ? true : false), [this.edge_pixels/4])}
     if (this.is_left_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.left.x, edge_points.left.y, colors.road, (this.is_left_river ? true : false), [this.edge_pixels/4])}
 
+  }
+
+  paint_temporary_circle(
+    color: string
+  ) {
+    if (this.canvas_context) {
+      paint_circle(
+        this.canvas_context,
+        this.edge_pixels / 2,
+        this.center_x,
+        this.center_y,
+        color
+      )
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-import { MouseEvent, Dispatch, SetStateAction } from "react"
+import { MouseEvent, Dispatch, SetStateAction, MutableRefObject } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { paint_category } from "../types/type_paint_brush"
@@ -9,29 +9,36 @@ import FullPageOverlay from "../components/full_page_overlay"
 import class_names from "../configs/class_names"
 
 export default function BrushPicker(props: {
-    set_paint_brush_id: Dispatch<SetStateAction<string>>
+    set_paint_brush_id: Dispatch<SetStateAction<string>>,
+    ref_paint_brush_id: MutableRefObject<string>
 }) {
 
 
     return (
         <FullPageOverlay>
-            <Section this_paint_category={paint_category.background} set_paint_brush_id={props.set_paint_brush_id} />
-            <Section this_paint_category={paint_category.icon} set_paint_brush_id={props.set_paint_brush_id}  />
-            <Section this_paint_category={paint_category.path} set_paint_brush_id={props.set_paint_brush_id}  />
+            <Section this_paint_category={paint_category.background} set_paint_brush_id={props.set_paint_brush_id} ref_paint_brush_id={props.ref_paint_brush_id} />
+            <Section this_paint_category={paint_category.icon} set_paint_brush_id={props.set_paint_brush_id} ref_paint_brush_id={props.ref_paint_brush_id}  />
+            <Section this_paint_category={paint_category.path} set_paint_brush_id={props.set_paint_brush_id} ref_paint_brush_id={props.ref_paint_brush_id}  />
         </FullPageOverlay>
     )
 }
 
 function Section(props: {
     this_paint_category: paint_category,
-    set_paint_brush_id: Dispatch<SetStateAction<string>>
+    set_paint_brush_id: Dispatch<SetStateAction<string>>,
+    ref_paint_brush_id: MutableRefObject<string>
 }) {
     const brush_buttons = []
     const navigate = useNavigate()
 
     function handle_paint_brush_click(event: MouseEvent) {
         const clicked_paint_brush_id = ((event.target as HTMLElement).dataset.paintBrushId as string)
+
+        // Paint brush id has to be set in both places so we can change the state value and have it re-render visible elements like the paint brush button
+        // as well as change the un-rendered value so any processes can know what the current paint brush id is without having to had re-rendered whenever it changed
         props.set_paint_brush_id(clicked_paint_brush_id)
+        props.ref_paint_brush_id.current = clicked_paint_brush_id
+
         navigate("/")
     }
 
