@@ -1,9 +1,38 @@
 @startmindmap
 
+<style>
+
+MindmapDiagram {
+  .b {
+    BackgroundColor: Crimson
+    FontColor: White
+  }
+}
+
+</style>
+
 * paths
 ** clicking anywhere but on the next point with stop path
 ** clicking on same point will stop path
 ** clicking in menues will stop path
 *** Will need to bring click history state up
+** First click not starting path <<b>>
+
+* icons
+** size a pre-built svg
+** New icons to support
+*** city sizes
+*** flora and fauna
+*** site
+*** fortification
+*** waterfall
+*** cave
+*** peak
+
+* text
+** editor full page view
+** visible text on page
+** icon when there is hidden text
+** size
 
 @endmindmap
