@@ -11,6 +11,11 @@ MindmapDiagram {
     BackgroundColor: Crimson
     FontColor: White
   }
+
+  .q {
+    BackgroundColor: Dodgerblue
+    FontColor: White
+  }
 }
 
 </style>
@@ -30,6 +35,7 @@ MindmapDiagram {
 *** site
 *** fortification
 *** waterfall
+
 *** cave
 *** peak
 
@@ -38,6 +44,7 @@ MindmapDiagram {
 *** icon when there is hidden text
 ** editor full page view
 ** visible text on page
+*** How to handle overlapping <<q>>
 ** pick text size
 ** delete text
 ** support links to google doc bookmark
@@ -47,5 +54,9 @@ MindmapDiagram {
 
 * hexagon links (to support putting notes in another tool)
 * Menu link to take to top of google doc
+* Login Screen
+** Demo link if not logged in
+* Firebase Integration
+** comparing saved hexagons to new hexagons
 
 @endmindmap
