@@ -1,5 +1,7 @@
-import TopBar from "../components/top_bar/top_bar"
 import { useState, useRef, useContext, useEffect } from "react"
+
+import Hexagon from "../classes/Hexagon"
+import TopBar from "../components/top_bar/top_bar"
 import BrushPicker from "./brush_picker"
 import ZoomPicker from "../pages/zoom_picker"
 import HexGrid from "../components/hex_grid"
@@ -27,6 +29,9 @@ export default function Map () {
 
     const firebase_map_data = useRef<{[index: string]: string}>({})
     const firebase_listener_unsub_function = useRef<Function>(noop)
+
+    const ref_clicked_hexagon = useRef<Hexagon>()
+    const ref_previous_clicked_hexagon = useRef<Hexagon>()
 
     const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id) // This is used for changing the display to show the current paint brush
     const ref_paint_brush_id = useRef(paint_brush_id)// This is using so processes can know what the current paint brush is without having to re-render every time the paint brush changes
@@ -68,6 +73,8 @@ export default function Map () {
         <HexGrid
             set_is_show_loading={set_is_show_loading}
             ref_paint_brush_id={ref_paint_brush_id}
+            ref_clicked_hexagon={ref_clicked_hexagon}
+            ref_previous_clicked_hexagon={ref_previous_clicked_hexagon}
         />
 
         <TopBar>

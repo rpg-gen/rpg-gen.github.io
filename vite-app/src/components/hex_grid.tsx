@@ -17,7 +17,9 @@ import { paint_category } from "../types/type_paint_brush"
 
 export default memo(function HexGrid(props: {
     set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
-    ref_paint_brush_id: MutableRefObject<string>
+    ref_paint_brush_id: MutableRefObject<string>,
+    ref_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
+    ref_previous_clicked_hexagon: MutableRefObject<Hexagon | undefined>
 }) {
 
     const firebase_map_hook = useFirebaseMap()
@@ -39,8 +41,6 @@ export default memo(function HexGrid(props: {
 
     const ref_html_canvas = useRef<HTMLCanvasElement>(null)
     const ref_html_canvas_container = useRef<HTMLDivElement>(null)
-    const ref_clicked_hexagon = useRef<Hexagon>()
-    const ref_previous_clicked_hexagon = useRef<Hexagon>()
 
     function get_context() {
         return (ref_html_canvas.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
@@ -53,8 +53,6 @@ export default memo(function HexGrid(props: {
             return
         }
 
-        console.log(props.ref_paint_brush_id.current)
-
         const offset_x = ref_html_canvas_container.current.scrollLeft
         const offset_y = ref_html_canvas_container.current.scrollTop
         const clicked_x = event.clientX + offset_x
@@ -62,14 +60,14 @@ export default memo(function HexGrid(props: {
 
         matrix.hexagons.forEach((hexagon) => {
             if (hexagon.contains_point(clicked_x, clicked_y)) {
-               if (ref_clicked_hexagon.current) {
-                    ref_previous_clicked_hexagon.current = ref_clicked_hexagon.current
+               if (props.ref_clicked_hexagon.current) {
+                    props.ref_previous_clicked_hexagon.current = props.ref_clicked_hexagon.current
                 }
                 // else {
-                //     ref_previous_clicked_hexagon.current = hexagon
+                //     props.ref_previous_clicked_hexagon.current = hexagon
                 // }
 
-                ref_clicked_hexagon.current = hexagon
+                props.ref_clicked_hexagon.current = hexagon
 
                 const paint_brush = paint_brushes[props.ref_paint_brush_id.current]
 
@@ -92,38 +90,38 @@ export default memo(function HexGrid(props: {
                 else if (paint_brush.paint_category == paint_category.path) {
 
                     if (paint_brush.id == "clear_path") {
-                        ref_clicked_hexagon.current.is_top_left_river = false
-                        ref_clicked_hexagon.current.is_top_right_river = false
-                        ref_clicked_hexagon.current.is_right_river = false
-                        ref_clicked_hexagon.current.is_bottom_right_river = false
-                        ref_clicked_hexagon.current.is_bottom_left_river = false
-                        ref_clicked_hexagon.current.is_left_river = false
-                        ref_clicked_hexagon.current.is_top_left_road = false
-                        ref_clicked_hexagon.current.is_top_right_road = false
-                        ref_clicked_hexagon.current.is_right_road = false
-                        ref_clicked_hexagon.current.is_bottom_right_road = false
-                        ref_clicked_hexagon.current.is_bottom_left_road = false
-                        ref_clicked_hexagon.current.is_left_road = false
+                        props.ref_clicked_hexagon.current.is_top_left_river = false
+                        props.ref_clicked_hexagon.current.is_top_right_river = false
+                        props.ref_clicked_hexagon.current.is_right_river = false
+                        props.ref_clicked_hexagon.current.is_bottom_right_river = false
+                        props.ref_clicked_hexagon.current.is_bottom_left_river = false
+                        props.ref_clicked_hexagon.current.is_left_river = false
+                        props.ref_clicked_hexagon.current.is_top_left_road = false
+                        props.ref_clicked_hexagon.current.is_top_right_road = false
+                        props.ref_clicked_hexagon.current.is_right_road = false
+                        props.ref_clicked_hexagon.current.is_bottom_right_road = false
+                        props.ref_clicked_hexagon.current.is_bottom_left_road = false
+                        props.ref_clicked_hexagon.current.is_left_road = false
 
                         firebase_map_hook.save_hexagon_definitions([hexagon])
                         hexagon.paint()
                         return
                     }
 
-                    if (ref_previous_clicked_hexagon.current && ref_clicked_hexagon.current) {
-                        const are_neighbors = matrix.are_neighbors(hexagon, ref_previous_clicked_hexagon.current as Hexagon)
+                    if (props.ref_previous_clicked_hexagon.current && props.ref_clicked_hexagon.current) {
+                        const are_neighbors = matrix.are_neighbors(hexagon, props.ref_previous_clicked_hexagon.current as Hexagon)
 
                         if (are_neighbors) {
-                            matrix.add_path(ref_previous_clicked_hexagon.current, ref_clicked_hexagon.current, paint_brush.id)
+                            matrix.add_path(props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current, paint_brush.id)
 
-                            ref_previous_clicked_hexagon.current.paint()
-                            ref_clicked_hexagon.current.paint()
-                            ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
-                            firebase_map_hook.save_hexagon_definitions([ref_previous_clicked_hexagon.current, ref_clicked_hexagon.current])
+                            props.ref_previous_clicked_hexagon.current.paint()
+                            props.ref_clicked_hexagon.current.paint()
+                            props.ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
+                            firebase_map_hook.save_hexagon_definitions([props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current])
                         }
                         else {
                             // Reset the last clicked so we are still at the previous spot
-                            ref_clicked_hexagon.current = ref_previous_clicked_hexagon.current
+                            props.ref_clicked_hexagon.current = props.ref_previous_clicked_hexagon.current
                         }
                     }
                 }

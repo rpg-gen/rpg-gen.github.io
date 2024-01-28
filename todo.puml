@@ -7,13 +7,8 @@ MindmapDiagram {
     MaximumWidth: 200
   }
 
-  .b {
+  .bug {
     BackgroundColor: Crimson
-    FontColor: White
-  }
-
-  .q {
-    BackgroundColor: Dodgerblue
     FontColor: White
   }
 }
@@ -21,11 +16,12 @@ MindmapDiagram {
 </style>
 
 * paths
-** clicking anywhere but on the next point with stop path
-** clicking on same point will stop path
-** clicking in menues will stop path
-*** Will need to bring click history state up
-** First click not starting path <<b>>
+** Stopping path chain
+*** not stopping after switching path type <<bug>>
+*** clicking anywhere but on the next point with stop path
+*** clicking on same point will stop path
+*** clicking in menues will stop path
+** First click not starting path <<bug>>
 
 * icons
 ** size a pre-built svg
@@ -35,7 +31,6 @@ MindmapDiagram {
 *** site
 *** fortification
 *** waterfall
-
 *** cave
 *** peak
 
@@ -44,7 +39,6 @@ MindmapDiagram {
 *** icon when there is hidden text
 ** editor full page view
 ** visible text on page
-*** How to handle overlapping <<q>>
 ** pick text size
 ** delete text
 ** support links to google doc bookmark
@@ -54,9 +48,5 @@ MindmapDiagram {
 
 * hexagon links (to support putting notes in another tool)
 * Menu link to take to top of google doc
-* Login Screen
-** Demo link if not logged in
-* Firebase Integration
-** comparing saved hexagons to new hexagons
 
 @endmindmap
