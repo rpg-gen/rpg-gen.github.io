@@ -116,13 +116,16 @@ export default memo(function HexGrid(props: {
 
                             props.ref_previous_clicked_hexagon.current.paint()
                             props.ref_clicked_hexagon.current.paint()
-                            props.ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
                             firebase_map_hook.save_hexagon_definitions([props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current])
                         }
                         else {
                             // Reset the last clicked so we are still at the previous spot
                             props.ref_clicked_hexagon.current = props.ref_previous_clicked_hexagon.current
                         }
+                    }
+
+                    if (props.ref_clicked_hexagon.current) {
+                        props.ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
                     }
                 }
             }

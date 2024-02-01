@@ -1,18 +1,47 @@
 @startmindmap
 
 <style>
-
 MindmapDiagram {
-  node {
-    MaximumWidth: 200
-  }
 
   .bug {
     BackgroundColor: Crimson
     FontColor: White
   }
-}
 
+  .question {
+    BackgroundColor: PowderBlue
+  }
+
+  .ready {
+    BackgroundColor: YellowGreen
+    FontColor: Black
+  }
+
+  .report {
+    BackgroundColor: SlateGrey
+    FontColor: White
+  }
+
+  .backlog * {
+    BackgroundColor: Ivory
+    FontColor: Grey
+    LineColor: Lavender
+  }
+
+  .hold * {
+    BackgroundColor: GoldenRod
+    FontColor: Black
+  }
+
+  .priority {
+    BackgroundColor: MediumVioletRed
+    FontColor: White
+  }
+
+  .info * {
+    BackgroundColor: LemonChiffon
+  }
+}
 </style>
 
 * paths
@@ -21,7 +50,6 @@ MindmapDiagram {
 *** clicking anywhere but on the next point with stop path
 *** clicking on same point will stop path
 *** clicking in menues will stop path
-** First click not starting path <<bug>>
 
 * icons
 ** size a pre-built svg
