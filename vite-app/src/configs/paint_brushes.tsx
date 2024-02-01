@@ -179,7 +179,7 @@ const paint_brushes: {[key: string]: type_paint_brush} = {
     river: {
         id: "river",
         display_name: "River",
-        description: "Click successive hexes to draw waterways",
+        description: "Click neighboring hexes to draw waterways",
         paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.ocean,
@@ -191,7 +191,7 @@ const paint_brushes: {[key: string]: type_paint_brush} = {
     road: {
         id: "road",
         display_name: "Road",
-        description: "Click successive hexes to draw roads",
+        description: "Click neighboring hexes to draw roads",
         paint_category: paint_category.path,
         hotkey: "u",
         hexidecimal_color: colors.road,

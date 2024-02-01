@@ -44,12 +44,13 @@ MindmapDiagram {
 }
 </style>
 
+* zoom not preserving map on reload <<bug>>
+** Bring Hex matrix up so it's not reset whenever we change the scale?
+
 * paths
 ** Stopping path chain
-*** not stopping after switching path type <<bug>>
 *** clicking anywhere but on the next point with stop path
 *** clicking on same point will stop path
-*** clicking in menues will stop path
 
 * icons
 ** size a pre-built svg
@@ -76,5 +77,9 @@ MindmapDiagram {
 
 * hexagon links (to support putting notes in another tool)
 * Menu link to take to top of google doc
+
+* Cleanup
+** Move hex path clearing logic into the hexagon class
+** simplify nesting in the hex_grid on_click function
 
 @endmindmap

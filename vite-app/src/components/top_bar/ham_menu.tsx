@@ -5,12 +5,13 @@ import spacing from "../../configs/spacing"
 import ham_menu_black from "../../assets/ham_menu_black.svg"
 import top_bar_button_style from "./top_bar_button_style"
 
-export default memo(function HamMenu(props: {}) {
+export default memo(function HamMenu(props: {
+    navigate_away_from_map: Function
+}) {
 
-    const navigate = useNavigate()
 
     function click_action() {
-        navigate("/main_menu")
+        props.navigate_away_from_map("/main_menu")
     }
 
     return (

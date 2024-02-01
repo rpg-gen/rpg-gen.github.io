@@ -11,24 +11,17 @@ class Matrix {
   hexagon_edge_pixels: number = defaults.hexagon_edge_pixels
   canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined
 
-  constructor(
-    hexagon_edge_pixels: number,
-    num_rows?: number,
-    num_columns?: number
-  ) {
-    this.hexagon_edge_pixels = hexagon_edge_pixels
-
-    if (num_rows && num_columns) {
-      this.resize(num_rows||defaults.num_hexes_tall, num_columns||defaults.num_hexes_wide)
-    }
-  }
+  // Don't include size information in the constructor so that we can retain matrix information 
+  // even when we resize the scale contxt
+  constructor() {}
 
   // This is NOT done in the constructor because the hex_grid needs to create this before rendering, where the context isn't created yet
   set_context(canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined) {
     this.canvas_context = canvas_context
   }
 
-  resize(num_rows: number, num_columns: number) {
+  resize(hexagon_edge_pixels: number, num_rows: number, num_columns: number) {
+    this.hexagon_edge_pixels = this.hexagon_edge_pixels
     this.num_rows = num_rows
     this.num_columns = num_columns
   }

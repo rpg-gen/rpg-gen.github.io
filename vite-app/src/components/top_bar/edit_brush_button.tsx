@@ -10,24 +10,15 @@ import scale_context from "../../contexts/scale_context"
 
 export default memo(function EditBrushButton(props: {
     paint_brush_id: string,
-    // canvas: type_canvas_hook,
+    navigate_away_from_map: Function
 }) {
 
     const current_scale_context = useContext(scale_context)
-    const navigate = useNavigate()
 
     const this_paint_brush = paint_brushes[props.paint_brush_id]
 
     function handle_click() {
-        // const last_clicked_hex_def = props.canvas.ref_clicked_hex_def.current as type_hexagon_definition
-
-        // if (last_clicked_hex_def) {
-        //     hexagon_math.paint_hexagon(last_clicked_hex_def, props.canvas.get_canvas_context(), current_scale_context.hexagon_edge_pixels)
-        //     props.canvas.ref_clicked_hex_def.current = undefined
-        //     props.canvas.ref_previous_clicked_hex_def.current = undefined
-        // }
-
-        navigate("/brush_picker")
+        props.navigate_away_from_map("/brush_picker")
     }
 
     return (<>

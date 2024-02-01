@@ -1,4 +1,5 @@
 import { useState, useRef, useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 import Hexagon from "../classes/Hexagon"
 import TopBar from "../components/top_bar/top_bar"
@@ -24,8 +25,9 @@ export default function Map () {
 
     const { subpage } = useParams()
 
+    const navigate = useNavigate()
+
     const user_context = useContext(UserContext)
-    const map_scale_context = useContext(scale_context)
 
     const firebase_map_data = useRef<{[index: string]: string}>({})
     const firebase_listener_unsub_function = useRef<Function>(noop)
@@ -38,6 +40,31 @@ export default function Map () {
 
     const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
+
+    function reset_path_edit() {
+        /*
+            Whenever a user clicks off a path or goes to the menu, we want to erase the temporary circle that shows the last hex they clicked on.
+            We also want to erase the two refs that track current and previous-clicked hexes
+        */
+
+        if (ref_clicked_hexagon.current) {
+
+            // Paint the hexagon, which get's rid of the temporary circle
+            ref_clicked_hexagon.current.paint()
+
+            // Blank out the two refs
+            ref_clicked_hexagon.current = undefined
+            ref_previous_clicked_hexagon.current = undefined
+        }
+    }
+
+    function navigate_away_from_map(url: string) {
+        /*
+            When we go into any of the menus, there are some steps we want to do first
+        */
+        reset_path_edit()
+        navigate(url)
+    }
 
     // useEffect(function(){
     //     if (user_context.is_logged_in && feature_flags.is_persist_to_firebase) {
@@ -75,15 +102,16 @@ export default function Map () {
             ref_paint_brush_id={ref_paint_brush_id}
             ref_clicked_hexagon={ref_clicked_hexagon}
             ref_previous_clicked_hexagon={ref_previous_clicked_hexagon}
+            reset_path_edit={reset_path_edit}
         />
 
         <TopBar>
-            <HamMenu />
+            <HamMenu navigate_away_from_map={navigate_away_from_map} />
             <EditBrushButton
                 paint_brush_id={paint_brush_id}
-                // canvas={canvas}
+                navigate_away_from_map={navigate_away_from_map}
             />
-            <ZoomButton />
+            <ZoomButton navigate_away_from_map={navigate_away_from_map} />
         </TopBar>
 
         {

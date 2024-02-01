@@ -19,7 +19,8 @@ export default memo(function HexGrid(props: {
     set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
     ref_paint_brush_id: MutableRefObject<string>,
     ref_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
-    ref_previous_clicked_hexagon: MutableRefObject<Hexagon | undefined>
+    ref_previous_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
+    reset_path_edit: Function
 }) {
 
     const firebase_map_hook = useFirebaseMap()
@@ -27,10 +28,7 @@ export default memo(function HexGrid(props: {
     const CANVAS_ID = "canvas_id"
     let is_canvas_too_large = false
 
-    const user_context = useContext(userContext)
     const current_scale_context = useContext(scale_context)
-
-    const short_diagonal_pixels = get_hexagon_short_diagonal_length(current_scale_context.hexagon_edge_pixels)
 
     const canvas_height_pixels = calculate_canvas_height(current_scale_context.hexagon_edge_pixels, current_scale_context.num_hexes_tall)
     const canvas_width_pixels = calculate_canvas_width(current_scale_context.hexagon_edge_pixels, current_scale_context.num_hexes_wide)
@@ -108,24 +106,33 @@ export default memo(function HexGrid(props: {
                         return
                     }
 
-                    if (props.ref_previous_clicked_hexagon.current && props.ref_clicked_hexagon.current) {
-                        const are_neighbors = matrix.are_neighbors(hexagon, props.ref_previous_clicked_hexagon.current as Hexagon)
-
-                        if (are_neighbors) {
-                            matrix.add_path(props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current, paint_brush.id)
-
-                            props.ref_previous_clicked_hexagon.current.paint()
-                            props.ref_clicked_hexagon.current.paint()
-                            firebase_map_hook.save_hexagon_definitions([props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current])
-                        }
-                        else {
-                            // Reset the last clicked so we are still at the previous spot
-                            props.ref_clicked_hexagon.current = props.ref_previous_clicked_hexagon.current
-                        }
+                    // If they click on the same hex as before, we want to treat the path as "ended" and reset things
+                    if (props.ref_clicked_hexagon.current == props.ref_previous_clicked_hexagon.current) {
+                        props.reset_path_edit()
                     }
 
-                    if (props.ref_clicked_hexagon.current) {
-                        props.ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
+                    else {
+                        if (props.ref_previous_clicked_hexagon.current && props.ref_clicked_hexagon.current) {
+                            const are_neighbors = matrix.are_neighbors(hexagon, props.ref_previous_clicked_hexagon.current as Hexagon)
+
+                            if (are_neighbors) {
+                                matrix.add_path(props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current, paint_brush.id)
+
+                                props.ref_previous_clicked_hexagon.current.paint()
+                                props.ref_clicked_hexagon.current.paint()
+                                firebase_map_hook.save_hexagon_definitions([props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current])
+                            }
+                            else {
+                                // Reset the last clicked so we are still at the previous spot
+                                // Then stop the path chain. Clicking on a non-neighbor is a way to stop the chain
+                                props.ref_clicked_hexagon.current = props.ref_previous_clicked_hexagon.current
+                                props.reset_path_edit()
+                            }
+                        }
+
+                        if (props.ref_clicked_hexagon.current) {
+                            props.ref_clicked_hexagon.current.paint_temporary_circle(paint_brush.hexidecimal_color)
+                        }
                     }
                 }
             }
