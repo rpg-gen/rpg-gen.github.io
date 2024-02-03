@@ -13,7 +13,8 @@ onmessage = (message: MessageEvent) => {
     const offscreen_context = offscreen_canvas.getContext("2d") as OffscreenCanvasRenderingContext2D
 
     // We have to rebuild the matrix here since the class object can't be passed to the worker (since it's not fully serializable)
-    const matrix = new Matrix(hexagon_edge_pixels)
+    const matrix = new Matrix()
+    matrix.resize(hexagon_edge_pixels)
     matrix.set_context(offscreen_context)
     matrix.populate_matrix(firebase_map_doc)
 

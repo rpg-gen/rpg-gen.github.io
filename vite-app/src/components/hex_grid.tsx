@@ -14,6 +14,7 @@ import Matrix from "../classes/Matrix"
 import { calculate_canvas_height, calculate_canvas_width } from "../helpers/sizing"
 import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
+import DataContext from "../contexts/DataContext"
 
 export default memo(function HexGrid(props: {
     set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -23,28 +24,34 @@ export default memo(function HexGrid(props: {
     reset_path_edit: Function
 }) {
 
+    // Hooks
     const firebase_map_hook = useFirebaseMap()
 
-    const CANVAS_ID = "canvas_id"
-    let is_canvas_too_large = false
-
+    // Contexts
     const current_scale_context = useContext(scale_context)
+    const data_context = useContext(DataContext)
 
+    // Refs
+    const ref_html_canvas = useRef<HTMLCanvasElement>(null)
+    const ref_html_canvas_container = useRef<HTMLDivElement>(null)
+    const is_after_first_map_draw = useRef<Boolean>(false)
+
+    // Constants
+    const CANVAS_ID = "canvas_id"
+    const matrix = data_context.matrix
     const canvas_height_pixels = calculate_canvas_height(current_scale_context.hexagon_edge_pixels, current_scale_context.num_hexes_tall)
     const canvas_width_pixels = calculate_canvas_width(current_scale_context.hexagon_edge_pixels, current_scale_context.num_hexes_wide)
+
+    // Variables
+    let is_canvas_too_large = false
 
     if (canvas_height_pixels > limits.canvas_height_pixels || canvas_width_pixels > limits.canvas_width_pixels) {
         is_canvas_too_large = true
     }
 
-    const ref_html_canvas = useRef<HTMLCanvasElement>(null)
-    const ref_html_canvas_container = useRef<HTMLDivElement>(null)
-
     function get_context() {
         return (ref_html_canvas.current as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D
     }
-
-    const matrix = new Matrix(current_scale_context.hexagon_edge_pixels)
 
     function handle_map_click(event: MouseEvent) {
         if (!ref_html_canvas_container.current || !ref_html_canvas.current) {
@@ -143,8 +150,6 @@ export default memo(function HexGrid(props: {
         props.set_is_show_loading(true)
         const worker = new Worker(worker_url, {type: "module"})
 
-
-
         // Ensure at least a half-second delay while drawing map, to prevent un-readable flicker
         setTimeout(() => {
             worker.postMessage({
@@ -166,13 +171,39 @@ export default memo(function HexGrid(props: {
     useEffect(() => {
         matrix.set_context(get_context())
 
-        firebase_map_hook.get_map_doc().then((data: any) => {
-            matrix.populate_matrix(data)
-            if (!is_canvas_too_large) {
-                draw_map()
+        // Create a listener that will populate fields whenever the firebase database changes
+        // This does a initial load when it's created, so we won't don't need to do that separately
+        // This is done here so that the map doesn't load unless they are on the map page
+        firebase_map_hook.create_listener(function(data: any) {
+            console.log("firebase listener called")
+            const is_initial_load = (Object.keys(matrix.firebase_map_doc).length == 0)
+
+            if (is_initial_load) {
+                matrix.populate_matrix(data)
+                if (!is_canvas_too_large) {
+                    console.log("doing initial draw")
+                    draw_map()
+                    is_after_first_map_draw.current = true
+                }
             }
+            else {
+                matrix.update_matrix_from_firebase_doc(data)
+            }
+
         })
 
+    },[])
+
+    // Anytime the scale context changes, we need to redraw the whole map
+    useEffect(function() {
+        if (is_after_first_map_draw.current) {
+            matrix.resize(
+                current_scale_context.hexagon_edge_pixels,
+                current_scale_context.num_hexes_tall,
+                current_scale_context.num_hexes_wide
+            )
+            draw_map()
+        }
     },[current_scale_context])
 
     return (

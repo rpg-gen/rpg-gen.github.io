@@ -1,56 +1,57 @@
 @startmindmap
 
 <style>
-MindmapDiagram {
+  MindmapDiagram {
 
-  .bug {
-    BackgroundColor: Crimson
-    FontColor: White
-  }
+    .bug {
+      BackgroundColor: Crimson
+      FontColor: White
+    }
 
-  .question {
-    BackgroundColor: PowderBlue
-  }
+    .question {
+      BackgroundColor: PowderBlue
+    }
 
-  .ready {
-    BackgroundColor: YellowGreen
-    FontColor: Black
-  }
+    .ready {
+      BackgroundColor: YellowGreen
+      FontColor: Black
+    }
 
-  .report {
-    BackgroundColor: SlateGrey
-    FontColor: White
-  }
+    .report {
+      BackgroundColor: SlateGrey
+      FontColor: White
+    }
 
-  .backlog * {
-    BackgroundColor: Ivory
-    FontColor: Grey
-    LineColor: Lavender
-  }
+    .backlog * {
+      BackgroundColor: Ivory
+      FontColor: Grey
+      LineColor: Lavender
+    }
 
-  .hold * {
-    BackgroundColor: GoldenRod
-    FontColor: Black
-  }
+    .hold * {
+      BackgroundColor: GoldenRod
+      FontColor: Black
+    }
 
-  .priority {
-    BackgroundColor: MediumVioletRed
-    FontColor: White
-  }
+    .priority {
+      BackgroundColor: MediumVioletRed
+      FontColor: White
+    }
 
-  .info * {
-    BackgroundColor: LemonChiffon
+    .info * {
+      BackgroundColor: LemonChiffon
+    }
   }
-}
 </style>
 
-* zoom not preserving map on reload <<bug>>
-** Bring Hex matrix up so it's not reset whenever we change the scale?
+* firebase
+** loading firebase data, should it use the firebase size (rows and cols) or a default size? <<question>>
 
-* paths
-** Stopping path chain
-*** clicking anywhere but on the next point with stop path
-*** clicking on same point will stop path
+* Zoom
+** Add current zoom to url param so reload preserves size
+
+* Paths
+** Have clearing path remove all the way to middle of connected hexes
 
 * icons
 ** size a pre-built svg

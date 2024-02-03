@@ -1,17 +1,32 @@
 import './App.css'
 import { Outlet } from "react-router-dom"
 import { useContext, useState, useEffect } from "react"
+
+import DataContext from "./contexts/DataContext"
 import UserContext from "./contexts/user_context"
 import scale_context from './contexts/scale_context'
-import hexagon_math from "./utility/hexagon_math"
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
 import useFirebaseMap from "./hooks/use_firebase_map"
+import Matrix from './classes/Matrix'
 
 function App() {
 
+    // State
     const [user_context, set_user_context] = useState(useContext(UserContext))
     const [app_scale_context, set_scale_context] = useState(useContext(scale_context))
+
+    // We have to load the firebase data here so it stays persistent even if other parts of the website need to reload
+    // same applies to the regular matrix even if we're not using firebase
+    // For example, zoom changes that reset the scale context would throw away the map data otherwise
+    const firebase_map_hook = useFirebaseMap()
+    const data_context = useContext(DataContext)
+
+    data_context.matrix.resize(
+        app_scale_context.hexagon_edge_pixels,
+        app_scale_context.num_hexes_tall,
+        app_scale_context.num_hexes_wide
+    )
 
     app_scale_context.set_scale_context = set_scale_context
 
@@ -22,7 +37,6 @@ function App() {
     const firebase_auth_hook = useFirebaseAuth()
 
     useEffect(function() {
-
         firebase_auth_hook.set_user_listener((user: any) => {
             set_user_context({
                 is_logged_in: (user != null ? true : false),
@@ -51,9 +65,11 @@ function App() {
 
         <UserContext.Provider value={user_context}>
         <scale_context.Provider value={app_scale_context}>
+        <DataContext.Provider value={data_context}>
 
             { user_context.is_auth_checked ? <Outlet /> : ""}
 
+        </DataContext.Provider>
         </scale_context.Provider>
         </UserContext.Provider>
 

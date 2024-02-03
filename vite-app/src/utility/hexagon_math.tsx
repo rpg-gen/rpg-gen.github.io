@@ -133,32 +133,3 @@ function paint_text(
     // /////
     // if (hexagon_definition.text)
 }
-
-function paint_hexagon(
-    hexagon_definition: type_hexagon_definition,
-    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-    edge_length: number,
-) {
-    paint_background(hexagon_definition, context, edge_length)
-    paint_paths(hexagon_definition, context, edge_length)
-    // paint_icon(hexagon_definition, context, edge_length)
-    paint_text(hexagon_definition, context, edge_length)
-}
-
-function get_changed_hexagon_definitions(hexagon_definitions: type_hexagon_definition[], firebase_map_document: {[index: string]: string}) {
-    const modified_hexagons = []
-    for (let i = 0; i < hexagon_definitions.length; i++) {
-        const hexagon_definition = hexagon_definitions[i]
-        const local_string = get_encoded_hexagon_definition(hexagon_definition)
-        const remote_key = get_hexagon_definition_key(hexagon_definition.row_number, hexagon_definition.column_number)
-        const remote_string = firebase_map_document[remote_key]
-
-        if (remote_string != undefined && local_string != remote_string) {
-            // const remote_hexagon_definition = get_decoded_hexagon_definition(remote_key, remote_string)
-            replace_with_decoded_hexagon_definition(remote_key, remote_string, hexagon_definition)
-            modified_hexagons.push(hexagon_definition)
-        }
-    }
-
-    return modified_hexagons
-}
