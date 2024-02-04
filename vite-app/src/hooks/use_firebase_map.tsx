@@ -47,11 +47,16 @@ export default function useFirebaseMap() {
     }
 
     function create_listener(listen_action: Function) {
+        // If firebase is turned on and we're logged in, create the listener
         if (is_save_to_firebase()) {
             const unsub = onSnapshot(doc(FIRESTORE_DATABASE, MAP_COLLECTION_NAME, MAP_DOCUMENT_KEY), (doc) => {
                 listen_action(doc.data())
             });
             return unsub
+        }
+        // Otherwise just call the listener action once to draw the map with the default data
+        else {
+            listen_action({})
         }
     }
 
