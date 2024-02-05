@@ -23,23 +23,33 @@ function noop() {}
 
 export default function Map () {
 
+    console.log("rendering map")
+
+    // Params
     const { subpage } = useParams()
 
+    // Hooks
     const navigate = useNavigate()
 
-    const user_context = useContext(UserContext)
+    // State
+    const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id) // This is used for changing the display to show the current paint brush
+    const [is_show_loading, set_is_show_loading] = useState(false)
 
-    const firebase_map_data = useRef<{[index: string]: string}>({})
-    const firebase_listener_unsub_function = useRef<Function>(noop)
-
+    // Refs
     const ref_clicked_hexagon = useRef<Hexagon>()
     const ref_previous_clicked_hexagon = useRef<Hexagon>()
-
-    const [paint_brush_id, set_paint_brush_id] = useState(defaults.brush_id) // This is used for changing the display to show the current paint brush
     const ref_paint_brush_id = useRef(paint_brush_id)// This is using so processes can know what the current paint brush is without having to re-render every time the paint brush changes
+    const ref_is_loading = useRef<Boolean>(false)
 
-    const [is_show_loading, set_is_show_loading] = useState(false)
     const loading_function_ref = useRef<Function>(noop)
+
+    function set_loading_state(new_state: boolean) {
+        // We want to avoid setting the state if it's already what it needs to be, to avoid unecessary renders
+        if (new_state != ref_is_loading.current) {
+            ref_is_loading.current = new_state
+            set_is_show_loading(new_state)
+        }
+    }
 
     function reset_path_edit() {
         /*
@@ -98,7 +108,7 @@ export default function Map () {
         <>
 
         <HexGrid
-            set_is_show_loading={set_is_show_loading}
+            set_loading_state={set_loading_state}
             ref_paint_brush_id={ref_paint_brush_id}
             ref_clicked_hexagon={ref_clicked_hexagon}
             ref_previous_clicked_hexagon={ref_previous_clicked_hexagon}

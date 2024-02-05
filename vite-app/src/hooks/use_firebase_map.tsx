@@ -57,6 +57,7 @@ export default function useFirebaseMap() {
         // Otherwise just call the listener action once to draw the map with the default data
         else {
             listen_action({})
+            return function(){}
         }
     }
 

@@ -63,6 +63,10 @@ class Hexagon {
     // }
   }
 
+  clear_paths_from_hex() {
+
+  }
+
   populate_from_firebase_hex_data(firebase_hex_data: string) {
     const split_array = firebase_hex_data.split("_")
 

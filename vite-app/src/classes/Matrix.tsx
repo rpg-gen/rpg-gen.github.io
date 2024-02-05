@@ -2,6 +2,7 @@ import { DocumentData } from "firebase/firestore";
 
 import defaults from "../configs/defaults";
 import Hexagon from "./Hexagon";
+import enum_neighbor_type from "../types/enum_neighbor_type";
 
 class Matrix {
     num_rows: number = defaults.num_hexes_tall
@@ -10,10 +11,163 @@ class Matrix {
     firebase_map_doc: DocumentData = {}
     hexagon_edge_pixels: number = defaults.hexagon_edge_pixels
     canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined
+    neighbor_options: String[] = [
+        "top left",
+        "top right",
+        "right",
+        "bottom right",
+        "bottom left",
+        "left"
+    ]
 
     // Don't include size information in the constructor so that we can retain matrix information
     // even when we resize the scale contxt
     constructor() {}
+
+    are_neighbors(hexagon_1: Hexagon, hexagon_2: Hexagon) {
+        const neighboring_columns = [hexagon_1.column_number]
+
+        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 1) {
+            neighboring_columns.push(hexagon_1.column_number + 1)
+        }
+
+        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 0) {
+            neighboring_columns.push(hexagon_1.column_number - 1)
+        }
+
+        if (
+            // (hexagon_1.row_number != hexagon_2.row_number || hexagon_1.column_number != hexagon_2.column_number) // Not the same hex
+            Math.abs(hexagon_1.row_number - hexagon_2.row_number) < 2 // in a neighboring or same row
+            && (
+                neighboring_columns.includes(hexagon_2.column_number) // Neighboring column, adjusted for row offsets
+            )
+        ) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    is_pushed_right_row(row_number: number) {
+        return (row_number % 2 == 1)
+    }
+
+    has_neighbor(hexagon: Hexagon, neighbor_type: enum_neighbor_type) {
+        let has_neighbor: Boolean = true
+        const is_pushed_right_row = this.is_pushed_right_row(hexagon.row_number)
+
+        switch (neighbor_type) {
+            case enum_neighbor_type.top_left:
+                if (
+                    hexagon.row_number == 1
+                    || (
+                        hexagon.column_number == 1
+                        && !is_pushed_right_row
+                    )
+                ) {
+                    has_neighbor = false
+                }
+                break
+            case enum_neighbor_type.top_right:
+                if (
+                    hexagon.row_number == 1
+                    || (
+                        hexagon.column_number == this.num_columns
+                        && is_pushed_right_row
+                    )
+                ) {
+                    has_neighbor = false
+                }
+                break
+            case enum_neighbor_type.right:
+                if (
+                    hexagon.column_number == this.num_columns
+                ) {
+                    has_neighbor = false
+                }
+                break
+            case enum_neighbor_type.bottom_right:
+                if (
+                    hexagon.row_number == this.num_rows
+                    || (
+                        hexagon.column_number == this.num_columns
+                        && is_pushed_right_row
+                    )
+                ) {
+                    has_neighbor = false
+                }
+                break
+            case enum_neighbor_type.bottom_left:
+                if (
+                    hexagon.row_number == this.num_rows
+                    || (
+                        hexagon.column_number == 1
+                        && !is_pushed_right_row
+                    )
+                ) {
+                    has_neighbor = false
+                }
+                break
+            case enum_neighbor_type.left:
+                if (hexagon.column_number == 1) {
+                    has_neighbor = false
+                }
+                break
+        }
+
+        return has_neighbor
+    }
+
+    get_neighbor(hexagon: Hexagon, neighbor_type: enum_neighbor_type) {
+        let return_value: Hexagon | undefined = undefined
+        const is_pushed_right_row = this.is_pushed_right_row(hexagon.row_number)
+
+        // Start with our current hex and adjust based on specific directional and grid logic
+        let neighbor_row_number = hexagon.row_number
+        let neighbor_column_number = hexagon.column_number
+
+        /* ------------------------ See if we move up or down ----------------------- */
+        if ([enum_neighbor_type.top_left,enum_neighbor_type.top_right].includes(neighbor_type)) {
+            neighbor_row_number += 1
+        }
+
+        else if ([enum_neighbor_type.bottom_right, enum_neighbor_type.bottom_left].includes(neighbor_type)) {
+            neighbor_row_number -= 1
+        }
+
+        /* ----------------------- see if we move side to side ---------------------- */
+        if (
+            neighbor_type == enum_neighbor_type.right
+            || (
+                [enum_neighbor_type.top_right, enum_neighbor_type.bottom_right].includes(neighbor_type)
+                && is_pushed_right_row
+            )
+        ) {
+            neighbor_column_number += 1
+        }
+        else if (
+            neighbor_type == enum_neighbor_type.left
+            || (
+                [enum_neighbor_type.top_left, enum_neighbor_type.bottom_left].includes(neighbor_type)
+                && !is_pushed_right_row
+            )
+        ) {
+            neighbor_column_number -= 1
+        }
+
+        // If this is a valid location on the grid, return the hexagon referenced by it
+        if (
+            neighbor_row_number > 0
+            && neighbor_row_number <= this.num_rows
+            && neighbor_column_number > 0
+            && neighbor_column_number <= this.num_columns
+        ) {
+            return_value = this.get_hexagon(neighbor_row_number, neighbor_column_number)
+        }
+
+        return return_value
+    }
 
     // This is NOT done in the constructor because the hex_grid needs to create this before rendering, where the context isn't created yet
     set_context(canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined) {
@@ -38,7 +192,6 @@ class Matrix {
             const current_firebase_hex_data = hexagon.get_firebase_hex_data()
 
             if (incoming_firebase_hex_data != undefined && incoming_firebase_hex_data != current_firebase_hex_data) {
-                console.log(incoming_firebase_hex_data, current_firebase_hex_data)
                 hexagon.populate_from_firebase_hex_data(incoming_firebase_hex_data)
                 hexagon.paint()
             }
@@ -116,38 +269,13 @@ class Matrix {
         let return_hexagon = undefined
 
         for (let hexagon_index: number = 0; hexagon_index < this.hexagons.length; hexagon_index++) {
-        const hexagon = this.hexagons[hexagon_index]
-        if (hexagon.row_number == row_number && hexagon.column_number == column_number) {
-            return_hexagon = hexagon
-        }
+            const hexagon = this.hexagons[hexagon_index]
+            if (hexagon.row_number == row_number && hexagon.column_number == column_number) {
+                return_hexagon = hexagon
+            }
         }
 
         return return_hexagon
-    }
-
-    are_neighbors(hexagon_1: Hexagon, hexagon_2: Hexagon) {
-        const neighboring_columns = [hexagon_1.column_number]
-
-        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 1) {
-            neighboring_columns.push(hexagon_1.column_number + 1)
-        }
-
-        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 0) {
-            neighboring_columns.push(hexagon_1.column_number - 1)
-        }
-
-        if (
-            // (hexagon_1.row_number != hexagon_2.row_number || hexagon_1.column_number != hexagon_2.column_number) // Not the same hex
-            Math.abs(hexagon_1.row_number - hexagon_2.row_number) < 2 // in a neighboring or same row
-            && (
-                neighboring_columns.includes(hexagon_2.column_number) // Neighboring column, adjusted for row offsets
-            )
-        ) {
-            return true
-        }
-        else {
-            return false
-        }
     }
 
     add_path(start_hexagon: Hexagon, target_hexagon: Hexagon, path_brush_id: string) {

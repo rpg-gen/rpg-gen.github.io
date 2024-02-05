@@ -49,9 +49,8 @@ function App() {
     }, [])
 
     // firebase_auth_hook.login_firebase_user("tarronlane@gmail.com", "*****")
-    //     .then(function(payload: any) {console.log("Successfully logged in")})
+    //     .then(function(payload: any) {})
     //     .catch((payload: any) => {
-    //         console.log("Here is the payload", payload)
     //     })
 
     // firebase_auth_hook.logout_firebase_user()
@@ -67,7 +66,7 @@ function App() {
         <scale_context.Provider value={app_scale_context}>
         <DataContext.Provider value={data_context}>
 
-            { user_context.is_auth_checked ? <Outlet /> : ""}
+            { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
 
         </DataContext.Provider>
         </scale_context.Provider>

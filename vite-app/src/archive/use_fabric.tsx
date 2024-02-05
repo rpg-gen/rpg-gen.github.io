@@ -156,8 +156,6 @@
 //             return
 //         }
 
-//         // console.log(find_objects(ref_clicked_row_number.current, ref_clicked_column_number.current))
-
 //         const existing_icon = find_object(ref_clicked_row_number.current, ref_clicked_column_number.current, enum_custom_types.icon) as fabric.Polygon & custom_attributes
 
 //         if (existing_icon) {
@@ -166,7 +164,6 @@
 //                 return
 //             }
 //             if (existing_icon.paint_brush_id != paint_brush_id) {
-//                 console.log("remove")
 //                 ref_canvas.current.remove(existing_icon)
 //             }
 //         }
@@ -223,7 +220,6 @@
 //             ref_canvas.current.add(text)
 //         }
 //         else {
-//             console.log("setting new text to " + new_text_string)
 //             existing_text.set("text", new_text_string)
 //             ref_canvas.current.renderAll()
 //         }

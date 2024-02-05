@@ -50,8 +50,11 @@
 * Zoom
 ** Add current zoom to url param so reload preserves size
 
-* Paths
+* Paths <<ready>>
 ** Have clearing path remove all the way to middle of connected hexes
+*** Test my new neighbor functions
+*** Get-all neighbors loop function (using enum)
+*** Rewrite the is_neighbor logic to use the common methods
 
 * icons
 ** size a pre-built svg

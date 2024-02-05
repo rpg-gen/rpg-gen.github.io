@@ -17,11 +17,11 @@ import { paint_category } from "../types/type_paint_brush"
 import DataContext from "../contexts/DataContext"
 
 export default memo(function HexGrid(props: {
-    set_is_show_loading: React.Dispatch<React.SetStateAction<boolean>>,
+    set_loading_state: Function,
     ref_paint_brush_id: MutableRefObject<string>,
     ref_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
     ref_previous_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
-    reset_path_edit: Function
+    reset_path_edit: Function,
 }) {
 
     // Hooks
@@ -95,12 +95,19 @@ export default memo(function HexGrid(props: {
                 else if (paint_brush.paint_category == paint_category.path) {
 
                     if (paint_brush.id == "clear_path") {
+
+                        const clicked_hex = props.ref_clicked_hexagon.current
+
+                        if (clicked_hex.is_top_left_river) {
+                            
+                        }
                         props.ref_clicked_hexagon.current.is_top_left_river = false
                         props.ref_clicked_hexagon.current.is_top_right_river = false
                         props.ref_clicked_hexagon.current.is_right_river = false
                         props.ref_clicked_hexagon.current.is_bottom_right_river = false
                         props.ref_clicked_hexagon.current.is_bottom_left_river = false
                         props.ref_clicked_hexagon.current.is_left_river = false
+
                         props.ref_clicked_hexagon.current.is_top_left_road = false
                         props.ref_clicked_hexagon.current.is_top_right_road = false
                         props.ref_clicked_hexagon.current.is_right_road = false
@@ -147,7 +154,8 @@ export default memo(function HexGrid(props: {
     }
 
     async function draw_map() {
-        props.set_is_show_loading(true)
+        props.set_loading_state(true) // In case it isn't already (sometimes it is)
+
         const worker = new Worker(worker_url, {type: "module"})
 
         // Ensure at least a half-second delay while drawing map, to prevent un-readable flicker
@@ -164,24 +172,23 @@ export default memo(function HexGrid(props: {
             const context = get_context()
             context.drawImage(message.data.bitmap, 0, 0)
             message.data.bitmap.close()
-            props.set_is_show_loading(false)
+            props.set_loading_state(false)
         }
     }
 
     useEffect(() => {
         matrix.set_context(get_context())
+        props.set_loading_state(true)
 
         // Create a listener that will populate fields whenever the firebase database changes
         // This does a initial load when it's created, so we won't don't need to do that separately
         // This is done here so that the map doesn't load unless they are on the map page
-        firebase_map_hook.create_listener(function(data: any) {
-            console.log("firebase listener called")
+        const unsub = firebase_map_hook.create_listener(function(data: any) {
             const is_initial_load = (Object.keys(matrix.firebase_map_doc).length == 0)
 
             if (is_initial_load) {
                 matrix.populate_matrix(data)
                 if (!is_canvas_too_large) {
-                    console.log("doing initial draw")
                     draw_map()
                     is_after_first_map_draw.current = true
                 }
@@ -191,6 +198,10 @@ export default memo(function HexGrid(props: {
             }
 
         })
+
+        // The value returned here is the "cleanup" function. This will unsubscribe the listener
+        // so that we aren't getting firebase updates anymore once the hex map unmounts
+        return unsub
 
     },[])
 
