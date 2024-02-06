@@ -25,98 +25,34 @@ class Matrix {
     constructor() {}
 
     are_neighbors(hexagon_1: Hexagon, hexagon_2: Hexagon) {
-        const neighboring_columns = [hexagon_1.column_number]
+        let are_neighbors_return = false
+        const neighbors = this.get_all_neighbors(hexagon_1)
 
-        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 1) {
-            neighboring_columns.push(hexagon_1.column_number + 1)
-        }
+        neighbors.forEach((neighbor) => {
+            if (neighbor == hexagon_2) {
+                are_neighbors_return = true
+            }
+        })
 
-        if (hexagon_1.row_number == hexagon_2.row_number || hexagon_1.row_number % 2 == 0) {
-            neighboring_columns.push(hexagon_1.column_number - 1)
-        }
-
-        if (
-            // (hexagon_1.row_number != hexagon_2.row_number || hexagon_1.column_number != hexagon_2.column_number) // Not the same hex
-            Math.abs(hexagon_1.row_number - hexagon_2.row_number) < 2 // in a neighboring or same row
-            && (
-                neighboring_columns.includes(hexagon_2.column_number) // Neighboring column, adjusted for row offsets
-            )
-        ) {
-            return true
-        }
-        else {
-            return false
-        }
+        return are_neighbors_return
     }
 
     is_pushed_right_row(row_number: number) {
         return (row_number % 2 == 1)
     }
 
-    has_neighbor(hexagon: Hexagon, neighbor_type: enum_neighbor_type) {
-        let has_neighbor: Boolean = true
-        const is_pushed_right_row = this.is_pushed_right_row(hexagon.row_number)
+    get_all_neighbors(hexagon: Hexagon) {
+        const neighbors_array: Hexagon[] = []
+        const neighbor_types = Object.values(enum_neighbor_type)
 
-        switch (neighbor_type) {
-            case enum_neighbor_type.top_left:
-                if (
-                    hexagon.row_number == 1
-                    || (
-                        hexagon.column_number == 1
-                        && !is_pushed_right_row
-                    )
-                ) {
-                    has_neighbor = false
-                }
-                break
-            case enum_neighbor_type.top_right:
-                if (
-                    hexagon.row_number == 1
-                    || (
-                        hexagon.column_number == this.num_columns
-                        && is_pushed_right_row
-                    )
-                ) {
-                    has_neighbor = false
-                }
-                break
-            case enum_neighbor_type.right:
-                if (
-                    hexagon.column_number == this.num_columns
-                ) {
-                    has_neighbor = false
-                }
-                break
-            case enum_neighbor_type.bottom_right:
-                if (
-                    hexagon.row_number == this.num_rows
-                    || (
-                        hexagon.column_number == this.num_columns
-                        && is_pushed_right_row
-                    )
-                ) {
-                    has_neighbor = false
-                }
-                break
-            case enum_neighbor_type.bottom_left:
-                if (
-                    hexagon.row_number == this.num_rows
-                    || (
-                        hexagon.column_number == 1
-                        && !is_pushed_right_row
-                    )
-                ) {
-                    has_neighbor = false
-                }
-                break
-            case enum_neighbor_type.left:
-                if (hexagon.column_number == 1) {
-                    has_neighbor = false
-                }
-                break
-        }
+        neighbor_types.forEach((neighbor_type) => {
+            const neighbor = this.get_neighbor(hexagon, neighbor_type)
+            if (neighbor) {
+                neighbors_array.push(neighbor)
+            }
+        })
 
-        return has_neighbor
+        return neighbors_array
     }
 
     get_neighbor(hexagon: Hexagon, neighbor_type: enum_neighbor_type) {

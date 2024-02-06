@@ -1,9 +1,9 @@
 enum enum_neighbor_type {
-  top_left="top left",
-  top_right="top right",
+  top_left="top_left",
+  top_right="top_right",
   right="right",
-  bottom_right="bottom right",
-  bottom_left="bottom left",
+  bottom_right="bottom_right",
+  bottom_left="bottom_left",
   left="left"
 }
 

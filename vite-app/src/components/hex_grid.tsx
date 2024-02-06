@@ -98,9 +98,14 @@ export default memo(function HexGrid(props: {
 
                         const clicked_hex = props.ref_clicked_hexagon.current
 
-                        if (clicked_hex.is_top_left_river) {
-                            
-                        }
+                        const neighbors = matrix.get_all_neighbors(hexagon)
+
+                        // console.log(hexagon.get_attribute_index_array())
+
+                        // hexagon.get_attribute_index_array().forEach((attribute) => {
+                        //     hexagon[attribute] = 'test'
+                        // })
+
                         props.ref_clicked_hexagon.current.is_top_left_river = false
                         props.ref_clicked_hexagon.current.is_top_right_river = false
                         props.ref_clicked_hexagon.current.is_right_river = false

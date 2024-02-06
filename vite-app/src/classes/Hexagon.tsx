@@ -2,12 +2,17 @@ import colors from "../configs/colors"
 import { get_hexagon_short_diagonal_length, get_hexagon_edge_points, get_hexagon_corner_points } from "../helpers/geometry"
 import spacing from "../configs/spacing"
 import { paint_hexagon, paint_line, get_2d_path, paint_circle } from "../helpers/canvas"
+import enum_neighbor_type from "../types/enum_neighbor_type"
+import type_path_dictionary from "../types/type_path_dictionary"
 
 class Hexagon {
   row_number: number
   column_number: number
 
   background_color_hexidecimal: string = colors.white
+
+  river_array: type_path_dictionary = this.build_empty_path_dictionary()
+  road_array: type_path_dictionary = this.build_empty_path_dictionary()
 
   is_top_left_river: boolean = false
   is_top_right_river: boolean = false
@@ -37,7 +42,6 @@ class Hexagon {
     edge_pixels: number,
     canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined
   ) {
-    // if (row_number && column_number) {
     this.row_number = row_number
     this.column_number = column_number
     this.edge_pixels = edge_pixels
@@ -49,28 +53,47 @@ class Hexagon {
 
     this.center_x = center_x
     this.center_y = center_y
-    // }
-    // else if (firebase_hex_key && firebase_hex_data) {
-
-    //   this.row_number = parseInt(firebase_hex_key.split("_")[0])
-    //   this.column_number = parseInt(firebase_hex_key.split("_")[1])
-
-    //   this.populate_from_firebase_hex_data(firebase_hex_data)
-    // }
-    // else {
-    //   this.row_number = 0
-    //   this.column_number = 0
-    // }
   }
 
   clear_paths_from_hex() {
 
   }
 
+  get_attribute_index_array() {
+    const attribute_array: String[] = []
+    attribute_array.push('another_background_color_hexidecimal')
+    // attribute_array.push(...Object.keys(this.river_array).map((key) => ("is_" + key + "_river")))
+    // attribute_array.push(...Object.keys(this.road_array).map((key) => ("is_" + key + "_road")))
+    // attribute_array.push('text')
+    // attribute_array.push('icon_name')
+    return attribute_array
+  }
+
+  get_serialized_attribute_index(attribute_name: string) {
+    let return_index = undefined
+
+    switch (attribute_name) {
+      case 'background_color_hexidecimal':
+
+        break;
+    }
+    // console.log(
+    //   [...Object.keys(this.river_array).entries()]
+    // )
+  }
+
+  build_empty_path_dictionary() {
+    const return_dictionary = Object.fromEntries(Object.values(enum_neighbor_type).map((neighbor_type) => [neighbor_type, false])) as type_path_dictionary
+    return return_dictionary
+  }
+
   populate_from_firebase_hex_data(firebase_hex_data: string) {
     const split_array = firebase_hex_data.split("_")
 
     this.background_color_hexidecimal = split_array[0]
+
+    // Object.keys(this.river_array).sort().forEach(()
+
     this.is_top_left_river = (split_array[1] == "1" ? true : false)
     this.is_top_right_river = (split_array[2] == "1" ? true : false)
     this.is_right_river = (split_array[3] == "1" ? true : false)

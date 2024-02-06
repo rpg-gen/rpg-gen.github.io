@@ -23,8 +23,6 @@ function noop() {}
 
 export default function Map () {
 
-    console.log("rendering map")
-
     // Params
     const { subpage } = useParams()
 

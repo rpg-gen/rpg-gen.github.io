@@ -3,7 +3,7 @@ const defaults = {
     num_hexes_wide: 10,
     hexagon_edge_pixels: 80,
     zoom_level: 5,
-    brush_id: "river",
+    brush_id: "clear_path",
     hexagon_stroke_width: 1,
 }
 
