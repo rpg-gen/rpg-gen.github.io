@@ -128,7 +128,7 @@ export default function Map () {
             : ""
         }
 
-        { subpage == "account" ? <Account set_is_show_loading={set_is_show_loading} /> : "" }
+        {/* { subpage == "account" ? <Account set_is_show_loading={set_is_show_loading} /> : "" } */}
         { subpage == "main_menu" ? <MainMenu /> : "" }
         { subpage == "brush_picker" ? <BrushPicker set_paint_brush_id={set_paint_brush_id} ref_paint_brush_id={ref_paint_brush_id} /> : "" }
         { subpage == "zoom" ? <ZoomPicker /> : "" }

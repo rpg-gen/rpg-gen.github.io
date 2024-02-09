@@ -5,14 +5,16 @@ import colors from "../configs/colors"
 import userContext from "../contexts/user_context"
 import useFirebaseAuth from "../hooks/use_firebase_auth"
 
-export default function Account(props: {set_is_show_loading: Function}) {
+export default function Account(props: {
+    // set_is_show_loading: Function
+}) {
     const user_context = useContext(userContext)
     const navigate = useNavigate()
     const [is_logging_out, set_is_logging_out] = useState(false)
 
     function successful_login_action() {
-        props.set_is_show_loading(true)
-        navigate("/")
+        // props.set_is_show_loading(true)
+        // navigate("/")
     }
 
     function cancel_action() {
@@ -20,11 +22,11 @@ export default function Account(props: {set_is_show_loading: Function}) {
     }
 
     function logout_action() {
-        props.set_is_show_loading(true)
+        // props.set_is_show_loading(true)
         set_is_logging_out(true)
         const firebase_auth_hook = useFirebaseAuth()
         firebase_auth_hook.logout_firebase_user().then(function() {
-            navigate("/")
+            // navigate("/")
             set_is_logging_out(false)
         })
     }
@@ -63,7 +65,7 @@ export default function Account(props: {set_is_show_loading: Function}) {
                     :<LoginForm successful_login_action={successful_login_action} />
                 }
                 <div style={{display: "flex", justifyContent: "center", marginTop: "10px"}}>
-                    <button onClick={cancel_action}>Cancel</button>
+                    <button onClick={cancel_action}>{user_context.is_logged_in ? "Main Menu" : "Cancel"}</button>
                 </div>
             </div>
         </div>

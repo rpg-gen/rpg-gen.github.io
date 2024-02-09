@@ -1,5 +1,5 @@
 import './App.css'
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useContext, useState, useEffect } from "react"
 
 import DataContext from "./contexts/DataContext"
@@ -9,8 +9,17 @@ import scale_context from './contexts/scale_context'
 import useFirebaseAuth from "./hooks/use_firebase_auth"
 import useFirebaseMap from "./hooks/use_firebase_map"
 import Matrix from './classes/Matrix'
+import MainMenu from './pages/main_menu'
 
 function App() {
+
+    // Hooks
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    // if (location.pathname == '/') {
+    //     navigate('/map')
+    // }
 
     // State
     const [user_context, set_user_context] = useState(useContext(UserContext))

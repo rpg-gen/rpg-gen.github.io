@@ -3,6 +3,9 @@ import App from "../App"
 import NavigationError from "../pages/navigation_error"
 import MainMenu from "../pages/main_menu"
 import Map from "../pages/map"
+import Account from "../pages/account"
+import { nav_paths } from "../configs/constants"
+import Tagger from "../pages/Tagger"
 
 const router = createBrowserRouter([
     {
@@ -12,21 +15,24 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/",
+                element: <MainMenu />
+            },
+            {
+                path: "/tagger",
+                element: <Tagger />
+            },
+            {
+                path: "/account",
+                element: <Account />
+            },
+            {
+                path: nav_paths.map,
                 element: <Map />
             },
             {
-                path: "/:subpage",
+                path: nav_paths.map + "/:subpage",
                 element: <Map />
             }
-            
-            // {
-            //     path: "/map",
-            //     element: <Map />
-            // },
-            // {
-            //     path: "/map",
-            //     element: <Map />
-            // }
         ]
     }
 ])

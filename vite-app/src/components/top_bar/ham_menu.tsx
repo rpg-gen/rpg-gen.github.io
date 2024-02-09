@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom"
 import spacing from "../../configs/spacing"
 import ham_menu_black from "../../assets/ham_menu_black.svg"
 import top_bar_button_style from "./top_bar_button_style"
+import { nav_paths } from "../../configs/constants"
 
 export default memo(function HamMenu(props: {
     navigate_away_from_map: Function
 }) {
 
-
     function click_action() {
-        props.navigate_away_from_map("/main_menu")
+        props.navigate_away_from_map(nav_paths.map + "/main_menu")
     }
 
     return (
