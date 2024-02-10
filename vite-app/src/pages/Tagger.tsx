@@ -1,14 +1,19 @@
 // Library Imports
 import useFirebaseProject from "../hooks/use_firebase_project"
 import { getFirestore, doc, getDoc, setDoc, DocumentData } from "firebase/firestore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties } from "react"
 
 // rpg-gen imports
+import { mobile } from "../configs/constants"
 import { useNavigate } from "react-router-dom"
 import words_url from "../assets/words_alpha.txt?raw"
 import loading_gif from "../assets/loading.gif"
+import useWindowSize from "../hooks/useWindowSize"
 
 export default function Tagger() {
+
+    // Hooks
+    const window_size = useWindowSize()
 
     // State
     const [is_waiting_on_firebase, set_is_waiting_on_firebase] = useState(true)
@@ -21,6 +26,7 @@ export default function Tagger() {
     const COLLECTION_KEEP = "words"
     const BOOKMARK_DOC_NAME = "latest_word"
     const BOOKMARK_DOC_FIELD_KEY = "value"
+    const is_mobile = window_size[0] < mobile.break_point;
 
     async function get_bookmark() {
         let return_value = undefined
@@ -90,6 +96,29 @@ export default function Tagger() {
         update_bookmark(next_word)
     }
 
+    function load_previous_word() {
+        const words_array = get_words_array()
+        let previous_word = undefined
+
+        if (!loaded_word) {
+            previous_word = get_first_word_from_list()
+        }
+        else {
+            words_array.forEach((word, index) => {
+                if (word == loaded_word) {
+                    previous_word = words_array[index - 1]
+                }
+            })
+        }
+
+        if (!previous_word) {
+            previous_word = get_first_word_from_list()
+        }
+
+        update_loaded_word(previous_word)
+        update_bookmark(previous_word)
+    }
+
     function discard_word() {
         load_next_word()
     }
@@ -115,32 +144,55 @@ export default function Tagger() {
 
     return (
         <div style={{padding: "1rem"}}>
-            <Menu />
             {
                 is_waiting_on_firebase
                 ? <LoadingDiv />
                 : <LoadedWord
                     loaded_word={loaded_word}
                     keep_word={keep_word}
-                    discard_word={discard_word} /> }
-            {/* {
-                has_bookmark
-                ? <ResetBookmark
-                    is_waiting_on_firebase={is_waiting_on_firebase}
-                    update_bookmark={update_bookmark}
-                    set_loaded_word={set_loaded_word} />
-                : ""
-            } */}
+                    discard_word={discard_word} 
+                    load_previous_word={load_previous_word}
+                    is_mobile={is_mobile}
+                    /> 
+            }
+                <Menu />
         </div>
     )
+}
+
+function Button(props: {
+    on_click_action: Function, 
+    children: ReactNode,
+    background_color?: string,
+    font_color?: string
+}) {
+    
+    function handle_click() {
+        props.on_click_action()
+    }
+    
+    const button_style = {
+        marginRight: ".25rem",
+        borderRadius: ".25rem",
+        borderWidth: "1px",
+        backgroundColor: props.background_color || 'buttonface',
+        color: props.font_color || 'black',
+        padding: ".5rem"
+    }
+
+    return <button style={button_style} onClick={handle_click}>{props.children}</button>
 }
 
 function Menu() {
     const navigate = useNavigate()
 
+    function handle_click() {
+        navigate("/")
+    }
+
     return (
-        <div>
-            <button onClick={() => {navigate("/")}}>Main Menu</button>
+        <div style={{marginTop: ".25rem"}}>
+            <Button on_click_action={handle_click}>Main Menu</Button>
         </div>
     )
 }
@@ -148,8 +200,14 @@ function Menu() {
 function LoadedWord(props: {
     loaded_word: string | undefined,
     keep_word: Function,
-    discard_word: Function
+    discard_word: Function,
+    load_previous_word: Function,
+    is_mobile: boolean
 }) {
+
+    function handle_load_previous_word_click() {
+        props.load_previous_word()
+    }
 
     function handle_click_keep() {
         props.keep_word()
@@ -159,12 +217,22 @@ function LoadedWord(props: {
         props.discard_word()
     }
 
+    const button_row_style: CSSProperties = {}
+
+    if (props.is_mobile) {
+        button_row_style.display = "flex"
+        button_row_style.justifyContent = "space-between"
+    }
+
     return (
         <div>
-            <p>{props.loaded_word}</p>
-            <div>
-                <button onClick={handle_click_keep}>Keep</button>
-                <button onClick={handle_click_discard} style={{marginLeft: ".25rem"}}>Discard</button>
+            <p style={{fontSize: "2rem"}}>{props.loaded_word}</p>
+            <div style={button_row_style}>
+                <Button on_click_action={handle_click_keep} background_color="green" font_color="white">Keep</Button>
+                <Button on_click_action={handle_click_discard} background_color="red" font_color="white">Discard</Button>
+            </div>
+            <div style={{marginTop: "1rem"}}>
+                <Button on_click_action={handle_load_previous_word_click}>Previous</Button>
             </div>
         </div>
     )

@@ -2,4 +2,8 @@ const nav_paths = {
   map: "/map"
 }
 
-export { nav_paths }
+const mobile = {
+  break_point: 500
+}
+
+export { nav_paths, mobile }
