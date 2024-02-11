@@ -5,6 +5,7 @@ const defaults = {
     zoom_level: 5,
     brush_id: "clear_path",
     hexagon_stroke_width: 1,
+    daily_word_goal: 2000
 }
 
 export default defaults
