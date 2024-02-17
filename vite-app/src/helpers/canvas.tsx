@@ -50,6 +50,10 @@ function paint_line(
   if (is_dashed) {
     context.setLineDash(line_dash_array)
   }
+  else {
+    context.setLineDash([])
+  }
+
   context.strokeStyle = color
   context.lineCap = "butt"
   context.lineWidth = 10

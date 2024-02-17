@@ -3,6 +3,7 @@
 */
 
 import enum_neighbor_type from "../types/enum_neighbor_type"
+import type_edge_points from "../types/type_edge_points"
 
 function get_hexagon_short_diagonal_length(edge_length: number) {
   return Math.round(Math.sqrt(3) * edge_length)
@@ -47,14 +48,16 @@ function get_hexagon_corner_points(center_x: number, center_y: number, edge_leng
 
 function get_hexagon_edge_points(center_x: number, center_y: number, edge_length: number) {
     const short_diagonal = get_hexagon_short_diagonal_length(edge_length)
-    return {
-        top_left: {x: center_x - (short_diagonal / 4), y: center_y - edge_length*.75},
-        top_right: {x: center_x + (short_diagonal / 4), y: center_y - (edge_length*.75)},
-        right: {x: center_x + (short_diagonal / 2), y: center_y},
-        bottom_right: {x: center_x + (short_diagonal / 4), y: center_y + edge_length*.75},
-        bottom_left: {x: center_x - (short_diagonal / 4), y: center_y + (edge_length*.75)},
-        left: {x: center_x - (short_diagonal / 2), y: center_y},
+    const edge_points: type_edge_points = {
+        [enum_neighbor_type.top_left]: {x: center_x - (short_diagonal / 4), y: center_y - edge_length*.75},
+        [enum_neighbor_type.top_right]: {x: center_x + (short_diagonal / 4), y: center_y - (edge_length*.75)},
+        [enum_neighbor_type.right]: {x: center_x + (short_diagonal / 2), y: center_y},
+        [enum_neighbor_type.bottom_right]: {x: center_x + (short_diagonal / 4), y: center_y + edge_length*.75},
+        [enum_neighbor_type.bottom_left]: {x: center_x - (short_diagonal / 4), y: center_y + (edge_length*.75)},
+        [enum_neighbor_type.left]: {x: center_x - (short_diagonal / 2), y: center_y},
     }
+
+    return edge_points
 }
 
 function get_opposite_neighbor_type(neighbor_type: enum_neighbor_type) {
@@ -72,8 +75,8 @@ function get_opposite_neighbor_type(neighbor_type: enum_neighbor_type) {
             return enum_neighbor_type.top_left
         case enum_neighbor_type.bottom_left:
             return enum_neighbor_type.top_right
-        case enum_neighbor_type.right:
-            enum_neighbor_type.left
+        default: // If it wasn't any of the previous ones, it must be right
+            return enum_neighbor_type.right
     }
 }
 

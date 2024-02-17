@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 // import top_bar_button_style from "./top_bar_button_style"
 import spacing from "../../configs/spacing"
 import paint_brushes from "../../configs/paint_brushes"
+import { nav_paths } from "../../configs/constants"
 
 
 import scale_context from "../../contexts/scale_context"
@@ -18,7 +19,7 @@ export default memo(function EditBrushButton(props: {
     const this_paint_brush = paint_brushes[props.paint_brush_id]
 
     function handle_click() {
-        props.navigate_away_from_map("/brush_picker")
+        props.navigate_away_from_map(nav_paths.map + "/brush_picker")
     }
 
     return (<>

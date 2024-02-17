@@ -7,6 +7,8 @@ import spacing from "../configs/spacing"
 import colors from "../configs/colors"
 import FullPageOverlay from "../components/full_page_overlay"
 import class_names from "../configs/class_names"
+import { nav_paths } from "../configs/constants"
+
 
 export default function BrushPicker(props: {
     set_paint_brush_id: Dispatch<SetStateAction<string>>,
@@ -39,7 +41,7 @@ function Section(props: {
         props.set_paint_brush_id(clicked_paint_brush_id)
         props.ref_paint_brush_id.current = clicked_paint_brush_id
 
-        navigate("/")
+        navigate(nav_paths.map)
     }
 
     const PaintOption = function (props: {paint_brush_id: string}) {

@@ -4,6 +4,8 @@ import spacing from "../configs/spacing"
 import { paint_hexagon, paint_line, get_2d_path, paint_circle } from "../helpers/canvas"
 import enum_neighbor_type from "../types/enum_neighbor_type"
 import type_path_dictionary from "../types/type_path_dictionary"
+import paint_brushes from "../configs/paint_brushes"
+import { paint_category } from "../types/type_paint_brush"
 
 class Hexagon {
   row_number: number
@@ -11,8 +13,7 @@ class Hexagon {
 
   background_color_hexidecimal: string = colors.white
 
-  river_array: type_path_dictionary = this.build_empty_path_dictionary()
-  road_array: type_path_dictionary = this.build_empty_path_dictionary()
+  path_dictionaries = this.build_empty_path_dictionaries()
 
   is_top_left_river: boolean = false
   is_top_right_river: boolean = false
@@ -62,29 +63,36 @@ class Hexagon {
   get_attribute_index_array() {
     const attribute_array: String[] = []
     attribute_array.push('another_background_color_hexidecimal')
-    // attribute_array.push(...Object.keys(this.river_array).map((key) => ("is_" + key + "_river")))
-    // attribute_array.push(...Object.keys(this.road_array).map((key) => ("is_" + key + "_road")))
+    // attribute_array.push(...Object.keys(this.river_dict).map((key) => ("is_" + key + "_river")))
+    // attribute_array.push(...Object.keys(this.road_dict).map((key) => ("is_" + key + "_road")))
     // attribute_array.push('text')
     // attribute_array.push('icon_name')
     return attribute_array
   }
 
-  get_serialized_attribute_index(attribute_name: string) {
-    let return_index = undefined
+  // get_serialized_attribute_index(attribute_name: string) {
+  //   let return_index = undefined
 
-    switch (attribute_name) {
-      case 'background_color_hexidecimal':
+  //   switch (attribute_name) {
+  //     case 'background_color_hexidecimal':
 
-        break;
-    }
-    // console.log(
-    //   [...Object.keys(this.river_array).entries()]
-    // )
-  }
+  //       break;
+  //   }
+  // }
 
-  build_empty_path_dictionary() {
-    const return_dictionary = Object.fromEntries(Object.values(enum_neighbor_type).map((neighbor_type) => [neighbor_type, false])) as type_path_dictionary
-    return return_dictionary
+  build_empty_path_dictionaries() {
+    const path_brushes = Object.entries(paint_brushes).filter((brush) => {
+      const brush_data = brush[1]
+      return brush_data.paint_category == paint_category.path && brush_data.id != 'clear_path'
+    })
+
+    const path_dictionaries: {[index: string]: type_path_dictionary} = {}
+
+    path_brushes.forEach((path_brush) => {
+      path_dictionaries[path_brush[0]] = Object.fromEntries(Object.values(enum_neighbor_type).map((neighbor_type) => [neighbor_type, false])) as type_path_dictionary
+    });
+
+    return path_dictionaries
   }
 
   populate_from_firebase_hex_data(firebase_hex_data: string) {
@@ -92,7 +100,7 @@ class Hexagon {
 
     this.background_color_hexidecimal = split_array[0]
 
-    // Object.keys(this.river_array).sort().forEach(()
+    // Object.keys(this.river_dict).sort().forEach(()
 
     this.is_top_left_river = (split_array[1] == "1" ? true : false)
     this.is_top_right_river = (split_array[2] == "1" ? true : false)
@@ -161,6 +169,8 @@ class Hexagon {
     if (!this.canvas_context) {
       return
     }
+    
+    const typesafe_canvas_context = this.canvas_context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
     /* ---------------------------- background color ---------------------------- */
     paint_hexagon(
@@ -174,20 +184,35 @@ class Hexagon {
     /* ---------------------------------- paths --------------------------------- */
     const edge_points = get_hexagon_edge_points(this.center_x, this.center_y, this.edge_pixels)
 
-    if (this.is_top_left_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.top_left.x, edge_points.top_left.y, colors.ocean, false, [this.edge_pixels/4])}
-    if (this.is_top_right_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.top_right.x, edge_points.top_right.y, colors.ocean, false, [this.edge_pixels/4])}
-    if (this.is_right_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.right.x, edge_points.right.y, colors.ocean, false, [this.edge_pixels/4])}
-    if (this.is_bottom_right_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.bottom_right.x, edge_points.bottom_right.y, colors.ocean, false, [this.edge_pixels/4])}
-    if (this.is_bottom_left_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.bottom_left.x, edge_points.bottom_left.y, colors.ocean, false, [this.edge_pixels/4])}
-    if (this.is_left_river) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.left.x, edge_points.left.y, colors.ocean, false, [this.edge_pixels/4])}
+    Object.entries(this.path_dictionaries).forEach((path_dictionary_entry) => {
+      const paint_brush_id = path_dictionary_entry[0]
+      const path_dictionary = path_dictionary_entry[1]
 
-    if (this.is_top_left_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.top_left.x, edge_points.top_left.y, colors.road, (this.is_top_left_river ? true : false), [this.edge_pixels/4])}
-    if (this.is_top_right_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.top_right.x, edge_points.top_right.y, colors.road, (this.is_top_right_river ? true : false), [this.edge_pixels/4])}
-    if (this.is_right_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.right.x, edge_points.right.y, colors.road, (this.is_right_river ? true : false), [this.edge_pixels/4])}
-    if (this.is_bottom_right_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.bottom_right.x, edge_points.bottom_right.y, colors.road, (this.is_bottom_right_river ? true : false), [this.edge_pixels/4])}
-    if (this.is_bottom_left_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.bottom_left.x, edge_points.bottom_left.y, colors.road, (this.is_bottom_left_river ? true : false), [this.edge_pixels/4])}
-    if (this.is_left_road) {paint_line(this.canvas_context, this.center_x, this.center_y, edge_points.left.x, edge_points.left.y, colors.road, (this.is_left_river ? true : false), [this.edge_pixels/4])}
+      Object.values(enum_neighbor_type).forEach((neighbor_type) => {
+        const edge_type = neighbor_type
+        const is_path = path_dictionary[neighbor_type]
+        const edge_point = edge_points[edge_type]
+        const dash_array = [this.edge_pixels/4]
+        let is_dashed = false
 
+        if (paint_brush_id == 'road' && this.path_dictionaries.river[edge_type]) {
+          is_dashed = true
+        }
+
+        if (is_path) {
+          paint_line(
+            typesafe_canvas_context,
+            this.center_x,
+            this.center_y,
+            edge_point.x,
+            edge_point.y,
+            paint_brushes[paint_brush_id].hexidecimal_color,
+            is_dashed,
+            dash_array
+          )
+        }
+      })
+    })
   }
 
   paint_temporary_circle(

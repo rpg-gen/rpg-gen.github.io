@@ -3,6 +3,7 @@ import { DocumentData } from "firebase/firestore";
 import defaults from "../configs/defaults";
 import Hexagon from "./Hexagon";
 import enum_neighbor_type from "../types/enum_neighbor_type";
+import { get_opposite_neighbor_type } from "../helpers/geometry";
 
 class Matrix {
     num_rows: number = defaults.num_hexes_tall
@@ -65,11 +66,11 @@ class Matrix {
 
         /* ------------------------ See if we move up or down ----------------------- */
         if ([enum_neighbor_type.top_left,enum_neighbor_type.top_right].includes(neighbor_type)) {
-            neighbor_row_number += 1
+            neighbor_row_number -= 1
         }
 
         else if ([enum_neighbor_type.bottom_right, enum_neighbor_type.bottom_left].includes(neighbor_type)) {
-            neighbor_row_number -= 1
+            neighbor_row_number += 1
         }
 
         /* ----------------------- see if we move side to side ---------------------- */
@@ -214,139 +215,37 @@ class Matrix {
         return return_hexagon
     }
 
-    add_path(start_hexagon: Hexagon, target_hexagon: Hexagon, path_brush_id: string) {
-        if (start_hexagon.row_number == target_hexagon.row_number && start_hexagon.column_number == target_hexagon.column_number) {
-            return
+    get_neighbor_direction(start_hexagon: Hexagon, end_hexagon: Hexagon) {
+        const neighbor_types = Object.values(enum_neighbor_type)
+        const return_neighbor_type = neighbor_types.find((neighbor_type) => {
+            const possible_end_hexagon = this.get_neighbor(start_hexagon, neighbor_type)
+            if (possible_end_hexagon) {
+                const end_hex_key = possible_end_hexagon.get_firebase_hex_key()
+                const possible_end_hex_key = end_hexagon.get_firebase_hex_key()
+                
+                return (possible_end_hex_key == end_hex_key)
+            }
+        })
+
+        if (!return_neighbor_type) {
+            throw new Error("Unable to get neighbor direction, Possibly attempting with non-neighbors")
         }
 
-        // Left and Right Neighbors
-        if (start_hexagon.row_number == target_hexagon.row_number) {
-            if (target_hexagon.column_number > start_hexagon.column_number) {
-                if (path_brush_id == "river") {
-                    start_hexagon.is_right_river = true
-                    target_hexagon.is_left_river = true
-                }
-                else if (path_brush_id == "road") {
-                    start_hexagon.is_right_road = true
-                    target_hexagon.is_left_road = true
-                }
-            }
-            else {
-                if (path_brush_id == "river") {
-                    start_hexagon.is_left_river = true
-                    target_hexagon.is_right_river = true
-                }
-                else if (path_brush_id == "road") {
-                    start_hexagon.is_left_road = true
-                    target_hexagon.is_right_road = true
-                }
-            }
-        }
-        // Upwards neighbors
-        else if (target_hexagon.row_number < start_hexagon.row_number) {
-            if (start_hexagon.row_number % 2 == 1) {
-                // Top Left Neighbor of odd rows
-                if (target_hexagon.column_number == start_hexagon.column_number) {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_top_left_river = true
-                        target_hexagon.is_bottom_right_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_top_left_road = true
-                        target_hexagon.is_bottom_right_road = true
-                    }
-                }
-                // Top right of odd rows
-                else {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_top_right_river = true
-                        target_hexagon.is_bottom_left_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_top_right_road = true
-                        target_hexagon.is_bottom_left_road = true
-                    }
-                }
-            }
-            else {
-                // Top Right Neighbor of even rows
-                if (target_hexagon.column_number == start_hexagon.column_number) {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_top_right_river = true
-                        target_hexagon.is_bottom_left_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_top_right_road = true
-                        target_hexagon.is_bottom_left_road = true
-                    }
-                }
-                // top left of even rows
-                else {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_top_left_river = true
-                        target_hexagon.is_bottom_right_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_top_left_road = true
-                        target_hexagon.is_bottom_right_road = true
-                    }
-                }
-            }
-        }
-        // Downwards neighbors
-        else {
-            if (start_hexagon.row_number % 2 == 1) {
-                // Bottom Left Neighbor of odd rows
-                if (target_hexagon.column_number == start_hexagon.column_number) {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_bottom_left_river = true
-                        target_hexagon.is_top_right_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_bottom_left_road = true
-                        target_hexagon.is_top_right_road = true
-                    }
-                }
-                // Bottom right of odd rows
-                else {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_bottom_right_river = true
-                        target_hexagon.is_top_left_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_bottom_right_road = true
-                        target_hexagon.is_top_left_road = true
-                    }
-                }
-            }
-            else {
-                // Bottom Right Neighbor of even rows
-                if (target_hexagon.column_number == start_hexagon.column_number) {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_bottom_right_river = true
-                        target_hexagon.is_top_left_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_bottom_right_road = true
-                        target_hexagon.is_top_left_road = true
-                    }
-                }
-                // Bottom left of even rows
-                else {
-                    if (path_brush_id == "river") {
-                        start_hexagon.is_bottom_left_river = true
-                        target_hexagon.is_top_right_river = true
-                    }
-                    else if (path_brush_id == "road") {
-                        start_hexagon.is_bottom_left_road = true
-                        target_hexagon.is_top_right_road = true
-                    }
-                }
-            }
-        }
+        return return_neighbor_type
     }
 
+    add_path(start_hexagon: Hexagon, target_hexagon: Hexagon, path_brush_id: string) {
+        const neighbor_type = this.get_neighbor_direction(start_hexagon, target_hexagon)
+        
+        if (!this.are_neighbors(start_hexagon, target_hexagon)) {
+            throw new Error("Attempted to add a path between hexes that are not neighbors")
+        }
 
+        const inverse_neighbor_type = get_opposite_neighbor_type(neighbor_type)
+
+        start_hexagon.path_dictionaries[path_brush_id][neighbor_type] = true
+        target_hexagon.path_dictionaries[path_brush_id][inverse_neighbor_type] = true
+    }
 }
 
 export default Matrix

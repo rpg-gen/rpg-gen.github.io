@@ -100,8 +100,6 @@ export default memo(function HexGrid(props: {
 
                         const neighbors = matrix.get_all_neighbors(hexagon)
 
-                        // console.log(hexagon.get_attribute_index_array())
-
                         // hexagon.get_attribute_index_array().forEach((attribute) => {
                         //     hexagon[attribute] = 'test'
                         // })
@@ -136,7 +134,6 @@ export default memo(function HexGrid(props: {
 
                             if (are_neighbors) {
                                 matrix.add_path(props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current, paint_brush.id)
-
                                 props.ref_previous_clicked_hexagon.current.paint()
                                 props.ref_clicked_hexagon.current.paint()
                                 firebase_map_hook.save_hexagon_definitions([props.ref_previous_clicked_hexagon.current, props.ref_clicked_hexagon.current])
