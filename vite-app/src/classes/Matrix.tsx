@@ -12,18 +12,12 @@ class Matrix {
     firebase_map_doc: DocumentData = {}
     hexagon_edge_pixels: number = defaults.hexagon_edge_pixels
     canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined
-    neighbor_options: String[] = [
-        "top left",
-        "top right",
-        "right",
-        "bottom right",
-        "bottom left",
-        "left"
-    ]
 
     // Don't include size information in the constructor so that we can retain matrix information
     // even when we resize the scale contxt
     constructor() {}
+
+    /* ------------------- Functions for neighbor logic, paths ------------------ */
 
     are_neighbors(hexagon_1: Hexagon, hexagon_2: Hexagon) {
         let are_neighbors_return = false
@@ -105,6 +99,53 @@ class Matrix {
 
         return return_value
     }
+
+    get_neighbor_direction(start_hexagon: Hexagon, end_hexagon: Hexagon) {
+        const neighbor_types = Object.values(enum_neighbor_type)
+        const return_neighbor_type = neighbor_types.find((neighbor_type) => {
+            const possible_end_hexagon = this.get_neighbor(start_hexagon, neighbor_type)
+            if (possible_end_hexagon) {
+                const end_hex_key = possible_end_hexagon.get_firebase_hex_key()
+                const possible_end_hex_key = end_hexagon.get_firebase_hex_key()
+
+                return (possible_end_hex_key == end_hex_key)
+            }
+        })
+
+        if (!return_neighbor_type) {
+            throw new Error("Unable to get neighbor direction, Possibly attempting with non-neighbors")
+        }
+
+        return return_neighbor_type
+    }
+
+    add_path(start_hexagon: Hexagon, target_hexagon: Hexagon, path_brush_id: string) {
+        const neighbor_type = this.get_neighbor_direction(start_hexagon, target_hexagon)
+
+        if (!this.are_neighbors(start_hexagon, target_hexagon)) {
+            throw new Error("Attempted to add a path between hexes that are not neighbors")
+        }
+
+        const inverse_neighbor_type = get_opposite_neighbor_type(neighbor_type)
+
+        start_hexagon.path_dictionaries[path_brush_id][neighbor_type] = true
+        target_hexagon.path_dictionaries[path_brush_id][inverse_neighbor_type] = true
+    }
+
+    remove_paths(hexagon: Hexagon) {
+        hexagon.clear_paths()
+
+        Object.values(enum_neighbor_type).forEach((neighbor_type) => {
+            const neighbor_hexagon = this.get_neighbor(hexagon, neighbor_type)
+
+            if (neighbor_hexagon) {
+                const inverse_neighbor_type = get_opposite_neighbor_type(neighbor_type)
+                neighbor_hexagon.clear_paths(inverse_neighbor_type)
+            }
+        })
+    }
+
+    /* ---------------------------------- misc ---------------------------------- */
 
     // This is NOT done in the constructor because the hex_grid needs to create this before rendering, where the context isn't created yet
     set_context(canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined) {
@@ -215,37 +256,6 @@ class Matrix {
         return return_hexagon
     }
 
-    get_neighbor_direction(start_hexagon: Hexagon, end_hexagon: Hexagon) {
-        const neighbor_types = Object.values(enum_neighbor_type)
-        const return_neighbor_type = neighbor_types.find((neighbor_type) => {
-            const possible_end_hexagon = this.get_neighbor(start_hexagon, neighbor_type)
-            if (possible_end_hexagon) {
-                const end_hex_key = possible_end_hexagon.get_firebase_hex_key()
-                const possible_end_hex_key = end_hexagon.get_firebase_hex_key()
-                
-                return (possible_end_hex_key == end_hex_key)
-            }
-        })
-
-        if (!return_neighbor_type) {
-            throw new Error("Unable to get neighbor direction, Possibly attempting with non-neighbors")
-        }
-
-        return return_neighbor_type
-    }
-
-    add_path(start_hexagon: Hexagon, target_hexagon: Hexagon, path_brush_id: string) {
-        const neighbor_type = this.get_neighbor_direction(start_hexagon, target_hexagon)
-        
-        if (!this.are_neighbors(start_hexagon, target_hexagon)) {
-            throw new Error("Attempted to add a path between hexes that are not neighbors")
-        }
-
-        const inverse_neighbor_type = get_opposite_neighbor_type(neighbor_type)
-
-        start_hexagon.path_dictionaries[path_brush_id][neighbor_type] = true
-        target_hexagon.path_dictionaries[path_brush_id][inverse_neighbor_type] = true
-    }
 }
 
 export default Matrix

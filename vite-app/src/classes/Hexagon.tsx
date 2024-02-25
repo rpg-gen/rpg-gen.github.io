@@ -15,22 +15,10 @@ class Hexagon {
 
   path_dictionaries = this.build_empty_path_dictionaries()
 
-  is_top_left_river: boolean = false
-  is_top_right_river: boolean = false
-  is_right_river: boolean = false
-  is_bottom_right_river: boolean = false
-  is_bottom_left_river: boolean = false
-  is_left_river: boolean = false
-
-  is_top_left_road: boolean = false
-  is_top_right_road: boolean = false
-  is_right_road: boolean = false
-  is_bottom_right_road: boolean = false
-  is_bottom_left_road: boolean = false
-  is_left_road: boolean = false
-
   text: string = ""
   icon_name: string = ""
+
+  firebase_serialization_indexes = this.get_firebase_serialization_indexes()
 
   edge_pixels: number
   canvas_context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | undefined
@@ -56,35 +44,29 @@ class Hexagon {
     this.center_y = center_y
   }
 
-  clear_paths_from_hex() {
+  clear_paths(neighbor_type?: enum_neighbor_type) {
+    // If no neighbor type passed in, remove all paths from the hexagon
+
+    if (!neighbor_type) {
+      this.path_dictionaries = this.build_empty_path_dictionaries()
+    }
+    else {
+      Object.keys(this.path_dictionaries).forEach((path_id: string) => {
+        this.path_dictionaries[path_id][neighbor_type] = false
+      })
+    }
 
   }
 
-  get_attribute_index_array() {
-    const attribute_array: String[] = []
-    attribute_array.push('another_background_color_hexidecimal')
-    // attribute_array.push(...Object.keys(this.river_dict).map((key) => ("is_" + key + "_river")))
-    // attribute_array.push(...Object.keys(this.road_dict).map((key) => ("is_" + key + "_road")))
-    // attribute_array.push('text')
-    // attribute_array.push('icon_name')
-    return attribute_array
-  }
-
-  // get_serialized_attribute_index(attribute_name: string) {
-  //   let return_index = undefined
-
-  //   switch (attribute_name) {
-  //     case 'background_color_hexidecimal':
-
-  //       break;
-  //   }
-  // }
-
-  build_empty_path_dictionaries() {
-    const path_brushes = Object.entries(paint_brushes).filter((brush) => {
+  get_path_brushes() {
+    return Object.entries(paint_brushes).filter((brush) => {
       const brush_data = brush[1]
       return brush_data.paint_category == paint_category.path && brush_data.id != 'clear_path'
     })
+  }
+
+  build_empty_path_dictionaries() {
+    const path_brushes = this.get_path_brushes()
 
     const path_dictionaries: {[index: string]: type_path_dictionary} = {}
 
@@ -95,46 +77,82 @@ class Hexagon {
     return path_dictionaries
   }
 
+  /* ------------------------- Firebase serialization ------------------------- */
+
+  get_firebase_serialization_indexes() {
+    const attribute_array: String[] = []
+    attribute_array.push('background_color_hexidecimal')
+    attribute_array.push('text')
+    attribute_array.push('icon_name')
+
+    Object.keys(this.path_dictionaries).forEach((path_key) => {
+      Object.keys(this.path_dictionaries[path_key]).forEach((neighbor_key) => {
+        attribute_array.push(this.get_path_attribute_key(path_key, neighbor_key))
+      })
+    })
+
+    return attribute_array
+  }
+
+  get_path_attribute_key(path_key: string, neighbor_type: string) {
+    return path_key + "_" + neighbor_type
+  }
+
+  get_firebase_serialization_index(attribute_name: string) {
+    let return_value = 0
+
+    this.firebase_serialization_indexes.forEach((value: String, index: number) => {
+
+      if (value == attribute_name) {
+        return_value = index
+      }
+    })
+
+    return return_value
+  }
+
   populate_from_firebase_hex_data(firebase_hex_data: string) {
-    const split_array = firebase_hex_data.split("_")
+    const firebase_array = firebase_hex_data.split("_")
 
-    this.background_color_hexidecimal = split_array[0]
+    this.background_color_hexidecimal = firebase_array[this.get_firebase_serialization_index('background_color_hexidecimal')]
+    this.text = firebase_array[this.get_firebase_serialization_index('text')]
+    this.icon_name = firebase_array[this.get_firebase_serialization_index('icon_name')]
 
-    // Object.keys(this.river_dict).sort().forEach(()
-
-    this.is_top_left_river = (split_array[1] == "1" ? true : false)
-    this.is_top_right_river = (split_array[2] == "1" ? true : false)
-    this.is_right_river = (split_array[3] == "1" ? true : false)
-    this.is_bottom_right_river = (split_array[4] == "1" ? true : false)
-    this.is_bottom_left_river = (split_array[5] == "1" ? true : false)
-    this.is_left_river = (split_array[6] == "1" ? true : false)
-    this.is_top_left_road = (split_array[7] == "1" ? true : false)
-    this.is_top_right_road = (split_array[8] == "1" ? true : false)
-    this.is_right_road = (split_array[9] == "1" ? true : false)
-    this.is_bottom_right_road = (split_array[10] == "1" ? true : false)
-    this.is_bottom_left_road = (split_array[11] == "1" ? true : false)
-    this.is_left_road = (split_array[12] == "1" ? true : false)
-    this.text = split_array[13]
-    this.icon_name = split_array[14]
-
+    Object.keys(this.path_dictionaries).forEach((path_key) => {
+      Object.values(enum_neighbor_type).forEach((neighbor_type) => {
+        const firebase_string_value = firebase_array[this.get_firebase_serialization_index(this.get_path_attribute_key(path_key, neighbor_type))]
+        this.path_dictionaries[path_key][neighbor_type] = (firebase_string_value == '1' ? true : false)
+      })
+    })
   }
 
   get_firebase_hex_data() {
-    return this.background_color_hexidecimal + "_"
-        + (this.is_top_left_river ? 1 : 0) + "_"
-        + (this.is_top_right_river ? 1 : 0) + "_"
-        + (this.is_right_river ? 1 : 0) + "_"
-        + (this.is_bottom_right_river ? 1 : 0) + "_"
-        + (this.is_bottom_left_river ? 1 : 0) + "_"
-        + (this.is_left_river ? 1 : 0) + "_"
-        + (this.is_top_left_road ? 1 : 0) + "_"
-        + (this.is_top_right_road ? 1 : 0) + "_"
-        + (this.is_right_road ? 1 : 0) + "_"
-        + (this.is_bottom_right_road ? 1 : 0) + "_"
-        + (this.is_bottom_left_road ? 1 : 0) + "_"
-        + (this.is_left_road ? 1 : 0) + "_"
-        + this.text + "_"
-        + this.icon_name
+    let hex_data_array: [number, string][] = []
+
+    hex_data_array.push([this.get_firebase_serialization_index('background_color_hexidecimal'), this.background_color_hexidecimal])
+    hex_data_array.push([this.get_firebase_serialization_index('text'), this.text])
+    hex_data_array.push([this.get_firebase_serialization_index('icon_name'), this.icon_name])
+
+    Object.keys(this.path_dictionaries).forEach((path_key) => {
+      Object.values(enum_neighbor_type).forEach((neighbor_type) => {
+        const firebase_array_index = this.get_firebase_serialization_index(this.get_path_attribute_key(path_key, neighbor_type))
+        const firebase_value = (this.path_dictionaries[path_key][neighbor_type] == true ? '1' : '0')
+        hex_data_array.push([firebase_array_index, firebase_value])
+      })
+    })
+
+    hex_data_array.sort((start_element: [number, string], next_element: [number, string]) => {
+      if (start_element[0] < next_element[0]) {
+        return -1
+      }
+      else {
+        return 1
+      }
+    })
+
+    const just_values_array = hex_data_array.map((element) => element[1])
+
+    return just_values_array.join("_")
   }
 
   get_firebase_hex_key() {
@@ -169,7 +187,7 @@ class Hexagon {
     if (!this.canvas_context) {
       return
     }
-    
+
     const typesafe_canvas_context = this.canvas_context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
 
     /* ---------------------------- background color ---------------------------- */

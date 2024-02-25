@@ -10,6 +10,7 @@ import scale_context from "../contexts/scale_context"
 import class_names from "../configs/class_names"
 import FullPageOverlay from "../components/full_page_overlay"
 import { calculate_canvas_height, calculate_canvas_width } from "../helpers/sizing"
+import { nav_paths } from "../configs/constants"
 
 export default function ZoomPicker() {
 
@@ -66,7 +67,7 @@ function ZoomOption(props: {zoom_level: number}) {
                 hexagon_edge_pixels: new_edge_length
             }
         })
-        navigate("/")
+        navigate(nav_paths.map)
     }
 
     const new_edge_length = props.zoom_level * (defaults.hexagon_edge_pixels / defaults.zoom_level)

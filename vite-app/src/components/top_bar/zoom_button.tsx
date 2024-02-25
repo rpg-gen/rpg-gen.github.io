@@ -3,6 +3,7 @@ import { memo, useContext } from "react"
 import scale_context from "../../contexts/scale_context"
 import { useNavigate } from "react-router-dom"
 import defaults from "../../configs/defaults"
+import { nav_paths } from "../../configs/constants"
 
 export default memo(function ZoomButton(props: {
     navigate_away_from_map: Function
@@ -12,7 +13,7 @@ export default memo(function ZoomButton(props: {
     const current_zoom_level = current_scale_context.hexagon_edge_pixels / (defaults.hexagon_edge_pixels / defaults.zoom_level)
 
     function handle_click() {
-        props.navigate_away_from_map("/zoom")
+        props.navigate_away_from_map(nav_paths.map + "/zoom")
     }
 
     return (

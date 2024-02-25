@@ -96,30 +96,16 @@ export default memo(function HexGrid(props: {
 
                     if (paint_brush.id == "clear_path") {
 
-                        const clicked_hex = props.ref_clicked_hexagon.current
+                        matrix.remove_paths(props.ref_clicked_hexagon.current)
 
-                        const neighbors = matrix.get_all_neighbors(hexagon)
-
-                        // hexagon.get_attribute_index_array().forEach((attribute) => {
-                        //     hexagon[attribute] = 'test'
-                        // })
-
-                        props.ref_clicked_hexagon.current.is_top_left_river = false
-                        props.ref_clicked_hexagon.current.is_top_right_river = false
-                        props.ref_clicked_hexagon.current.is_right_river = false
-                        props.ref_clicked_hexagon.current.is_bottom_right_river = false
-                        props.ref_clicked_hexagon.current.is_bottom_left_river = false
-                        props.ref_clicked_hexagon.current.is_left_river = false
-
-                        props.ref_clicked_hexagon.current.is_top_left_road = false
-                        props.ref_clicked_hexagon.current.is_top_right_road = false
-                        props.ref_clicked_hexagon.current.is_right_road = false
-                        props.ref_clicked_hexagon.current.is_bottom_right_road = false
-                        props.ref_clicked_hexagon.current.is_bottom_left_road = false
-                        props.ref_clicked_hexagon.current.is_left_road = false
-
-                        firebase_map_hook.save_hexagon_definitions([hexagon])
                         hexagon.paint()
+
+                        const neighbor_hexes = matrix.get_all_neighbors(props.ref_clicked_hexagon.current)
+
+                        neighbor_hexes.forEach((hex) => {hex.paint()})
+
+                        firebase_map_hook.save_hexagon_definitions([hexagon, ...neighbor_hexes])
+
                         return
                     }
 
