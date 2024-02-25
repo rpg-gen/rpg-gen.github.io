@@ -89,7 +89,7 @@ export default function Tagger() {
         const doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_TRACKING, get_date_key())
         const doc_snap = await getDoc(doc_ref)
         const data = doc_snap.data()
-        
+
         if (data) {
             first_word_of_today.current = (data.first_word_of_this_day)
             return data.first_word_of_this_day
@@ -209,10 +209,10 @@ export default function Tagger() {
                     <LoadedWord
                         loaded_word={loaded_word}
                         keep_word={keep_word}
-                        discard_word={discard_word} 
+                        discard_word={discard_word}
                         load_previous_word={load_previous_word}
                         is_mobile={is_mobile}
-                    /> 
+                    />
                     <p style={{padding: "1rem", color: "white", backgroundColor: (words_done_today >= defaults.daily_word_goal ? "green" : "red")}}>{"Goal: " + words_done_today + " / " + defaults.daily_word_goal}</p>
                     <Menu />
                     </>
@@ -223,17 +223,17 @@ export default function Tagger() {
 }
 
 function Button(props: {
-    on_click_action: Function, 
+    on_click_action: Function,
     children: ReactNode,
     background_color?: string,
     font_color?: string,
     height?: number
 }) {
-    
+
     function handle_click() {
         props.on_click_action()
     }
-    
+
     const button_style = {
         marginRight: ".25rem",
         borderRadius: ".25rem",
@@ -272,7 +272,7 @@ function LoadedWord(props: {
     // State
     const [loaded_definition, set_loaded_definition] = useState<string[]>([])
     const [is_loading_definition, set_is_loading_definition] = useState(false)
-    
+
     async function load_definition() {
         const new_definition_array: string[] = []
 
@@ -281,7 +281,7 @@ function LoadedWord(props: {
 
             if (response.ok) {
                 const response_json = await response.json()
-                
+
                 if (response_json[0] && response_json[0].meanings) {
                     response_json[0].meanings.forEach((meaning: any) => {
                         meaning.definitions.forEach((definition: any) => {
@@ -300,11 +300,11 @@ function LoadedWord(props: {
         catch (error: any) {
             new_definition_array.push("Error loading defintion from API: " + error.message)
         }
-        
+
         set_loaded_definition(new_definition_array)
         set_is_loading_definition(false)
     }
-    
+
     // Handlers
 
     function handle_load_previous_word_click() {
@@ -326,7 +326,7 @@ function LoadedWord(props: {
         set_is_loading_definition(true)
         load_definition()
     }
-    
+
     // Styles
 
     const button_row_style: CSSProperties = {}
@@ -389,5 +389,5 @@ function get_first_word_from_list() {
 }
 
 function get_words_array() {
-    return words_url.split("\r\n")
+    return words_url.split("\n")
 }
