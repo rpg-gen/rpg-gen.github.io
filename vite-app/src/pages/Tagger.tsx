@@ -1,6 +1,6 @@
 // Library Imports
 import useFirebaseProject from "../hooks/use_firebase_project"
-import { getFirestore, doc, getDoc, setDoc, DocumentData } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, DocumentData, getCountFromServer, collection } from "firebase/firestore"
 import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties, useRef } from "react"
 
 // rpg-gen imports
@@ -26,6 +26,7 @@ export default function Tagger() {
     // State
     const [is_waiting_on_firebase, set_is_waiting_on_firebase] = useState(true)
     const [loaded_word, set_loaded_word] = useState<string>()
+    const [saved_word_count, set_saved_word_count] = useState<number>()
     const [has_bookmark, set_has_bookmark] = useState<Boolean>(false)
     //const [first_word_of_today, set_first_word_of_today] = useState()
     const first_word_of_today = useRef<string>()
@@ -34,6 +35,7 @@ export default function Tagger() {
     const FIRESTORE_DATABASE = getFirestore(useFirebaseProject())
     const is_mobile = window_size[0] < mobile.break_point;
     const words_done_today = get_words_done_today()
+    const total_words_done = get_total_words_done()
 
     async function get_bookmark() {
         let return_value = undefined
@@ -99,6 +101,15 @@ export default function Tagger() {
         }
     }
 
+    function get_total_words_done() {
+        if (!loaded_word) {
+           return 0
+        }
+        else {
+            return get_index_of_word(loaded_word) + 1
+        }
+    }
+
     function get_words_done_today() {
         if (loaded_word) {
             if (!first_word_of_today.current) {
@@ -117,6 +128,7 @@ export default function Tagger() {
     function get_index_of_word(word_to_search_for: string) {
         let return_index = -1
         const words_array = get_words_array()
+
         words_array.forEach((word, index) => {
             if (word == word_to_search_for) {
                 return_index = index
@@ -129,6 +141,13 @@ export default function Tagger() {
     function update_loaded_word(new_word: string) {
         set_loaded_word(new_word)
         update_bookmark(new_word)
+    }
+
+    async function load_saved_word_count() {
+        const collection_ref = collection(FIRESTORE_DATABASE, COLLECTION_KEEP);
+        const snapshot = await getCountFromServer(collection_ref)
+        const count = snapshot.data().count
+        set_saved_word_count(count)
     }
 
     async function load_initial_word() {
@@ -188,14 +207,14 @@ export default function Tagger() {
         if (loaded_word) {
             const doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_KEEP, loaded_word)
             const new_doc_data: DocumentData = {word_key: loaded_word}
-            setDoc(doc_ref, new_doc_data)
+            setDoc(doc_ref, new_doc_data).then(() => load_saved_word_count())
             load_next_word()
         }
     }
 
     // Effects
     useEffect(function () {
-        load_initial_word().then(() => {
+        Promise.all([load_initial_word(), load_saved_word_count()]).then(() => {
             set_is_waiting_on_firebase(false)
         })
     },[])
@@ -213,7 +232,12 @@ export default function Tagger() {
                         load_previous_word={load_previous_word}
                         is_mobile={is_mobile}
                     />
-                    <p style={{padding: "1rem", color: "white", backgroundColor: (words_done_today >= defaults.daily_word_goal ? "green" : "red")}}>{"Goal: " + words_done_today + " / " + defaults.daily_word_goal}</p>
+                    <p style={{padding: "1rem", color: "white", backgroundColor: (words_done_today >= defaults.daily_word_goal ? "green" : "red")}}>
+                        {"Goal: " + words_done_today + " / " + defaults.daily_word_goal}
+                    </p>
+                    <p>
+                        Total Words Saved: {saved_word_count} / { total_words_done }
+                    </p>
                     <Menu />
                     </>
                 )
@@ -389,5 +413,5 @@ function get_first_word_from_list() {
 }
 
 function get_words_array() {
-    return words_url.split("\n")
+    return words_url.split("\n").map((word: string) => word.trim())
 }
