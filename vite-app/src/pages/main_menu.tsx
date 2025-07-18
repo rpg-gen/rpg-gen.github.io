@@ -16,19 +16,17 @@ export default function MainMenu(props: {}) {
     const user_context = useContext(UserContext)
 
     // Variables
-    let link_prefix = '/'
     let map_link_text = 'Map'
 
-    // If we're already on the map page, stay underneath it so the map doesn't unload
+    // If we're already on the map page, change the text to indicate we can go back
     if (location.pathname.includes(nav_paths.map)) {
-        link_prefix = nav_paths.map
         map_link_text = 'Back to Map'
     }
 
     return (
         <FullPageOverlay>
             <MainMenuOption label={map_link_text} target={nav_paths.map} />
-            <MainMenuOption label="Account" target={link_prefix + "account"} />
+            <MainMenuOption label="Account" target="/account" />
             {
                 user_context.is_logged_in
                 ? <MainMenuOption label="Tagger" target="/tagger" />
