@@ -1,6 +1,6 @@
 // Library Imports
 import useFirebaseProject from "../hooks/use_firebase_project"
-import { getFirestore, doc, getDoc, setDoc, DocumentData, getCountFromServer, collection } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, DocumentData, getCountFromServer, collection, getDocs } from "firebase/firestore"
 import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties, useRef } from "react"
 
 // rpg-gen imports
@@ -150,6 +150,46 @@ export default function Tagger() {
         set_saved_word_count(count)
     }
 
+    async function download_saved_words() {
+        try {
+            console.log("Downloading saved words...")
+            
+            // Get all documents from the words collection
+            const collection_ref = collection(FIRESTORE_DATABASE, COLLECTION_KEEP);
+            const querySnapshot = await getDocs(collection_ref);
+            
+            // Extract word keys from documents
+            const words: string[] = [];
+            querySnapshot.forEach((doc: any) => {
+                const data = doc.data();
+                if (data.word_key) {
+                    words.push(data.word_key);
+                }
+            });
+            
+            // Sort words alphabetically
+            words.sort();
+            
+            // Create text content
+            const textContent = words.join('\n');
+            
+            // Create and download file
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `saved_words_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            console.log(`Downloaded ${words.length} words`);
+        } catch (error) {
+            console.error("Error downloading words:", error);
+        }
+    }
+
     async function load_initial_word() {
         const bookmark = await get_bookmark()
 
@@ -238,6 +278,9 @@ export default function Tagger() {
                     <p>
                         Total Words Saved: {saved_word_count} / { total_words_done }
                     </p>
+                    <div style={{marginTop: "1rem"}}>
+                    {/* <button onClick={download_saved_words}>Download Saved Words</button> */}
+                    </div>
                     <Menu />
                     </>
                 )

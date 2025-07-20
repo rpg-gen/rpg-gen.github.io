@@ -1,0 +1,59 @@
+Applicable to Science Fiction or Fantasy settings
+Pull from random words from words_in_dictionary.txt or non_dictionary_candidates.txt
+
+1. Plant Generator
+    a. meals made from it
+    b. danger of plant, negative properties
+    c. positive benefits of plant
+    d. physical description, size ,etc
+2. NPC / Figure Generator
+    a. Personality (one sentence)
+    b. Physical Description (one sentence)
+    c. Occupation or Role (pick one)
+    d. Title (generate one, using one or more words from the lists plus any neede connectors)
+    e. Nickname (generate one, if it make sense)
+    f. Relationship to adventurers or story (one sentence)
+    g. name (make up, don't pull from files)
+    h. background (one sentense)
+3. Item
+    a. Using any of the possible pieces in this structure
+        - The <descriptor> <object> of <descriptor/npc/place/event/etc>
+        - Adding more or less descriptor words when it makes sense
+    b. Physical description
+    c. Benefits of using (magical or non-magical)
+    d. Negatives of using (curses, downsides, etc)
+    e. Origin
+6. Events
+    a. Cause of event
+    b. Size of event
+    c. Description of event
+    d. Impact of event
+7. Creatures
+    a. meals made from it
+    b. dangers of it
+    c. benefits of it
+    d. Physical description, size
+8. Quest
+    a. How discovered
+    b. What is the goal
+    c. Source of main opposition
+    e. NPCs associated with it
+9. Location
+    a. Natural vs man-made
+    b. size of area (region, vs single site)
+    c. How long area or site has been around, any important history
+    d. current main residents of the place
+    e. Physical description of the place
+
+
+Tags to apply to word:
+
+Noun
+- noun - plant
+- noun - creature
+- noun - item
+- noun - place
+- noun - role (occupation, title, etc)
+- noun - event
+- verb
+- descriptor (color, "...ed", state)
