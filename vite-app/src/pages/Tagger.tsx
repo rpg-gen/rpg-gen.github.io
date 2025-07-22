@@ -6,12 +6,13 @@ import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties, useRe
 // rpg-gen imports
 import { mobile } from "../configs/constants"
 import { useNavigate } from "react-router-dom"
-import words_url from "../assets/words_alpha_shuffled.txt?raw"
+import words_url from "../assets/accepted_words_shuffled.txt?raw"
 import loading_gif from "../assets/loading.gif"
 import useWindowSize from "../hooks/useWindowSize"
 import defaults from "../configs/defaults"
 
-const DICTIONARY_API_ENDPOINT = "https://api.dictionaryapi.dev/api/v2/entries/en/"
+// Not used for now since we added the definitions to the file
+// const DICTIONARY_API_ENDPOINT = "https://api.dictionaryapi.dev/api/v2/entries/en/"
 const COLLECTION_BOOKMARK = "bookmarks"
 const COLLECTION_KEEP = "words"
 const COLLECTION_TRACKING = "tracking"
@@ -36,6 +37,8 @@ export default function Tagger() {
     const is_mobile = window_size[0] < mobile.break_point;
     const words_done_today = get_words_done_today()
     const total_words_done = get_total_words_done()
+    const total_words_in_file = get_total_words_in_file()
+    const total_words_remaining = total_words_in_file - total_words_done
 
     async function get_bookmark() {
         let return_value = undefined
@@ -106,8 +109,14 @@ export default function Tagger() {
            return 0
         }
         else {
-            return get_index_of_word(loaded_word) + 1
+            const index = get_index_of_word(loaded_word)
+            console.log(`Word: "${loaded_word}", Index: ${index}, Total: ${index}`)
+            return index
         }
+    }
+
+    function get_total_words_in_file() {
+        return get_words_array().length
     }
 
     function get_words_done_today() {
@@ -126,15 +135,8 @@ export default function Tagger() {
     }
 
     function get_index_of_word(word_to_search_for: string) {
-        let return_index = -1
         const words_array = get_words_array()
-
-        words_array.forEach((word, index) => {
-            if (word == word_to_search_for) {
-                return_index = index
-            }
-        })
-        return return_index
+        return words_array.findIndex((word) => word === word_to_search_for)
     }
 
     // Anytime we update the loaded word, we also want to update our bookmark
@@ -275,9 +277,13 @@ export default function Tagger() {
                     <p style={{padding: "1rem", color: "white", backgroundColor: (words_done_today >= defaults.daily_word_goal ? "green" : "red")}}>
                         {"Goal: " + words_done_today + " / " + defaults.daily_word_goal}
                     </p>
-                    <p>
-                        Total Words Saved: {saved_word_count} / { total_words_done }
-                    </p>
+                    <div style={{padding: "1rem", backgroundColor: "#f0f0f0", borderRadius: "0.25rem", marginTop: "1rem"}}>
+                        <h3 style={{margin: "0 0 0.5rem 0"}}>Progress Summary</h3>
+                        <p style={{margin: "0.25rem 0"}}>Total Words Saved: {saved_word_count || 0}</p>
+                        <p style={{margin: "0.25rem 0"}}>Total Words Processed: {total_words_done} ({(total_words_done / total_words_in_file * 100).toFixed(1)}%)</p>
+                        <p style={{margin: "0.25rem 0"}}>Total Words in File: {total_words_in_file}</p>
+                        <p style={{margin: "0.25rem 0"}}>Total Words Remaining: {total_words_remaining}</p>
+                    </div>
                     <div style={{marginTop: "1rem"}}>
                     {/* <button onClick={download_saved_words}>Download Saved Words</button> */}
                     </div>
@@ -337,55 +343,35 @@ function LoadedWord(props: {
 }) {
 
     // State
-    const [loaded_definition, set_loaded_definition] = useState<string[]>([])
+    const [loaded_definition, set_loaded_definition] = useState<string>("")
     const [is_loading_definition, set_is_loading_definition] = useState(false)
 
-    async function load_definition() {
-        const new_definition_array: string[] = []
-
-        try {
-            const response = await fetch(DICTIONARY_API_ENDPOINT + props.loaded_word)
-
-            if (response.ok) {
-                const response_json = await response.json()
-
-                if (response_json[0] && response_json[0].meanings) {
-                    response_json[0].meanings.forEach((meaning: any) => {
-                        meaning.definitions.forEach((definition: any) => {
-                            new_definition_array.push(definition.definition)
-                        })
-                    })
-                }
-            }
-            else if (response.status == 404) {
-                new_definition_array.push("No definition found")
-            }
-            else {
-                throw new Error("Network response was not OK or 404")
+    function load_definition() {
+        if (props.loaded_word) {
+            const definition = get_definition_for_word(props.loaded_word)
+            if (definition) {
+                set_loaded_definition(definition)
+            } else {
+                set_loaded_definition("No definition found in file")
             }
         }
-        catch (error: any) {
-            new_definition_array.push("Error loading defintion from API: " + error.message)
-        }
-
-        set_loaded_definition(new_definition_array)
         set_is_loading_definition(false)
     }
 
     // Handlers
 
     function handle_load_previous_word_click() {
-        set_loaded_definition([])
+        set_loaded_definition("")
         props.load_previous_word()
     }
 
     function handle_click_keep() {
-        set_loaded_definition([])
+        set_loaded_definition("")
         props.keep_word()
     }
 
     function handle_click_discard() {
-        set_loaded_definition([])
+        set_loaded_definition("")
         props.discard_word()
     }
 
@@ -418,7 +404,7 @@ function LoadedWord(props: {
                 {
                     is_loading_definition
                     ? <LoadingDiv />
-                    : loaded_definition.map((definition, index) => (<p key={index}>{definition}</p>))
+                    : loaded_definition && <p>{loaded_definition}</p>
                 }
             </div>
         </div>
@@ -456,5 +442,24 @@ function get_first_word_from_list() {
 }
 
 function get_words_array() {
-    return words_url.split("\n").map((word: string) => word.trim())
+    const lines = words_url.split("\n")
+        .map((line: string) => line.trim())
+        .filter((line: string) => line.length > 0)
+    const words = lines.map((line: string) => line.split("|")[0]) // Extract just the word part before the pipe
+    console.log(`Total words loaded: ${words.length}`)
+    return words
+}
+
+function get_definition_for_word(word_to_search_for: string) {
+    const lines = words_url.split("\n")
+        .map((line: string) => line.trim())
+        .filter((line: string) => line.length > 0)
+    
+    for (const line of lines) {
+        const [word, definition] = line.split("|")
+        if (word === word_to_search_for && definition) {
+            return definition
+        }
+    }
+    return null
 }

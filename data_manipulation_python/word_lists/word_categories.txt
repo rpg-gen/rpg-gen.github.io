@@ -15,14 +15,21 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
     f. Relationship to adventurers or story (one sentence)
     g. name (make up, don't pull from files)
     h. background (one sentense)
+    - race
 3. Item
     a. Using any of the possible pieces in this structure
         - The <descriptor> <object> of <descriptor/npc/place/event/etc>
         - Adding more or less descriptor words when it makes sense
-    b. Physical description
+    b. Physical description, size
     c. Benefits of using (magical or non-magical)
     d. Negatives of using (curses, downsides, etc)
     e. Origin
+    f. Value (treasure, common, valuable)
+4. Gear
+    a. weapon / armor / clothing / token / 
+    a. Power
+    b. Downside
+    c. Physical description
 6. Events
     a. Cause of event
     b. Size of event
@@ -33,6 +40,10 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
     b. dangers of it
     c. benefits of it
     d. Physical description, size
+8. Monster
+    a. Two powers it has
+    b. Physical description
+    c. History
 8. Quest
     a. How discovered
     b. What is the goal
@@ -44,16 +55,33 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
     c. How long area or site has been around, any important history
     d. current main residents of the place
     e. Physical description of the place
-
+    - name
 
 Tags to apply to word:
 
 Noun
-- noun - plant
-- noun - creature
-- noun - item
-- noun - place
-- noun - role (occupation, title, etc)
-- noun - event
-- verb
-- descriptor (color, "...ed", state)
+- plant
+- creature
+- item
+- place
+
+- title
+- job
+- role
+
+- event
+
+- non-pg
+- evil
+- good
+
+- prefix
+- suffix
+
+- fantasy
+- sci-fi
+
+Tagger Features
+
+- [ ] Delete a word from the list, send to a torched collection
+- [ ] 
