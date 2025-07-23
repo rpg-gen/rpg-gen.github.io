@@ -60,28 +60,22 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
 Tags to apply to word:
 
 Noun
-- plant
-- creature
-- item
-- place
 
-- title
-- job
-- role
+- plant (non-animal living things)
+- item (noun, something that is an object)
 
-- event
+- creature (non-plant living things)
+- gear (items that can be equipped, worn, or carried, but which aren't exactly weapons)
+- weapon (items that can be used as weapons)
+- place (a location, site, place one can be at)
+- title (a title of leadership or other)
+- job (an occupation that an npc could have)
+- role (relationship of an npc to the adventures, such as mentor, villain, etc)
+- event (something that takes place or happens, something adventureres might happen upon on their adventures)
 
-- non-pg
-- evil
-- good
-
-- prefix
-- suffix
-
-- fantasy
-- sci-fi
-
-Tagger Features
-
-- [ ] Delete a word from the list, send to a torched collection
-- [ ] 
+- non-pg (words that are not family-friendly)
+- evil (has an evil connotation)
+- good (has a good or righteous connotation)
+- prefix (makes sense to use as a descriptor prefix to a noun. This can include nouns as well. Such as the <descriptor> <noun>)
+- suffix (makes sense to use as a descriptor suffix to a noun, like the <noun> of <descriptor>. This can include nouns as well. )
+- verb (is not a descriptor word or a noun, some action that can be taken)

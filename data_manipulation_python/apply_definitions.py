@@ -7,7 +7,7 @@ def load_definitions():
     """Load definitions from the temporary file."""
     definitions = {}
     try:
-        with open('definitions_to_add.txt', 'r', encoding='utf-8') as file:
+        with open('data_manipulation_python/definitions_to_add.txt', 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
                 if '|' in line:
@@ -56,6 +56,14 @@ def apply_definitions():
         import shutil
         shutil.move(output_file, input_file)
         print(f"Replaced original file with updated version.")
+        
+        # Clear the definitions_to_add.txt file after successful application
+        try:
+            with open('data_manipulation_python/definitions_to_add.txt', 'w', encoding='utf-8') as file:
+                file.write('')  # Write empty content to clear the file
+            print("Cleared definitions_to_add.txt file.")
+        except Exception as e:
+            print(f"Warning: Could not clear definitions_to_add.txt: {e}")
         
     except Exception as e:
         print(f"Error processing file: {e}")
