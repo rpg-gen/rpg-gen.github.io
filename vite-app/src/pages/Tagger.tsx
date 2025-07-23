@@ -1,6 +1,6 @@
 // Library Imports
 import useFirebaseProject from "../hooks/use_firebase_project"
-import { getFirestore, doc, getDoc, setDoc, DocumentData, getCountFromServer, collection, getDocs } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, DocumentData, getCountFromServer, collection, getDocs } from "firebase/firestore"
 import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties, useRef } from "react"
 
 // rpg-gen imports
@@ -28,23 +28,21 @@ const NOUN_CATEGORIES = [
     "creature",
     "weapon",
     "place",
-    "title",
-    "job",
-    "role",
-    "event"
+    "event",
+    "gear",
+    "org",
+    "food",
+    "npc"
 ]
 
 const DESCRIPTOR_TAGS = [
     "non-pg",
     "evil",
     "good",
-    "prefix",
-    "suffix",
+    "descriptor",
     "verb",
     "mannerism"
 ]
-
-const WORD_TAGS = [...NOUN_CATEGORIES, ...DESCRIPTOR_TAGS]
 
 export default function Tagger() {
 
@@ -201,26 +199,40 @@ export default function Tagger() {
         }
         
         try {
-            const doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_KEEP, word)
-            const doc_snap = await getDoc(doc_ref)
-            const data = doc_snap.data()
+            // First check the keep collection
+            const keep_doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_KEEP, word)
+            const keep_doc_snap = await getDoc(keep_doc_ref)
+            const keep_data = keep_doc_snap.data()
             
-            if (data && data.tags && Array.isArray(data.tags)) {
-                set_selected_tags(data.tags)
-            } else {
-                // No tags found in Firebase, try to get them from the file
-                const file_tags = get_tags_from_file(word)
-                if (file_tags && file_tags.length > 0) {
-                    set_selected_tags(file_tags)
-                    // Auto-save the tags to Firebase
+            if (keep_data && keep_data.tags && Array.isArray(keep_data.tags)) {
+                set_selected_tags(keep_data.tags)
+                return
+            }
+            
+            // If not found in keep collection, check the discarded collection
+            const discarded_doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_DISCARDED, word)
+            const discarded_doc_snap = await getDoc(discarded_doc_ref)
+            const discarded_data = discarded_doc_snap.data()
+            
+            if (discarded_data && discarded_data.tags && Array.isArray(discarded_data.tags)) {
+                set_selected_tags(discarded_data.tags)
+                return
+            }
+            
+            // No tags found in Firebase, try to get them from the file
+            const file_tags = get_tags_from_file(word)
+            if (file_tags && file_tags.length > 0) {
+                set_selected_tags(file_tags)
+                // Auto-save the tags to Firebase (only if word is not torched)
+                if (!discarded_data) {
                     const new_doc_data: DocumentData = {
                         word_key: word,
                         tags: file_tags
                     }
-                    await setDoc(doc_ref, new_doc_data)
-                } else {
-                    set_selected_tags([])
+                    await setDoc(keep_doc_ref, new_doc_data)
                 }
+            } else {
+                set_selected_tags([])
             }
         } catch (error) {
             console.error("Error loading tags:", error)
@@ -348,20 +360,28 @@ export default function Tagger() {
 
     async function restore_word() {
         if (loaded_word) {
-            // Remove from discarded collection
+            // Get the tags from the discarded collection before deleting it
             const discarded_doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_DISCARDED, loaded_word)
-            await setDoc(discarded_doc_ref, {})
+            const discarded_doc_snap = await getDoc(discarded_doc_ref)
+            const discarded_data = discarded_doc_snap.data()
+            const tags_to_restore = discarded_data && discarded_data.tags && Array.isArray(discarded_data.tags) 
+                ? discarded_data.tags 
+                : selected_tags
+            
+            // Remove from discarded collection
+            await deleteDoc(discarded_doc_ref)
             
             // Add back to words collection with tags
             const doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_KEEP, loaded_word)
             const new_doc_data: DocumentData = {
                 word_key: loaded_word,
-                tags: selected_tags
+                tags: tags_to_restore
             }
             await setDoc(doc_ref, new_doc_data)
             
             // Update state
             set_is_word_torched(false)
+            set_selected_tags(tags_to_restore)
             load_saved_word_count()
         }
     }
@@ -370,7 +390,7 @@ export default function Tagger() {
         if (loaded_word) {
             // Remove from words collection
             const doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_KEEP, loaded_word)
-            await setDoc(doc_ref, {})
+            await deleteDoc(doc_ref)
             
             // Add to words_discarded collection with tags
             const discarded_doc_ref = doc(FIRESTORE_DATABASE, COLLECTION_DISCARDED, loaded_word)
@@ -437,7 +457,6 @@ export default function Tagger() {
                         animation_state={word_animation_state}
                         selected_tags={selected_tags}
                         toggle_tag={toggle_tag}
-                        word_tags={WORD_TAGS}
                         is_word_torched={is_word_torched}
                     />
                     <p style={{padding: "1rem", color: "white", backgroundColor: (words_done_today >= defaults.daily_word_goal ? "green" : "red")}}>
@@ -551,7 +570,6 @@ function LoadedWord(props: {
     animation_state: 'normal' | 'falling',
     selected_tags: string[],
     toggle_tag: Function,
-    word_tags: string[],
     is_word_torched: boolean
 }) {
 
@@ -722,7 +740,8 @@ function LoadedWord(props: {
                 set_flame_opacity(i * 0.05) // 0 to 1
                 // Start fading word earlier - at 1/4 through flame growth
                 if (i >= 5) {
-                    set_word_opacity(1 - ((i - 5) * 2.0)) // 1 to 0 over just 1 step (instant fade)
+                    const fadeProgress = (i - 5) / 15 // 0 to 1 over 15 steps
+                    set_word_opacity(Math.max(0, 1 - fadeProgress)) // 1 to 0 over 15 steps
                 }
                 await new Promise(resolve => setTimeout(resolve, fast_timing))
             }
@@ -827,7 +846,7 @@ function LoadedWord(props: {
         left: '0%',
         transform: `translateY(-50%) scale(${flame_scale})`,
         opacity: flame_opacity,
-        zIndex: 10,
+        zIndex: 9999,
         pointerEvents: 'none'
     }
 
@@ -837,7 +856,7 @@ function LoadedWord(props: {
         left: '0%',
         transform: `translateY(-50%) scale(${flame_scale}) translateX(-40px)`,
         opacity: flame_opacity,
-        zIndex: 10,
+        zIndex: 9999,
         pointerEvents: 'none'
     }
 
@@ -847,7 +866,7 @@ function LoadedWord(props: {
         left: '0%',
         transform: `translateY(-50%) scale(${flame_scale}) translateX(40px)`,
         opacity: flame_opacity,
-        zIndex: 10,
+        zIndex: 9999,
         pointerEvents: 'none'
     }
 
@@ -891,7 +910,7 @@ function LoadedWord(props: {
                     <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                         <p style={{
                             ...word_style,
-                            opacity: props.is_word_torched ? 0.5 : 1,
+                            opacity: is_torch_animation ? word_opacity : (props.is_word_torched ? 0.5 : 1),
                             color: props.is_word_torched ? '#666' : 'inherit'
                         }}>{props.loaded_word}</p>
                         {props.is_word_torched && (
