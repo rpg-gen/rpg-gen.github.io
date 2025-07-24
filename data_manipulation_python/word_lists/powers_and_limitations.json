@@ -1,0 +1,1870 @@
+[
+  {
+    "type": "limitation",
+    "value": "This Item Breaks Easily"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Doctor"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Fighter"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Magician"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Naturalist"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Ranger"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Spy"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a Wizard"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a boss"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a commoner"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by a minion"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used by an Invoker"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used during a rest"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used during the Day"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used during the night"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used in combat"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used outside of combat"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Can Only be used while in safety"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item Requires Concentration"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item adds 1 minute to the casting time of all spells the wielder casts while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item amplifies sound, causing the wielder's voice to boom uncontrollably"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item attracts lightning during storms"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item bans the wielder from speaking their native language while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item becomes ice-cold, dealing 1 cold damage per round if held longer than a minute"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item blinds the wielder for 6 seconds on a natural 20 as power surges"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item bonds to the dominant hand; removing it requires a remove curse spell"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item burns the wielder's hands for 1 fire damage each time it is drawn"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be activated after the wielder recites its 77-word true name"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be activated while the wielder is holding their breath"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be drawn with closed eyes; opening them before drawing cancels activation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used After Noon"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used Before Noon"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used Indoors"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used Outdoors"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used after the wielder thanks it sincerely"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Adults"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Children"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Fathers"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Females"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Males"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used by Mothers"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used during a full moon"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used for evil"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used for good"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used from stealth"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used in counterattacks"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used in direct sunlight"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used in the Evening"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used in the Morning"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used in total darkness"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used once per day at dawn; attempts before recharge instead deal necrotic backlash"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be used while the wielder is dancing"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only be wielded by someone who has never taken a life today; otherwise it locks up"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item can only target creatures with exactly an even number of hit dice"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot be used if the wielder has told a lie within the last hour"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot be used indoors"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot be used outdoors"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot be used while the wielder is wearing armor"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot cross running water"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item cannot cross thresholds without spoken invitation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes metal weapons within 5 feet to magnetically stick to it for 1 round after activation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes milk to sour and bread to stale within 10 feet"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes nearby beasts to become hostile toward the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes nearby clocks and timepieces to run backward for 10 minutes"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes nearby plants to wither, attracting druidic hostility"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes small bells to ring faintly nearby after each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes small objects around the wielder to levitate uncontrollably for 1 minute after activation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes the wielder's footprints to point the wrong direction"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes the wielder's hair and eyes to change color randomly each dawn"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes the wielder's shadow to act independently, occasionally mimicking foes"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item causes the wielder's shadow to slow by 1 second, unsettling observers"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item compels the wielder to accept every formal duel offered"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item compels the wielder to collect small shiny objects, filling inventory slots"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item compels the wielder to loudly announce its name before each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item compels the wielder to overpay by at least 10% for any purchase while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item corrodes mundane metal it touches, including coins carried by the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item creates a harmless but pungent odor when activated"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item creates illusory echoes that repeat the wielder's last spoken sentence for a minute"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item demands silence; speaking during use ends the effect"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item demands to be fed gems worth at least 25 gp after each combat encounter"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item dims all light sources the wielder carries by half brightness"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item doubles critical failure range (1\u20132) while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item doubles the time the wielder needs for a long rest"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item drains 1 hit die from the wielder whenever activated"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item drains 1 spell slot of highest level available when activated"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item drains color from the wielder's surroundings, turning objects gray for an hour"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item echoes the wielder's thoughts aloud in a faint whisper"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item extinguishes all non-magical flames within 30 feet when drawn"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item fogs all mirrors near the wielder, preventing reflection-based scrying but raising suspicion"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces a random nearby creature to sneeze violently on activation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to answer any direct question truthfully for one hour after use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to re-roll natural 20s, taking the new result"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to re-roll successful Stealth checks, taking the new roll"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to relive one painful memory after each use, causing psychic damage"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to relive the pain they inflict as empathic feedback"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to roll on the Wild Magic Surge table after each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to speak only in rhyme while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder to succeed on a Con save or gain a level of exhaustion after extended use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item forces the wielder's allies within 10 feet to shout compliments at them or suffer disadvantage"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item freezes any fresh water it touches"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item functions only at night during a waning moon"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item functions only when the wielder has fewer than half hit points"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item functions only when the wielder stands barefoot on natural earth"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item functions only while the wielder is frightened"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item gains a cumulative 5% chance to malfunction each time it is used in a day"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item gains a random new quirk after every third use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item gains sentience after 13 uses and may disagree with the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item gains weight equal to the wielder's guilt (DM adjudicates) each day"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item glows brightest when enemies are near, but also when friends are lying"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item has Limited Charges"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item has a Very Powerful Kickback"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item hums loudly near other magic items, revealing their presence but betraying stealth"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item imposes disadvantage on initiative rolls while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item imposes disadvantage on saving throws against fear while wielded"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item induces vivid nightmares, preventing benefits of long rests unless a Wisdom save is made"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item inverts gravity for the wielder for 6 seconds on a natural 1"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item inverts the wielder's sense of direction for one hour after use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item inverts written text within 10 feet, making reading difficult"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item is Extremely Easy to Lose"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item is can behave unexpectedly"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item is not Reliable"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item leaves a faint trail of luminous spores visible in darkness for an hour"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item leaves glowing footprints behind the wielder for 10 minutes"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item leeches 1d4 gold pieces per use, which vanish into planar ether"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item locks itself to the current wielder until they defeat a worthy foe"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item marks the wielder with a glowing sigil visible to undead"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item must be bathed in moonlight each night or loses its power"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item petrifies a small area of ground beneath the wielder after each use, leaving obvious footprints"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item prevents the wielder from entering holy ground unless wrapped in cloth"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item prevents the wielder from telling jokes or puns; attempts leave them tongue-tied"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item projects a visible aura that cannot be hidden by illusions"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item randomly changes its weight between 1 lb and 40 lbs each hour"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item reduces maximum hit points by 1 for every week it remains attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item refuses to function if submerged or soaked"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item refuses to function unless submerged for at least one minute first"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item refuses to strike the same creature twice in a row"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item refuses to work against creatures of the wielder's own ancestry"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item releases a loud thunderclap on activation, ruining stealth"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item releases a swarm of harmless moths that obscure vision for the wielder on critical failure"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item repels healing magic cast on the wielder for 1 minute after use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item replaces the wielder's reflection with that of a stranger until sunrise"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires a different bearer each new moon or it loses potency"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires a specific gemstone set in its hilt each dawn (consumed on use)"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires a vial of the wielder's blood each dawn to remain attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires attunement by a different creature type each week"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires the wielder to donate 10% of treasure gained each day to the poor or cease functioning"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires the wielder to solve a simple riddle aloud before each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item requires weekly polishing with rare oils worth 50 gp"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item resets the wielder's short-term memory of the last minute on a critical miss"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item shatters all non-magical glass within 15 feet when activated"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item sparks harmless flames that singe paper carried by the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item summons a minor imp that heckles the wielder for one minute after use"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item summons harmless but distracting spectral birds each time it scores a critical hit"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item suppresses the wielder's sense of taste for 24 hours after activation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item swaps the wielder's sense of taste and smell while attuned"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item switches the wielder's dominant hand when drawn, imposing disadvantage until adapted"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item takes up two inventory slots"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item warps magnetic compasses within 60 feet, scrambling navigation"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item whispers secrets aloud at random times, revealing the wielder's plans"
+  },
+  {
+    "type": "limitation",
+    "value": "This item will randomly either be overpowered or underpowered"
+  },
+  {
+    "type": "limitation",
+    "value": "Using this Item consumes Health"
+  },
+  {
+    "type": "limitation",
+    "value": "After using this item the wielder blacks out for a time, and can't remember what they did."
+  },
+  {
+    "type": "power",
+    "value": "This Item Never neads to be repaired"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item always has bottom initiative, even in Ambushes"
+  },
+  {
+    "type": "power",
+    "value": "This Item always has top Initiative, even in Ambushes"
+  },
+  {
+    "type": "power",
+    "value": "This Item grants counterattacks"
+  },
+  {
+    "type": "power",
+    "value": "This Item has Area of Effect"
+  },
+  {
+    "type": "power",
+    "value": "This Item is Very Difficult to Lose"
+  },
+  {
+    "type": "power",
+    "value": "This Item is Very Reliable"
+  },
+  {
+    "type": "limitation",
+    "value": "This Item is part of a set and cannot be used without the other members of the set"
+  },
+  {
+    "type": "power",
+    "value": "This Item is part of a set and gets more powerful with each added item of the set"
+  },
+  {
+    "type": "power",
+    "value": "This Item takes up no inventory slots"
+  },
+  {
+    "type": "limitation",
+    "value": "This item Can only be used at Dawn"
+  },
+  {
+    "type": "limitation",
+    "value": "This item Can only be used at Dusk"
+  },
+  {
+    "type": "limitation",
+    "value": "This item Consumes AP"
+  },
+  {
+    "type": "limitation",
+    "value": "This item Consumes an inventoried item when used"
+  },
+  {
+    "type": "limitation",
+    "value": "This item Steals AP"
+  },
+  {
+    "type": "limitation",
+    "value": "This item abandons the user if they retreat from a fight"
+  },
+  {
+    "type": "limitation",
+    "value": "This item abandons the user if they start a fight"
+  },
+  {
+    "type": "power",
+    "value": "This item acts like a lighting rod"
+  },
+  {
+    "type": "limitation",
+    "value": "This item awakens and attracts evil"
+  },
+  {
+    "type": "power",
+    "value": "This item can be summoned on command"
+  },
+  {
+    "type": "power",
+    "value": "This item can be triggered remotely"
+  },
+  {
+    "type": "power",
+    "value": "This item can becomes invisible when not held by its owner"
+  },
+  {
+    "type": "power",
+    "value": "This item can change size on command"
+  },
+  {
+    "type": "power",
+    "value": "This item can communicate telepathically to the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only affect magical or ethereal things"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be activated when wielded by multiple people at once"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be obtained by killing the previous owner"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be transferred if won in a duel"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used at midnight"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used below ground"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used by the old"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used by those of its maker's race"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used by those of noble birth"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used if taught how by someone who already knows"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used if the wielder knows its history and origin."
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used in the land of its origin"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used once"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used once per day"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used once per wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used underwater"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only be used when the wielder is moving quickly"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only cause fatal injuries"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can only cause nonfatal injuries"
+  },
+  {
+    "type": "power",
+    "value": "This item can quickly phase in and out of the shadown realm"
+  },
+  {
+    "type": "limitation",
+    "value": "This item can speak out loud whatever it does"
+  },
+  {
+    "type": "power",
+    "value": "This item cannot be forcibly removed from its rightful owner"
+  },
+  {
+    "type": "limitation",
+    "value": "This item cannot be held by bare skin"
+  },
+  {
+    "type": "limitation",
+    "value": "This item cannot be traded, or thrown away. It can only be destroyed"
+  },
+  {
+    "type": "limitation",
+    "value": "This item cannot be used below ground"
+  },
+  {
+    "type": "limitation",
+    "value": "This item cannot be used by those of noble birth"
+  },
+  {
+    "type": "limitation",
+    "value": "This item cannot be used underwater"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes accelerated hair growth in the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes accelerated hair loss in the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes disconcerting minor time distortions"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes hallucinations in the wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes the wielder to be sore and tired"
+  },
+  {
+    "type": "limitation",
+    "value": "This item causes the wielder to feel more paranoid"
+  },
+  {
+    "type": "power",
+    "value": "This item connects the user to an ancient inhabitant"
+  },
+  {
+    "type": "limitation",
+    "value": "This item demands the sacrifice of a life"
+  },
+  {
+    "type": "limitation",
+    "value": "This item deteriorates irreparably over time"
+  },
+  {
+    "type": "limitation",
+    "value": "This item dulls the bearer's senses"
+  },
+  {
+    "type": "limitation",
+    "value": "This item emits a harmful, spreading byproduct when used"
+  },
+  {
+    "type": "power",
+    "value": "This item emits a smoke or glow that reflects its effect"
+  },
+  {
+    "type": "power",
+    "value": "This item generates AP"
+  },
+  {
+    "type": "power",
+    "value": "This item gets bigger each time you use it"
+  },
+  {
+    "type": "limitation",
+    "value": "This item gets smaller each time you use it"
+  },
+  {
+    "type": "power",
+    "value": "This item gets stronger the more people are nearby"
+  },
+  {
+    "type": "power",
+    "value": "This item gets stronger with each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item gets weaker the more people are nearby"
+  },
+  {
+    "type": "limitation",
+    "value": "This item gets weaker with each use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item gives the user indigestion"
+  },
+  {
+    "type": "limitation",
+    "value": "This item gives the wielder false memory"
+  },
+  {
+    "type": "limitation",
+    "value": "This item has a delayed effect"
+  },
+  {
+    "type": "limitation",
+    "value": "This item has a mind of its own"
+  },
+  {
+    "type": "limitation",
+    "value": "This item has broken or missing parts"
+  },
+  {
+    "type": "power",
+    "value": "This item has mysterious ties to ancient, unknown magics"
+  },
+  {
+    "type": "limitation",
+    "value": "This item has no effect on those that know its history and origin"
+  },
+  {
+    "type": "power",
+    "value": "This item has very long range"
+  },
+  {
+    "type": "limitation",
+    "value": "This item has very short range"
+  },
+  {
+    "type": "power",
+    "value": "This item heightens the bearer's senses"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is a mimic"
+  },
+  {
+    "type": "power",
+    "value": "This item is a weak conduit to a distant magician, that flows both ways."
+  },
+  {
+    "type": "limitation",
+    "value": "This item is addictive"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is bound to a quest and can only be used in that quest's pursuit"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is bound to the user until death"
+  },
+  {
+    "type": "power",
+    "value": "This item is completely silent"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is coveted by everyone who knows about it"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is cursed"
+  },
+  {
+    "type": "power",
+    "value": "This item is disguised as a harmless, unassuming object"
+  },
+  {
+    "type": "power",
+    "value": "This item is easy control"
+  },
+  {
+    "type": "power",
+    "value": "This item is extremely valued by others"
+  },
+  {
+    "type": "power",
+    "value": "This item is from an unknown ancient civilization"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is hard to control"
+  },
+  {
+    "type": "power",
+    "value": "This item is linked to a powerful and benevolent entity, and attracts its attention"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is linked to a powerful and malicious entity, and attracts its attention"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is monitored by interdimensional powers that will interfere if misused"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is painful to use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is sentient"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is so heavy the bearer can only move slowly"
+  },
+  {
+    "type": "power",
+    "value": "This item is so light the bearer does not notice its weight"
+  },
+  {
+    "type": "limitation",
+    "value": "This item is well known and recognized by others"
+  },
+  {
+    "type": "power",
+    "value": "This item keeps track of its successful uses with a visual or physical method"
+  },
+  {
+    "type": "limitation",
+    "value": "This item leaves permanent scars on the wielder's soul"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes a loud noise when used"
+  },
+  {
+    "type": "power",
+    "value": "This item makes the bearer uncharacteristally carefree and relaxed"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the bearer uncomfortably cold"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the bearer uncomfortably hot"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the user extremely hungry and thirsty"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the user itchy"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the user obsessed with it over time"
+  },
+  {
+    "type": "limitation",
+    "value": "This item makes the wielder fall asleep after use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item melds to the user and cannot be let go once picked up."
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be examined by an expert to unlock its abilities"
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be paired with another object to function"
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be used at least once per day"
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be used during each combat session"
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be used frequently or suffers withdrawals or detriment"
+  },
+  {
+    "type": "limitation",
+    "value": "This item must be used with two hands"
+  },
+  {
+    "type": "limitation",
+    "value": "This item needs a ritual performed in order to recharge its ability after each use."
+  },
+  {
+    "type": "limitation",
+    "value": "This item only starts working after it gets used to you"
+  },
+  {
+    "type": "limitation",
+    "value": "This item only starts working after you impress it"
+  },
+  {
+    "type": "power",
+    "value": "This item only triggers when you get hit or damaged"
+  },
+  {
+    "type": "limitation",
+    "value": "This item prevents the wielder from lying"
+  },
+  {
+    "type": "limitation",
+    "value": "This item prevents the wielder from moving while in use."
+  },
+  {
+    "type": "power",
+    "value": "This item pulls power and entities from the shadow realm"
+  },
+  {
+    "type": "limitation",
+    "value": "This item requires abnormally expensive upkeep"
+  },
+  {
+    "type": "limitation",
+    "value": "This item requires masterery of a certain skill to use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item requires the user to swear an oath before being able to use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item reveals its location to the enemy when used"
+  },
+  {
+    "type": "limitation",
+    "value": "This item robs a treasured memory from the user upon use"
+  },
+  {
+    "type": "limitation",
+    "value": "This item robs future luck to power its abilities"
+  },
+  {
+    "type": "limitation",
+    "value": "This item saps the emotions from its wielder"
+  },
+  {
+    "type": "limitation",
+    "value": "This item stops working after a long while"
+  },
+  {
+    "type": "limitation",
+    "value": "This item stops working after a short span"
+  },
+  {
+    "type": "limitation",
+    "value": "This item stops working if you get hit or damaged"
+  },
+  {
+    "type": "limitation",
+    "value": "This item suffers interference when near other magical items"
+  },
+  {
+    "type": "limitation",
+    "value": "This item takes time to trigger"
+  },
+  {
+    "type": "limitation",
+    "value": "This item takes up all the wielders standard inventory slots"
+  },
+  {
+    "type": "limitation",
+    "value": "This item tends to malfuction and go off at unexpected times"
+  },
+  {
+    "type": "power",
+    "value": "This item thins the veil to the shadow world"
+  },
+  {
+    "type": "limitation",
+    "value": "This item turns the wielder into a coward"
+  },
+  {
+    "type": "limitation",
+    "value": "This item urges the bearer to tell lies"
+  },
+  {
+    "type": "power",
+    "value": "This item wants to turn to the light"
+  },
+  {
+    "type": "limitation",
+    "value": "This item wants to turn to the shadow"
+  },
+  {
+    "type": "power",
+    "value": "This item will hold the user back from death, but makes the user more susceptible to injuries"
+  },
+  {
+    "type": "limitation",
+    "value": "This item will only work if you treat it nicely"
+  },
+  {
+    "type": "power",
+    "value": "This item's effect has a long duration"
+  },
+  {
+    "type": "limitation",
+    "value": "This item's effect has a short duration"
+  },
+  {
+    "type": "power",
+    "value": "This item's effects are permanent"
+  },
+  {
+    "type": "limitation",
+    "value": "This item's effects are temporary"
+  },
+  {
+    "type": "limitation",
+    "value": "This was recently lost by a boss, who wants it back"
+  },
+  {
+    "type": "limitation",
+    "value": "This will abnormally attrack thieves"
+  },
+  {
+    "type": "limitation",
+    "value": "Using and possessing this item is stigmatized and seen as shameful by others"
+  },
+  {
+    "type": "power",
+    "value": "Using this Item Restores Health"
+  },
+  {
+    "type": "limitation",
+    "value": "You can easily get carried away with this item's ability"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to breathe any gas or liquid for up to one hour per day"
+  },
+  {
+    "type": "power",
+    "value": "This item can instantly purify up to 100 gallons of contaminated water"
+  },
+  {
+    "type": "power",
+    "value": "This item causes all precipitation within 100 feet to fall as flower petals instead"
+  },
+  {
+    "type": "power",
+    "value": "This item can change the temperature of a room-sized area by up to 40 degrees for 8 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item can instantly create a 10-foot bridge of solid stone that lasts for one hour"
+  },
+  {
+    "type": "power",
+    "value": "This item causes beneficial plants to grow at triple speed within 30 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item can create a pocket of breathable atmosphere underwater for up to 4 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to understand and speak any language for 24 hours after activation"
+  },
+  {
+    "type": "power",
+    "value": "This item makes the wielder irresistibly charming to animals of a specific type"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to perfectly mimic any voice they have heard for at least one minute"
+  },
+  {
+    "type": "power",
+    "value": "This item grants advantage on all social rolls when discussing a specific topic chosen at attunement"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to sense the strongest emotion of any creature within 30 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item makes lies told by the wielder sound completely truthful to casual listeners"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to leave mental messages that can be retrieved by touching the same object later"
+  },
+  {
+    "type": "power",
+    "value": "This item doubles the output of any crafting project completed while wearing it"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to repair any non-magical item to full functionality once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item can temporarily animate crafted objects to perform simple tasks for one hour"
+  },
+  {
+    "type": "power",
+    "value": "This item reduces the time and materials needed for any crafting project by half"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to create temporary tools from raw materials that last for 24 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item can enhance the quality of any food or drink touched, making it provide additional nourishment"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to inscribe magical runes that provide minor benefits to anyone who reads them"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to see through solid objects up to 5 feet thick"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the ability to hear conversations happening up to 1 mile away by concentrating for one minute"
+  },
+  {
+    "type": "power",
+    "value": "This item reveals the magical aura and school of any enchanted item within sight"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to see the history of any object by touching it for one minute"
+  },
+  {
+    "type": "power",
+    "value": "This item alerts the wielder to any creature that has hostile intent within 100 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item can track any creature the wielder has touched within the last 24 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to see invisible writing or hidden messages on any surface"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to walk on any liquid surface as if it were solid ground"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the ability to phase through walls for up to 10 seconds once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item creates a magical steed that can carry the wielder at double normal speed for 4 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to instantly teleport to any location they can see within 500 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to walk on air for up to 100 feet as if climbing stairs"
+  },
+  {
+    "type": "power",
+    "value": "This item creates portals between two locations the wielder has visited within the last month"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to shrink to half size while retaining full strength and speed"
+  },
+  {
+    "type": "power",
+    "value": "This item grants immunity to extreme temperatures for 24 hours"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to summon an illusionary decoy that moves independently for 1 minute"
+  },
+  {
+    "type": "power",
+    "value": "This item can store a single spell of up to 3rd level and release it later"
+  },
+  {
+    "type": "power",
+    "value": "This item amplifies the wielder's voice to carry clearly for up to 1 mile"
+  },
+  {
+    "type": "power",
+    "value": "This item attracts beneficial insects that protect crops within a 100-foot radius"
+  },
+  {
+    "type": "power",
+    "value": "This item causes written contracts signed with it to be magically binding"
+  },
+  {
+    "type": "power",
+    "value": "This item can generate a cube of force 10 feet on a side that lasts 1 minute"
+  },
+  {
+    "type": "power",
+    "value": "This item illuminates invisible creatures within 60 feet with faerie fire"
+  },
+  {
+    "type": "power",
+    "value": "This item can neutralize poison in any creature touched"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the wielder darkvision out to 120 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to breathe comfortably at any altitude"
+  },
+  {
+    "type": "power",
+    "value": "This item can summon a localized raincloud that waters a 30-foot area"
+  },
+  {
+    "type": "power",
+    "value": "This item can mend broken hearts, removing one level of despair or sorrow"
+  },
+  {
+    "type": "power",
+    "value": "This item can conjure a feast that feeds up to 8 people once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item can record and replay sounds it hears for up to 10 minutes"
+  },
+  {
+    "type": "power",
+    "value": "This item allows communication with plants as though they were sentient"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder command small animals to perform simple tasks"
+  },
+  {
+    "type": "power",
+    "value": "This item can crystalize ambient moisture into potable water within a bowl"
+  },
+  {
+    "type": "power",
+    "value": "This item causes weapons wielded by allies within 10 feet to deal radiant damage"
+  },
+  {
+    "type": "power",
+    "value": "This item can harden any surface to steel-like strength for 1 hour"
+  },
+  {
+    "type": "power",
+    "value": "This item negates falling damage up to 500 feet for the wielder"
+  },
+  {
+    "type": "power",
+    "value": "This item creates a shimmering ladder of light up to 50 feet long"
+  },
+  {
+    "type": "power",
+    "value": "This item summons a gentle breeze that clears smoke or gas"
+  },
+  {
+    "type": "power",
+    "value": "This item engraves any spoken word onto nearby stone surfaces"
+  },
+  {
+    "type": "power",
+    "value": "This item projects a silent image of any creature the wielder imagines"
+  },
+  {
+    "type": "power",
+    "value": "This item can freeze a 20-foot cube of water into ice instantly"
+  },
+  {
+    "type": "power",
+    "value": "This item can thaw any mundane ice within 30 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item causes the next arrow fired to split into three spectral copies"
+  },
+  {
+    "type": "power",
+    "value": "This item turns dirt touched into fertile soil"
+  },
+  {
+    "type": "power",
+    "value": "This item can absorb sunlight and release it as bright light at night"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the wielder a perfect sense of time"
+  },
+  {
+    "type": "power",
+    "value": "This item purifies the air of toxins in a 60-foot radius"
+  },
+  {
+    "type": "power",
+    "value": "This item can reshape stone into simple forms"
+  },
+  {
+    "type": "power",
+    "value": "This item compels truth from anyone who shakes the wielder's hand"
+  },
+  {
+    "type": "power",
+    "value": "This item can erase written text from parchment"
+  },
+  {
+    "type": "power",
+    "value": "This item blesses any newborn touched, granting good luck"
+  },
+  {
+    "type": "power",
+    "value": "This item conjures a protective shadow that follows the wielder"
+  },
+  {
+    "type": "power",
+    "value": "This item causes campfires to burn without fuel"
+  },
+  {
+    "type": "power",
+    "value": "This item can decalcify metal rust back to pristine condition"
+  },
+  {
+    "type": "power",
+    "value": "This item conjures an anchor of force that stops a ship instantly"
+  },
+  {
+    "type": "power",
+    "value": "This item turns sound into visible color patterns"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder breathe underwater indefinitely"
+  },
+  {
+    "type": "power",
+    "value": "This item can store up to 10 gallons of liquid in extradimensional space"
+  },
+  {
+    "type": "power",
+    "value": "This item creates a hovering disc that follows the wielder carrying up to 500 lbs"
+  },
+  {
+    "type": "power",
+    "value": "This item de-ages fresh food, keeping it eternally ripe"
+  },
+  {
+    "type": "power",
+    "value": "This item summons a tiny elemental familiar for 1 hour"
+  },
+  {
+    "type": "power",
+    "value": "This item projects a field that silences all noise in a 20-foot radius"
+  },
+  {
+    "type": "power",
+    "value": "This item turns invisible for 10 minutes when dropped"
+  },
+  {
+    "type": "power",
+    "value": "This item converts written words into any language the reader knows"
+  },
+  {
+    "type": "power",
+    "value": "This item can knit torn fabric instantly"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the wielder perfect recall of everything seen today"
+  },
+  {
+    "type": "power",
+    "value": "This item creates an illusion of starlight on any ceiling"
+  },
+  {
+    "type": "power",
+    "value": "This item can magnetize or demagnetize metal objects touched"
+  },
+  {
+    "type": "power",
+    "value": "This item summons climbing vines that form a 30-foot rope"
+  },
+  {
+    "type": "power",
+    "value": "This item causes musical notes struck near it to echo harmoniously"
+  },
+  {
+    "type": "power",
+    "value": "This item telepathically translates the emotional state of any creature looked at"
+  },
+  {
+    "type": "power",
+    "value": "This item can generate a single meal exactly suited to the eater's favorite taste"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to walk through fog as if it were open space"
+  },
+  {
+    "type": "power",
+    "value": "This item can conjure a mirror that shows the nearest danger"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder see through the eyes of any bird within 1 mile"
+  },
+  {
+    "type": "power",
+    "value": "This item grants immunity to mundane disease"
+  },
+  {
+    "type": "power",
+    "value": "This item can create a simple campsite, including tent and fire, once per night"
+  },
+  {
+    "type": "power",
+    "value": "This item turns one page of any book into pure gold once per month"
+  },
+  {
+    "type": "power",
+    "value": "This item ensures arrows fired never miss their target's general direction, granting advantage"
+  },
+  {
+    "type": "power",
+    "value": "This item permits safe passage through nonmagical flames"
+  },
+  {
+    "type": "power",
+    "value": "This item causes the wielder's footsteps to leave glowing runes for an hour"
+  },
+  {
+    "type": "power",
+    "value": "This item can summon a rain of harmless sparks for celebration"
+  },
+  {
+    "type": "power",
+    "value": "This item forces any locked mundane door touched to reveal its secret opening method"
+  },
+  {
+    "type": "power",
+    "value": "This item can transform one small mundane item into another of equal value"
+  },
+  {
+    "type": "power",
+    "value": "This item grants the wielder echolocation"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to sculpt wind into solid shapes for 1 minute"
+  },
+  {
+    "type": "power",
+    "value": "This item turns any drink poured through it into perfect tea"
+  },
+  {
+    "type": "power",
+    "value": "This item grows tiny edible fruit along its hilt once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item can project a hologram map of the surrounding 1-mile area"
+  },
+  {
+    "type": "power",
+    "value": "This item can calm raging storms within a 1-mile radius for 1 hour"
+  },
+  {
+    "type": "power",
+    "value": "This item amplifies healing received by the wielder by 50%"
+  },
+  {
+    "type": "power",
+    "value": "This item negates the next critical hit against the wielder once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder read surface thoughts once per short rest"
+  },
+  {
+    "type": "power",
+    "value": "This item can summon a door of force that attaches to any flat surface"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to levitate objects up to 200 lbs for 10 minutes"
+  },
+  {
+    "type": "power",
+    "value": "This item can freeze time for everyone except the wielder for 3 seconds once per day"
+  },
+  {
+    "type": "power",
+    "value": "This item creates stepping stones across any gap up to 60 feet"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder speak with deceased spirits for one question"
+  },
+  {
+    "type": "power",
+    "value": "This item can transform sand into glass sculptures"
+  },
+  {
+    "type": "power",
+    "value": "This item draws constellations in the air to mark directions"
+  },
+  {
+    "type": "power",
+    "value": "This item generates a 15-foot radius sphere of daylight on command"
+  },
+  {
+    "type": "power",
+    "value": "This item restores shattered glass to its original form"
+  },
+  {
+    "type": "power",
+    "value": "This item summons a spectral shield granting +2 AC for 10 minutes"
+  },
+  {
+    "type": "power",
+    "value": "This item can disguise the wielder's scent completely"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder taste the emotional flavor of food"
+  },
+  {
+    "type": "power",
+    "value": "This item can copy any key after touching it"
+  },
+  {
+    "type": "power",
+    "value": "This item absorbs and stores one minute of music, replaying it as desired"
+  },
+  {
+    "type": "power",
+    "value": "This item exudes a comforting warmth that wards off cold damage"
+  },
+  {
+    "type": "power",
+    "value": "This item cools the wielder in hot climates preventing exhaustion"
+  },
+  {
+    "type": "power",
+    "value": "This item stitches wounds closed instantly once per short rest"
+  },
+  {
+    "type": "power",
+    "value": "This item can scribe letters in the night sky visible for miles"
+  },
+  {
+    "type": "power",
+    "value": "This item permits the wielder to walk through walls of living plants"
+  },
+  {
+    "type": "power",
+    "value": "This item creates a temporary 30-foot-deep well full of fresh water"
+  },
+  {
+    "type": "power",
+    "value": "This item enchants any quill touching it to write the truth"
+  },
+  {
+    "type": "power",
+    "value": "This item animates a shadow duplicate to flank enemies"
+  },
+  {
+    "type": "power",
+    "value": "This item can refill empty lanterns with magical flame"
+  },
+  {
+    "type": "power",
+    "value": "This item projects a barrier that repels insects"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder balance perfectly on any surface"
+  },
+  {
+    "type": "power",
+    "value": "This item can slow local time, granting the wielder one extra reaction"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to see the true form of shapeshifters"
+  },
+  {
+    "type": "power",
+    "value": "This item blinds enemies struck by its light for 1 round"
+  },
+  {
+    "type": "power",
+    "value": "This item changes the wielder's voice to any pitch or timbre"
+  },
+  {
+    "type": "power",
+    "value": "This item absorbs ambient heat to extinguish fires"
+  },
+  {
+    "type": "power",
+    "value": "This item emits soothing melodies that grant allies advantage on saves against fear"
+  },
+  {
+    "type": "power",
+    "value": "This item unerringly points toward the nearest ley line"
+  },
+  {
+    "type": "power",
+    "value": "This item can teleport small written messages to any creature known"
+  },
+  {
+    "type": "power",
+    "value": "This item lets the wielder breathe in a vacuum"
+  },
+  {
+    "type": "power",
+    "value": "This item summons a flock of messenger birds to carry parcels"
+  },
+  {
+    "type": "power",
+    "value": "This item allows the wielder to dance atop treetops without breaking branches"
+  },
+  {
+    "type": "power",
+    "value": "This item can condense clouds into solid platforms that last 10 minutes"
+  }
+]

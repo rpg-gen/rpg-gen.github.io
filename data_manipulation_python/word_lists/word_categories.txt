@@ -79,3 +79,15 @@ Noun
 - prefix (makes sense to use as a descriptor prefix to a noun. This can include nouns as well. Such as the <descriptor> <noun>)
 - suffix (makes sense to use as a descriptor suffix to a noun, like the <noun> of <descriptor>. This can include nouns as well. )
 - verb (is not a descriptor word or a noun, some action that can be taken)
+
+Powers
+- Only helps you commit tax fraud
+- Only works well if you use it in an improper manner, not what it was made for (stubborn, rebellious, rejects authority)
+
+Auto generate seed with perplexity
+
+plural locations?
+duplicates?
+
+Add to locations
+- types of buildings in a town
