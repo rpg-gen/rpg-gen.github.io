@@ -91,6 +91,9 @@ Add tools to props, make sure it's either in weapons or props
 
 - [ ] Make sure stmosphere doesn't repeat things in th description
 
+Locations
+- [ ] Check for any descriptions that are too similar, and make them have unique opportunities or dangers
+
 I want to update this file to include an "atmosphere" field with interesting and unique atmosphere notes to help in a fantasy TTRPG campaign for the dungeon-master to have good info to set the stage and help the players feel immersed at the location, like they can close their eyes and imagine they are actually there. The atmoshpere item should indicate what the players might notice upon entering or first seeing the area, like sights, smells, sounds, or vibe. The atmosphere should not repeat things already in the description, but just add additional atmospheric / ambience notes to add richness beyond the description. It doesn't need to be complete sentences. I'd rather have more details with less filler english words.
 
 Let's start by going through just one section, the "Natural" category, and fixing any atmosphere items that don't follow this pattern.
