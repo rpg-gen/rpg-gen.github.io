@@ -25,6 +25,8 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
     d. Negatives of using (curses, downsides, etc)
     e. Origin
     f. Value (treasure, common, valuable)
+
+    - A common item but with unexpected properties
 4. Gear
     a. weapon / armor / clothing / token / 
     a. Power
@@ -57,37 +59,48 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
     e. Physical description of the place
     - name
 
-Tags to apply to word:
+Generators seed lists to Add
 
-Noun
+- [ ] Types of organizations, factions, units of sentient beings, for adventureres to interact with and meet NPCs from and create dynamic political situations and conflicts between groups, social constructs
+- [ ] monster boss villain traits, to mix and match to make interesting monsters to fight or come into conflict with, both for humaniod and non-humanoid mosters, sentient and non sentient, that make encounters interesting
+- [ ] enemy weaknesses (bosses, villains)
+- [ ] Types of quests
+- [ ] Waus tp get quests
+- [ ] events, things the adventurers could run into, or hear of happening in the world, both small and large, things to make the world not feel static, like things are happening all the time, historical events to have people talk about having happened, or looking forward to
 
-- plant (non-animal living things)
-- item (noun, something that is an object)
+Add tools to props, make sure it's either in weapons or props
+- [ ] Remove any of the words in these lists from the word lists
 
-- creature (non-plant living things)
-- gear (items that can be equipped, worn, or carried, but which aren't exactly weapons)
-- weapon (items that can be used as weapons)
-- place (a location, site, place one can be at)
-- title (a title of leadership or other)
-- job (an occupation that an npc could have)
-- role (relationship of an npc to the adventures, such as mentor, villain, etc)
-- event (something that takes place or happens, something adventureres might happen upon on their adventures)
+- [ ] Still need a verb list, descriptors
 
-- non-pg (words that are not family-friendly)
-- evil (has an evil connotation)
-- good (has a good or righteous connotation)
-- prefix (makes sense to use as a descriptor prefix to a noun. This can include nouns as well. Such as the <descriptor> <noun>)
-- suffix (makes sense to use as a descriptor suffix to a noun, like the <noun> of <descriptor>. This can include nouns as well. )
-- verb (is not a descriptor word or a noun, some action that can be taken)
+- [ ] Types of magic, used to create abilities (fire, ice, time, relationship, transmutation, shapeshifting etc)
 
-Powers
-- Only helps you commit tax fraud
-- Only works well if you use it in an improper manner, not what it was made for (stubborn, rebellious, rejects authority)
+- [ ] Types of story twists to keep things interesting when they get boring, ways to add tension and break up static feeling
 
-Auto generate seed with perplexity
+- [ ] Types of personalities for NPCs
 
-plural locations?
-duplicates?
+- [ ] Look through map game and create any lists that can hepl with those
 
-Add to locations
-- types of buildings in a town
+- [ ] non-boss mobs to encounter for fights, with description that includes where they might be found and how they fight. Can be sentient or non sentient
+
+- [ ] Types of resources, things the players or NPCs will seek after, materials, minig, harvesting, finding, rarity level, etc, including trade resources, things of value a caravan or trader might deal in
+
+- [ ] Props but treasure items, split into common and treasure (valuable and distinct)
+
+- [ ] Add atmosphere to locations file
+
+- [ ] Make sure stmosphere doesn't repeat things in th description
+
+I want to update this file to include an "atmosphere" field with interesting and unique atmosphere notes to help in a fantasy TTRPG campaign for the dungeon-master to have good info to set the stage and help the players feel immersed at the location, like they can close their eyes and imagine they are actually there. The atmoshpere item should indicate what the players might notice upon entering or first seeing the area, like sights, smells, sounds, or vibe. The atmosphere should not repeat things already in the description, but just add additional atmospheric / ambience notes to add richness beyond the description. It doesn't need to be complete sentences. I'd rather have more details with less filler english words.
+
+Let's start by going through just one section, the "Natural" category, and fixing any atmosphere items that don't follow this pattern.
+
+
+Natural - Natural geographical features and landscapes
+Settlement - Human-built communities and living spaces
+Infrastructure - Built structures and facilities
+Dungeon - Underground or enclosed adventure locations
+Magical - Locations with magical properties or origins
+Ruin - Abandoned or destroyed locations
+Planar - Locations from other planes of existence
+Underwater - Submerged or aquatic locations
