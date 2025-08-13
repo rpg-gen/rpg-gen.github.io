@@ -61,17 +61,18 @@ Pull from random words from words_in_dictionary.txt or non_dictionary_candidates
 
 Generators seed lists to Add
 
-- [ ] Types of organizations, factions, units of sentient beings, for adventureres to interact with and meet NPCs from and create dynamic political situations and conflicts between groups, social constructs
-- [ ] monster boss villain traits, to mix and match to make interesting monsters to fight or come into conflict with, both for humaniod and non-humanoid mosters, sentient and non sentient, that make encounters interesting
-- [ ] enemy weaknesses (bosses, villains)
-- [ ] Types of quests
-- [ ] Waus tp get quests
+- [x] Types of organizations, factions, units of sentient beings, for adventureres to interact with and meet NPCs from and create dynamic political situations and conflicts between groups, social constructs
+- [x] orgs but kingdoms instead
+- [x] monster boss villain traits, to mix and match to make interesting monsters to fight or come into conflict with, both for humaniod and non-humanoid mosters, sentient and non sentient, that make encounters interesting
+- [x] enemy weaknesses (bosses, villains)
+- [x] Types of quests
+- [x] Waus tp get quests
 - [ ] events, things the adventurers could run into, or hear of happening in the world, both small and large, things to make the world not feel static, like things are happening all the time, historical events to have people talk about having happened, or looking forward to
 
 Add tools to props, make sure it's either in weapons or props
 - [ ] Remove any of the words in these lists from the word lists
 
-- [ ] Still need a verb list, descriptors
+- [ ] Still need a verb list, descriptors (grab starter list from the archive)
 
 - [ ] Types of magic, used to create abilities (fire, ice, time, relationship, transmutation, shapeshifting etc)
 
@@ -87,23 +88,10 @@ Add tools to props, make sure it's either in weapons or props
 
 - [ ] Props but treasure items, split into common and treasure (valuable and distinct)
 
-- [ ] Add atmosphere to locations file
+- [ ] Types of forests, mountains, variations on locations / map types, types of marshes / bogs
 
-- [ ] Make sure stmosphere doesn't repeat things in th description
 
 Locations
+- [x] Add atmosphere to locations file
+- [x] Make sure stmosphere doesn't repeat things in th description
 - [ ] Check for any descriptions that are too similar, and make them have unique opportunities or dangers
-
-I want to update this file to include an "atmosphere" field with interesting and unique atmosphere notes to help in a fantasy TTRPG campaign for the dungeon-master to have good info to set the stage and help the players feel immersed at the location, like they can close their eyes and imagine they are actually there. The atmoshpere item should indicate what the players might notice upon entering or first seeing the area, like sights, smells, sounds, or vibe. The atmosphere should not repeat things already in the description, but just add additional atmospheric / ambience notes to add richness beyond the description. It doesn't need to be complete sentences. I'd rather have more details with less filler english words.
-
-Let's start by going through just one section, the "Natural" category, and fixing any atmosphere items that don't follow this pattern.
-
-
-Natural - Natural geographical features and landscapes
-Settlement - Human-built communities and living spaces
-Infrastructure - Built structures and facilities
-Dungeon - Underground or enclosed adventure locations
-Magical - Locations with magical properties or origins
-Ruin - Abandoned or destroyed locations
-Planar - Locations from other planes of existence
-Underwater - Submerged or aquatic locations
