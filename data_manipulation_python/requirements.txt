@@ -1,1 +1,2 @@
-requests>=2.25.1 
+# Requirements for the apply_categories_and_biomes.py script
+# No external dependencies required - uses only Python standard library 

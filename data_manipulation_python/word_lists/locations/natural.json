@@ -1,0 +1,25 @@
+{
+    "description": "natural locations are places that are part of the natural world, without specific magical or supernatural elements or created by sapient beings. These should be single locations, not biomes, something an adventuring party would encounter in the wild that they could investigate to find dangers or opportunities.",
+    "list": [
+        "volcano",
+        "water strait",
+        "spider nest",
+        "animal den",
+        "beast lair",
+        "monster den",
+        "flame vents",
+        "oasis",
+        "mud volcano",
+        "cave",
+        "ravine",
+        "deer trail",
+        "meadow",
+        "mangroves",
+        "geothermal vents",
+        "geysers",
+        "lave fields",
+        "hive",
+        "craters",
+        "caldera"
+    ]
+}
