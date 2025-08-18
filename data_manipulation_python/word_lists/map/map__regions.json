@@ -225,16 +225,8 @@
       "description": "Remote frontier territories"
     },
     {
-      "name": "Badlands",
-      "description": "Harsh, difficult terrain"
-    },
-    {
       "name": "Wastelands",
       "description": "Desolate or barren regions"
-    },
-    {
-      "name": "Wetlands",
-      "description": "Marshy or swampy regions"
     },
     {
       "name": "Grasslands",
@@ -257,28 +249,12 @@
       "description": "Coastal territories"
     },
     {
-      "name": "Islands",
-      "description": "Island territories"
-    },
-    {
-      "name": "Peninsula",
-      "description": "Land surrounded by water on three sides"
-    },
-    {
       "name": "Isthmus",
       "description": "Narrow strip connecting two larger areas"
     },
     {
-      "name": "Delta",
-      "description": "River mouth region"
-    },
-    {
       "name": "Basin",
       "description": "Low-lying area surrounded by higher land"
-    },
-    {
-      "name": "Valley",
-      "description": "Low area between hills or mountains"
     },
     {
       "name": "Vale",
@@ -291,30 +267,6 @@
     {
       "name": "Glen",
       "description": "A narrow valley"
-    },
-    {
-      "name": "Gorge",
-      "description": "A narrow valley with steep sides"
-    },
-    {
-      "name": "Canyon",
-      "description": "A deep gorge"
-    },
-    {
-      "name": "Plateau",
-      "description": "Elevated flat region"
-    },
-    {
-      "name": "Mesa",
-      "description": "Isolated flat-topped elevation"
-    },
-    {
-      "name": "Steppe",
-      "description": "Large flat grassland"
-    },
-    {
-      "name": "Tundra",
-      "description": "Cold, treeless region"
     },
     {
       "name": "Taiga",
@@ -397,10 +349,6 @@
       "description": "The edge or border of an area"
     },
     {
-      "name": "Coast",
-      "description": "Land near the sea"
-    },
-    {
       "name": "Shore",
       "description": "Land along water"
     },
@@ -413,16 +361,8 @@
       "description": "A shore or beach"
     },
     {
-      "name": "Beach",
-      "description": "Sandy or pebbly shore"
-    },
-    {
       "name": "Cove",
       "description": "Small sheltered bay"
-    },
-    {
-      "name": "Bay",
-      "description": "Broad inlet of water"
     },
     {
       "name": "Gulf",
@@ -441,36 +381,8 @@
       "description": "Water passage"
     },
     {
-      "name": "Fjord",
-      "description": "Narrow inlet between cliffs"
-    },
-    {
       "name": "Inlet",
       "description": "Small arm of water"
-    },
-    {
-      "name": "Lagoon",
-      "description": "Shallow body of water"
-    },
-    {
-      "name": "Marsh",
-      "description": "Wetland area"
-    },
-    {
-      "name": "Swamp",
-      "description": "Wetland with trees"
-    },
-    {
-      "name": "Bog",
-      "description": "Wet spongy ground"
-    },
-    {
-      "name": "Fen",
-      "description": "Low marshy land"
-    },
-    {
-      "name": "Moor",
-      "description": "Open uncultivated upland"
     },
     {
       "name": "Heath",
@@ -499,20 +411,7 @@
     {
       "name": "Wood",
       "description": "Small forest"
-    },
-    {
-      "name": "Forest",
-      "description": "Large wooded area"
-    },
-    {
-      "name": "Jungle",
-      "description": "Tropical forest"
-    },
-    {
-      "name": "Rainforest",
-      "description": "Dense tropical forest"
-    },
-    {
+    },    {
       "name": "Timberland",
       "description": "Forested region"
     },
