@@ -13,7 +13,7 @@ export default function FullPageOverlay(props: {
 
     function handle_off_click(event: MouseEvent) {
         if ((event.target as HTMLDivElement).classList.contains(class_names.count_as_off_click)) {
-            navigate(nav_paths.map)
+            // navigate(nav_paths.map)
         }
     }
 

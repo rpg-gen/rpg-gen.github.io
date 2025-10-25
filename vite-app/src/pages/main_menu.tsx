@@ -26,6 +26,8 @@ export default function MainMenu(props: {}) {
     return (
         <FullPageOverlay>
             <MainMenuOption label={map_link_text} target={nav_paths.map} />
+            <MainMenuOption label="Delve Cards" target={nav_paths.delve_card_list} />
+            <MainMenuOption label="Random Card" target={nav_paths.delve_card_random} />
             <MainMenuOption label="Account" target="/account" />
             {
                 user_context.is_logged_in
