@@ -22,20 +22,22 @@ export default function CardList() {
     const [lastReload, setLastReload] = useState<Date | null>(null)
     const [searchText, setSearchText] = useState("")
     const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+    const [selectedRarities, setSelectedRarities] = useState<number[]>([])
 
     useEffect(() => {
         // Restore filter state if coming from edit page
-        const state = location.state as { searchText?: string; selectedTagIds?: string[] } | null
+        const state = location.state as { searchText?: string; selectedTagIds?: string[]; selectedRarities?: number[] } | null
         if (state) {
             if (state.searchText !== undefined) setSearchText(state.searchText)
             if (state.selectedTagIds !== undefined) setSelectedTagIds(state.selectedTagIds)
+            if (state.selectedRarities !== undefined) setSelectedRarities(state.selectedRarities)
         }
         loadData()
     }, [])
 
     useEffect(() => {
         filterCards()
-    }, [searchText, selectedTagIds, allCards, tags])
+    }, [searchText, selectedTagIds, selectedRarities, allCards, tags])
 
     async function loadData() {
         setIsLoading(true)
@@ -84,18 +86,25 @@ export default function CardList() {
             )
         }
 
+        // Rarity filter - card must have one of the selected rarities
+        if (selectedRarities.length > 0) {
+            filtered = filtered.filter(card =>
+                selectedRarities.includes(card.rarity)
+            )
+        }
+
         setCards(filtered)
     }
 
     function handleCreateNew() {
         navigate(nav_paths.delve_card_edit + "/new", {
-            state: { searchText, selectedTagIds }
+            state: { searchText, selectedTagIds, selectedRarities }
         })
     }
 
     function handleCardClick(cardId: string) {
         navigate(nav_paths.delve_card_edit + "/" + cardId, {
-            state: { searchText, selectedTagIds }
+            state: { searchText, selectedTagIds, selectedRarities }
         })
     }
 
@@ -107,13 +116,21 @@ export default function CardList() {
         }
     }
 
+    function toggleRarity(rarity: number) {
+        if (selectedRarities.includes(rarity)) {
+            setSelectedRarities(selectedRarities.filter(r => r !== rarity))
+        } else {
+            setSelectedRarities([...selectedRarities, rarity])
+        }
+    }
+
     if (isLoading) {
         return <FullPageOverlay><div>Loading cards...</div></FullPageOverlay>
     }
 
     return (
         <FullPageOverlay>
-            <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
+            <div style={{ padding: "1rem", width: "100%", maxWidth: "800px", margin: "0 auto", boxSizing: "border-box" }}>
                 <h1>Delve Cards</h1>
 
                 <div style={{ marginBottom: "1rem" }}>
@@ -179,13 +196,46 @@ export default function CardList() {
                             </button>
                         )}
                     </div>
+
+                    <div style={{ marginTop: "1rem" }}>
+                        <strong style={{ display: "block", marginBottom: "0.5rem" }}>
+                            Filter by Rarity {selectedRarities.length > 0 && `(${selectedRarities.length} selected)`}
+                        </strong>
+                        <div style={{
+                            border: "1px solid #ccc",
+                            padding: "0.5rem",
+                            maxHeight: "150px",
+                            overflowY: "auto",
+                            backgroundColor: "white"
+                        }}>
+                            {[1, 2, 3, 4, 5].map(rarity => (
+                                <label key={rarity} style={{ display: "block", marginBottom: "0.25rem", cursor: "pointer" }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedRarities.includes(rarity)}
+                                        onChange={() => toggleRarity(rarity)}
+                                        style={{ marginRight: "0.5rem" }}
+                                    />
+                                    {rarity} - {rarity === 1 ? "Most Common" : rarity === 5 ? "Most Rare" : ""}
+                                </label>
+                            ))}
+                        </div>
+                        {selectedRarities.length > 0 && (
+                            <button
+                                onClick={() => setSelectedRarities([])}
+                                style={{ marginTop: "0.5rem", fontSize: "0.85rem" }}
+                            >
+                                Clear Rarity Filters
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div style={{ marginBottom: "1rem" }}>
                     Showing {cards.length} of {allCards.length} cards
                 </div>
 
-                <div>
+                <div style={{ minHeight: "200px" }}>
                     {cards.map(card => (
                         <div
                             key={card.id}
@@ -202,21 +252,24 @@ export default function CardList() {
                             <div style={{ marginBottom: "0.5rem", fontSize: "0.9rem" }}>
                                 <strong>Effect:</strong> {card.effect}
                             </div>
-                            <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                            <div style={{ fontSize: "0.85rem", color: "#666", marginBottom: "0.25rem" }}>
                                 <strong>Tags:</strong> {card.tags.map(tagId => {
                                     const tag = tags.find(t => t.id === tagId)
                                     return tag ? tag.name : tagId
                                 }).join(", ") || "None"}
                             </div>
+                            <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                                <strong>Rarity:</strong> {card.rarity}/5
+                            </div>
                         </div>
                     ))}
-                </div>
 
-                {cards.length === 0 && (
-                    <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
-                        No cards found. {searchText || selectedTagIds.length > 0 ? "Try adjusting your filters." : "Create your first card!"}
-                    </div>
-                )}
+                    {cards.length === 0 && (
+                        <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
+                            No cards found. {searchText || selectedTagIds.length > 0 || selectedRarities.length > 0 ? "Try adjusting your filters." : "Create your first card!"}
+                        </div>
+                    )}
+                </div>
             </div>
         </FullPageOverlay>
     )

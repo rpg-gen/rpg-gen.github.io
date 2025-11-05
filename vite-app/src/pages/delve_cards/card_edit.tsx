@@ -18,7 +18,7 @@ export default function CardEdit() {
     const isNewCard = cardId === "new"
 
     // Store filter state to preserve when returning to card list
-    const returnState = location.state as { searchText?: string; selectedTagIds?: string[] } | null
+    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedRarities?: number[] } | null
 
     const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)

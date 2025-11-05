@@ -143,8 +143,8 @@ function evaluateExpression(expr: string, variables: Record<string, number> = {}
         return 0
     }
 
-    // Use safe parser instead of Function/eval
-    return safeEvaluate(processedExpr)
+    // Use safe parser instead of Function/eval and round to nearest integer
+    return Math.round(safeEvaluate(processedExpr))
 }
 
 // Process a card's effect and description, rolling dice and handling variables
@@ -201,9 +201,17 @@ export function processCardText(
         processedEffect = processedEffect.replace(varPattern, value.toString())
     })
 
-    // Third pass: replace simple dice notation in effect (not in variable assignments)
-    processedEffect = processedEffect.replace(/<(\d+d\d+)>/gi, (match, dice) => {
-        return rollDice(dice).toString()
+    // Third pass: evaluate any remaining expressions in angle brackets
+    // This handles things like <1d5 + 5>, <2d6 * 3>, etc.
+    // Match any content in angle brackets that contains dice notation or math operations
+    processedEffect = processedEffect.replace(/<([^>]+)>/g, (match, content) => {
+        // Check if this looks like an expression (contains dice notation or operators)
+        if (/\d+d\d+|[+\-*/]/.test(content)) {
+            const value = evaluateExpression(content, variables)
+            return value.toString()
+        }
+        // If it doesn't look like an expression, leave it as is
+        return match
     })
 
     // Fourth pass: process description
@@ -215,9 +223,16 @@ export function processCardText(
         processedDescription = processedDescription.replace(varPattern, value.toString())
     })
 
-    // Replace simple dice notation in description
-    processedDescription = processedDescription.replace(/<(\d+d\d+)>/gi, (match, dice) => {
-        return rollDice(dice).toString()
+    // Evaluate any remaining expressions in angle brackets
+    // This handles things like <1d5 + 5>, <2d6 * 3>, etc.
+    processedDescription = processedDescription.replace(/<([^>]+)>/g, (match, content) => {
+        // Check if this looks like an expression (contains dice notation or operators)
+        if (/\d+d\d+|[+\-*/]/.test(content)) {
+            const value = evaluateExpression(content, variables)
+            return value.toString()
+        }
+        // If it doesn't look like an expression, leave it as is
+        return match
     })
 
     return {
