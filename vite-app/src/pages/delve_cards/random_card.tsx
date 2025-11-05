@@ -7,6 +7,7 @@ import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import FullPageOverlay from "../../components/full_page_overlay"
 import { nav_paths } from "../../configs/constants"
 import UserContext from "../../contexts/user_context"
+import { processCardText } from "../../utility/dice_expression_parser"
 
 export default function RandomCard() {
     const navigate = useNavigate()
@@ -20,6 +21,7 @@ export default function RandomCard() {
     const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
     const [isExclusive, setIsExclusive] = useState(false)
     const [randomCard, setRandomCard] = useState<DelveCard | null>(null)
+    const [processedCardText, setProcessedCardText] = useState<{ effect: string; description: string } | null>(null)
     const [isShuffling, setIsShuffling] = useState(false)
 
     useEffect(() => {
@@ -56,12 +58,12 @@ export default function RandomCard() {
 
         if (isExclusive) {
             // Card must have ALL selected tags
-            return allCards.filter(card => 
+            return allCards.filter(card =>
                 selectedTagIds.every(tagId => card.tags.includes(tagId))
             )
         } else {
             // Card must have ANY of the selected tags
-            return allCards.filter(card => 
+            return allCards.filter(card =>
                 selectedTagIds.some(tagId => card.tags.includes(tagId))
             )
         }
@@ -69,7 +71,7 @@ export default function RandomCard() {
 
     function selectRandomCard() {
         const filteredCards = getFilteredCards()
-        
+
         if (filteredCards.length === 0) {
             alert("No cards match the selected filters")
             setRandomCard(null)
@@ -79,6 +81,7 @@ export default function RandomCard() {
         // Show shuffling state
         setIsShuffling(true)
         setRandomCard(null)
+        setProcessedCardText(null)
 
         // Wait 1 second before showing the card
         setTimeout(() => {
@@ -94,7 +97,13 @@ export default function RandomCard() {
 
             // Select random card from weighted pool
             const randomIndex = Math.floor(Math.random() * weightedPool.length)
-            setRandomCard(weightedPool[randomIndex])
+            const selectedCard = weightedPool[randomIndex]
+
+            // Process the card text (roll dice, handle variables)
+            const processed = processCardText(selectedCard)
+
+            setRandomCard(selectedCard)
+            setProcessedCardText(processed)
             setIsShuffling(false)
         }, 1000)
     }
@@ -126,7 +135,7 @@ export default function RandomCard() {
 
                 <div style={{ marginBottom: "2rem", padding: "1rem", border: "1px solid #ccc", backgroundColor: "#f9f9f9" }}>
                     <h3 style={{ marginTop: 0 }}>Filter by Tags</h3>
-                    
+
                     <div style={{ marginBottom: "1rem" }}>
                         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                             <span>Mode:</span>
@@ -161,7 +170,7 @@ export default function RandomCard() {
                     </div>
 
                     <div style={{ marginTop: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
-                        {selectedTagIds.length === 0 
+                        {selectedTagIds.length === 0
                             ? `All ${allCards.length} cards available`
                             : `${filteredCount} cards match selected filters`
                         }
@@ -169,7 +178,7 @@ export default function RandomCard() {
                 </div>
 
                 <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-                    <button 
+                    <button
                         onClick={selectRandomCard}
                         style={{ padding: "1rem 2rem", fontSize: "1.2rem" }}
                         disabled={isShuffling}
@@ -179,9 +188,9 @@ export default function RandomCard() {
                 </div>
 
                 {isShuffling && (
-                    <div style={{ 
-                        border: "2px solid #333", 
-                        padding: "3rem", 
+                    <div style={{
+                        border: "2px solid #333",
+                        padding: "3rem",
                         backgroundColor: "#fff",
                         textAlign: "center",
                         fontSize: "1.5rem",
@@ -193,32 +202,34 @@ export default function RandomCard() {
                     </div>
                 )}
 
-                {!isShuffling && randomCard && (
-                    <div style={{ 
-                        border: "2px solid #333", 
-                        padding: "1.5rem", 
+                {!isShuffling && randomCard && processedCardText && (
+                    <div style={{
+                        border: "2px solid #333",
+                        padding: "1.5rem",
                         backgroundColor: "#fff",
                         width: "100%",
                         boxSizing: "border-box",
                         overflowWrap: "break-word"
                     }}>
                         <h2 style={{ marginTop: 0, wordWrap: "break-word" }}>{randomCard.title}</h2>
-                        
-                        <div style={{ marginBottom: "1rem" }}>
-                            <strong>Effect:</strong>
-                            <div style={{ marginTop: "0.25rem", wordWrap: "break-word" }}>{randomCard.effect || "None"}</div>
-                        </div>
+
+                        {processedCardText.effect && (
+                            <div style={{ marginBottom: "1rem" }}>
+                                <strong>Effect:</strong>
+                                <div style={{ marginTop: "0.25rem", wordWrap: "break-word" }}>{processedCardText.effect}</div>
+                            </div>
+                        )}
 
                         <div style={{ marginBottom: "1rem" }}>
                             <strong>Description:</strong>
                             <div style={{ marginTop: "0.25rem", whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-                                {randomCard.description || "None"}
+                                {processedCardText.description || "None"}
                             </div>
                         </div>
 
                         <div style={{ marginBottom: "1rem", wordWrap: "break-word" }}>
                             <strong>Tags:</strong>{" "}
-                            {randomCard.tags.length > 0 
+                            {randomCard.tags.length > 0
                                 ? randomCard.tags.map(getTagName).join(", ")
                                 : "None"
                             }

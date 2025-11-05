@@ -61,24 +61,25 @@ export default function CardList() {
         if (searchText.trim()) {
             const searchLower = searchText.toLowerCase()
             filtered = filtered.filter(card => {
-                // Search in effect and description
-                const textMatch = 
+                // Search in title, effect and description
+                const textMatch =
+                    card.title.toLowerCase().includes(searchLower) ||
                     card.effect.toLowerCase().includes(searchLower) ||
                     card.description.toLowerCase().includes(searchLower)
-                
+
                 // Search in tag names
                 const tagMatch = card.tags.some(tagId => {
                     const tag = tags.find(t => t.id === tagId)
                     return tag ? tag.name.toLowerCase().includes(searchLower) : false
                 })
-                
+
                 return textMatch || tagMatch
             })
         }
 
         // Tag filter - card must have at least one of the selected tags
         if (selectedTagIds.length > 0) {
-            filtered = filtered.filter(card => 
+            filtered = filtered.filter(card =>
                 selectedTagIds.some(tagId => card.tags.includes(tagId))
             )
         }
@@ -136,20 +137,20 @@ export default function CardList() {
                 <div style={{ marginBottom: "1rem" }}>
                     <input
                         type="text"
-                        placeholder="Search effect, description, tags..."
+                        placeholder="Search title, effect, description, tags..."
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
                     />
-                    
+
                     <div style={{ marginTop: "0.5rem" }}>
                         <strong style={{ display: "block", marginBottom: "0.5rem" }}>
                             Filter by Tags {selectedTagIds.length > 0 && `(${selectedTagIds.length} selected)`}
                         </strong>
-                        <div style={{ 
-                            border: "1px solid #ccc", 
-                            padding: "0.5rem", 
-                            maxHeight: "150px", 
+                        <div style={{
+                            border: "1px solid #ccc",
+                            padding: "0.5rem",
+                            maxHeight: "150px",
                             overflowY: "auto",
                             backgroundColor: "white"
                         }}>
@@ -170,8 +171,8 @@ export default function CardList() {
                             )}
                         </div>
                         {selectedTagIds.length > 0 && (
-                            <button 
-                                onClick={() => setSelectedTagIds([])} 
+                            <button
+                                onClick={() => setSelectedTagIds([])}
                                 style={{ marginTop: "0.5rem", fontSize: "0.85rem" }}
                             >
                                 Clear Tag Filters

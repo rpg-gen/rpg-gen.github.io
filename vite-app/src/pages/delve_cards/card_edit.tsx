@@ -6,6 +6,7 @@ import DelveCard from "../../types/delve_cards/DelveCard"
 import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import FullPageOverlay from "../../components/full_page_overlay"
 import { nav_paths } from "../../configs/constants"
+import { processCardText } from "../../utility/dice_expression_parser"
 
 export default function CardEdit() {
     const navigate = useNavigate()
@@ -15,7 +16,7 @@ export default function CardEdit() {
     const tagsHook = useFirebaseDelveCardTags()
 
     const isNewCard = cardId === "new"
-    
+
     // Store filter state to preserve when returning to card list
     const returnState = location.state as { searchText?: string; selectedTagIds?: string[] } | null
 
@@ -24,12 +25,14 @@ export default function CardEdit() {
     const [availableTags, setAvailableTags] = useState<DelveCardTag[]>([])
     const [draftSaved, setDraftSaved] = useState(false)
     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
-    
+
     const [title, setTitle] = useState("")
     const [effect, setEffect] = useState("")
     const [description, setDescription] = useState("")
     const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [rarity, setRarity] = useState(1)
+    const [showPreview, setShowPreview] = useState(false)
+    const [previewText, setPreviewText] = useState<{ effect: string; description: string } | null>(null)
 
     const draftKey = `delve-card-draft-${cardId}`
 
@@ -161,7 +164,7 @@ export default function CardEdit() {
 
     async function handleDelete() {
         if (!cardId || isNewCard) return
-        
+
         if (confirm("Are you sure you want to delete this card?")) {
             try {
                 await cardsHook.deleteCard(cardId)
@@ -194,6 +197,12 @@ export default function CardEdit() {
         }
     }
 
+    function handlePreview() {
+        const processed = processCardText(effect, description)
+        setPreviewText(processed)
+        setShowPreview(true)
+    }
+
     if (isLoading) {
         return <FullPageOverlay><div>Loading...</div></FullPageOverlay>
     }
@@ -203,10 +212,10 @@ export default function CardEdit() {
             <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
                 <h1>{isNewCard ? "Create New Card" : "Edit Card"}</h1>
 
-                <div style={{ 
-                    marginBottom: "0.5rem", 
-                    fontSize: "0.85rem", 
-                    color: "#666", 
+                <div style={{
+                    marginBottom: "0.5rem",
+                    fontSize: "0.85rem",
+                    color: "#666",
                     fontStyle: "italic",
                     minHeight: "1.2em",
                     visibility: draftSaved ? "visible" : "hidden"
@@ -246,6 +255,24 @@ export default function CardEdit() {
                     />
                 </div>
 
+                <div style={{
+                    marginBottom: "1rem",
+                    padding: "0.75rem",
+                    backgroundColor: "#e3f2fd",
+                    border: "1px solid #90caf9",
+                    borderRadius: "4px",
+                    fontSize: "0.9rem"
+                }}>
+                    <strong>Dice & Variable Syntax:</strong>
+                    <ul style={{ marginTop: "0.5rem", marginBottom: 0, paddingLeft: "1.5rem" }}>
+                        <li>Dice rolls: <code>&lt;1d6&gt;</code>, <code>&lt;2d10&gt;</code>, etc.</li>
+                        <li>Variables in Effect: <code>&lt;supply = 10 - 1d3&gt;</code> (will be hidden when drawn)</li>
+                        <li>Variables can reference other variables: <code>&lt;cost = supply * 2&gt;</code></li>
+                        <li>Use variables in Effect or Description: <code>&lt;supply&gt;</code> (will show the calculated value)</li>
+                        <li>Math operators: +, -, *, /, ()</li>
+                    </ul>
+                </div>
+
                 <div style={{ marginBottom: "1rem" }}>
                     <label style={{ display: "block", marginBottom: "0.25rem" }}>
                         <strong>Effect</strong>
@@ -268,7 +295,71 @@ export default function CardEdit() {
                         rows={5}
                         style={{ width: "100%", padding: "0.5rem" }}
                     />
+                    <div style={{ marginTop: "0.5rem" }}>
+                        <button type="button" onClick={handlePreview}>
+                            Preview Dice Rolls & Variables
+                        </button>
+                        {showPreview && (
+                            <button
+                                type="button"
+                                onClick={() => setShowPreview(false)}
+                                style={{ marginLeft: "0.5rem" }}
+                            >
+                                Hide Preview
+                            </button>
+                        )}
+                    </div>
                 </div>
+
+                {showPreview && previewText && (
+                    <div style={{
+                        marginBottom: "1rem",
+                        padding: "1rem",
+                        border: "2px solid #4CAF50",
+                        backgroundColor: "#f0f8f0",
+                        borderRadius: "4px"
+                    }}>
+                        <h3 style={{ marginTop: 0, color: "#2e7d32" }}>Preview (Random Roll)</h3>
+                        <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem", fontStyle: "italic", color: "#666" }}>
+                            This shows one possible result. Each draw will roll dice randomly.
+                        </div>
+
+                        {previewText.effect && (
+                            <div style={{ marginBottom: "1rem" }}>
+                                <strong>Effect:</strong>
+                                <div style={{
+                                    marginTop: "0.25rem",
+                                    padding: "0.5rem",
+                                    backgroundColor: "white",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "3px"
+                                }}>
+                                    {previewText.effect}
+                                </div>
+                            </div>
+                        )}
+
+                        <div style={{ marginBottom: "0" }}>
+                            <strong>Description:</strong>
+                            <div style={{
+                                marginTop: "0.25rem",
+                                padding: "0.5rem",
+                                backgroundColor: "white",
+                                border: "1px solid #ccc",
+                                borderRadius: "3px",
+                                whiteSpace: "pre-wrap"
+                            }}>
+                                {previewText.description || "None"}
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: "0.75rem" }}>
+                            <button type="button" onClick={handlePreview} style={{ fontSize: "0.9rem" }}>
+                                Roll Again
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <div style={{ marginBottom: "1rem" }}>
                     <label style={{ display: "block", marginBottom: "0.25rem" }}>
@@ -290,10 +381,10 @@ export default function CardEdit() {
                 <div style={{ marginBottom: "1rem" }}>
                     <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
                         <strong>Tags</strong>
-                        <button 
-                            onClick={() => navigate(nav_paths.delve_card_tags, { 
-                                state: { returnPath: nav_paths.delve_card_edit + "/" + cardId } 
-                            })} 
+                        <button
+                            onClick={() => navigate(nav_paths.delve_card_tags, {
+                                state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
+                            })}
                             style={{ marginLeft: "0.5rem", fontSize: "0.85rem" }}
                         >
                             Manage Tags
