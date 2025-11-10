@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
 import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
 import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delve_card_decks"
@@ -25,6 +25,7 @@ function getRarityColors(rarity: number): { border: string; background: string }
 
 export default function RandomCard() {
     const navigate = useNavigate()
+    const location = useLocation()
     const cardsHook = useFirebaseDelveCards()
     const tagsHook = useFirebaseDelveCardTags()
     const decksHook = useFirebaseDelveCardDecks()
@@ -43,6 +44,14 @@ export default function RandomCard() {
     const [isShuffling, setIsShuffling] = useState(false)
 
     useEffect(() => {
+        // Restore filter state if coming from card list
+        const state = location.state as { selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[] } | null
+        if (state) {
+            if (state.selectedTagIds !== undefined) setSelectedTagIds(state.selectedTagIds)
+            if (state.selectedDeckIds !== undefined) setSelectedDeckIds(state.selectedDeckIds)
+            if (state.selectedRarities !== undefined) setSelectedRarities(state.selectedRarities)
+            if (state.searchTextFilters !== undefined) setSearchTextFilters(state.searchTextFilters)
+        }
         loadData()
     }, [])
 
@@ -178,7 +187,9 @@ export default function RandomCard() {
                 <h1 style={{ wordWrap: "break-word" }}>Random Card Generator</h1>
 
                 <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <button onClick={() => navigate(nav_paths.delve_card_list)}>
+                    <button onClick={() => navigate(nav_paths.delve_card_list, {
+                        state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+                    })}>
                         Back to Card List
                     </button>
                     <button onClick={() => navigate("/")}>
@@ -283,7 +294,9 @@ export default function RandomCard() {
 
                         {user_context.is_logged_in && (
                             <div>
-                                <button onClick={() => navigate(nav_paths.delve_card_edit + "/" + randomCard.id)}>
+                                <button onClick={() => navigate(nav_paths.delve_card_edit + "/" + randomCard.id, {
+                                    state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+                                })}>
                                     Edit This Card
                                 </button>
                             </div>

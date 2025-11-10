@@ -54,13 +54,14 @@ export default function CardList() {
     const [searchTextFilters, setSearchTextFilters] = useState<string[]>([])
 
     useEffect(() => {
-        // Restore filter state if coming from edit page
-        const state = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[] } | null
+        // Restore filter state if coming from edit page or random card page
+        const state = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[] } | null
         if (state) {
             if (state.searchText !== undefined) setSearchText(state.searchText)
             if (state.selectedTagIds !== undefined) setSelectedTagIds(state.selectedTagIds)
             if (state.selectedDeckIds !== undefined) setSelectedDeckIds(state.selectedDeckIds)
             if (state.selectedRarities !== undefined) setSelectedRarities(state.selectedRarities)
+            if (state.searchTextFilters !== undefined) setSearchTextFilters(state.searchTextFilters)
         }
         loadData()
     }, [])
@@ -157,13 +158,13 @@ export default function CardList() {
 
     function handleCreateNew() {
         navigate(nav_paths.delve_card_edit + "/new", {
-            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities }
+            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
         })
     }
 
     function handleCardClick(cardId: string) {
         navigate(nav_paths.delve_card_edit + "/" + cardId, {
-            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities }
+            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
         })
     }
 
@@ -191,7 +192,9 @@ export default function CardList() {
                             <button onClick={() => navigate(nav_paths.delve_card_decks)} style={{ marginLeft: "0.5rem" }}>Manage Decks</button>
                         </>
                     )}
-                    <button onClick={() => navigate(nav_paths.delve_card_random)} style={{ marginLeft: user_context.is_logged_in ? "0.5rem" : "0" }}>Random Card</button>
+                    <button onClick={() => navigate(nav_paths.delve_card_random, {
+                        state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+                    })} style={{ marginLeft: user_context.is_logged_in ? "0.5rem" : "0" }}>Random Card</button>
                     <button onClick={loadData} style={{ marginLeft: "0.5rem" }}>Refresh</button>
                     <button onClick={() => navigate("/")} style={{ marginLeft: "0.5rem" }}>Back to Menu</button>
                 </div>

@@ -40,8 +40,8 @@ export default function CardEdit() {
 
     const isNewCard = cardId === "new"
 
-    // Store filter state to preserve when returning to card list
-    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedRarities?: number[] } | null
+    // Store filter state to preserve when returning to card list, and use selectedDeckIds for pre-populating new cards
+    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[] } | null
 
     const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)
@@ -144,14 +144,19 @@ export default function CardEdit() {
                         setRarity(card.rarity)
                     }
                 }
-            } else if (isNewCard && draftData) {
-                // For new cards, always restore draft if available
-                setTitle(draftData.title)
-                setEffect(draftData.effect)
-                setDescription(draftData.description)
-                setSelectedTags(draftData.selectedTags)
-                setSelectedDecks(draftData.selectedDecks || [])
-                setRarity(draftData.rarity)
+            } else if (isNewCard) {
+                if (draftData) {
+                    // For new cards, restore draft if available
+                    setTitle(draftData.title)
+                    setEffect(draftData.effect)
+                    setDescription(draftData.description)
+                    setSelectedTags(draftData.selectedTags)
+                    setSelectedDecks(draftData.selectedDecks || [])
+                    setRarity(draftData.rarity)
+                } else if (returnState?.selectedDeckIds && returnState.selectedDeckIds.length > 0) {
+                    // If no draft, but coming from card list with decks selected, auto-populate those decks
+                    setSelectedDecks(returnState.selectedDeckIds)
+                }
             }
         } catch (error) {
             console.error("Error loading data:", error)
@@ -192,6 +197,45 @@ export default function CardEdit() {
                     navigate(nav_paths.delve_card_list, { state: returnState })
                 }
             }
+        } catch (error) {
+            console.error("Error saving card:", error)
+            alert("Error saving card")
+        }
+        setIsSaving(false)
+    }
+
+    async function handleSaveAndAddAnother() {
+        if (!title.trim()) {
+            alert("Title is required")
+            return
+        }
+
+        setIsSaving(true)
+        try {
+            const cardData: Omit<DelveCard, 'id'> = {
+                title: title.trim(),
+                effect: effect.trim(),
+                description: description.trim(),
+                tags: selectedTags,
+                decks: selectedDecks,
+                rarity
+            }
+
+            await cardsHook.createCard(cardData)
+
+            // Store the decks we want to keep selected
+            const decksToKeep = selectedDecks
+
+            // Clear the form for a new card
+            localStorage.removeItem(draftKey)
+            setTitle("")
+            setEffect("")
+            setDescription("")
+            setSelectedTags([])
+            setRarity(1)
+
+            // Keep the same decks selected
+            setSelectedDecks(decksToKeep)
         } catch (error) {
             console.error("Error saving card:", error)
             alert("Error saving card")
@@ -260,6 +304,11 @@ export default function CardEdit() {
                     <button onClick={() => handleSave(true)} disabled={isSaving} style={{ marginLeft: "0.5rem" }}>
                         {isSaving ? "Saving..." : "Save & Close"}
                     </button>
+                    {isNewCard && (
+                        <button onClick={handleSaveAndAddAnother} disabled={isSaving} style={{ marginLeft: "0.5rem" }}>
+                            {isSaving ? "Saving..." : "Save & Add Another"}
+                        </button>
+                    )}
                     {!isNewCard && (
                         <button onClick={handleDelete} style={{ marginLeft: "0.5rem" }}>
                             Delete
