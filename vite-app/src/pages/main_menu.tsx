@@ -31,7 +31,10 @@ export default function MainMenu(props: {}) {
             <MainMenuOption label="Account" target="/account" />
             {
                 user_context.is_logged_in
-                ? <MainMenuOption label="Tagger" target="/tagger" />
+                ? <>
+                    <MainMenuOption label="Tagger" target="/tagger" />
+                    <MainMenuOption label="Utilities" target={nav_paths.utilities_menu} />
+                </>
                 : ""
             }
         </FullPageOverlay>

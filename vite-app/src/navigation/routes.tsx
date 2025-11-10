@@ -9,7 +9,10 @@ import Tagger from "../pages/Tagger"
 import CardList from "../pages/delve_cards/card_list"
 import CardEdit from "../pages/delve_cards/card_edit"
 import TagManagement from "../pages/delve_cards/tag_management"
+import DeckManagement from "../pages/delve_cards/deck_management"
 import RandomCard from "../pages/delve_cards/random_card"
+import UtilitiesMenu from "../pages/utilities/utilities_menu"
+import MigrateToDecks from "../pages/delve_cards/migrate_to_decks"
 import ProtectedRoute from "../components/protected_route"
 
 const router = createBrowserRouter([
@@ -51,8 +54,20 @@ const router = createBrowserRouter([
                 element: <ProtectedRoute><TagManagement /></ProtectedRoute>
             },
             {
+                path: nav_paths.delve_card_decks,
+                element: <ProtectedRoute><DeckManagement /></ProtectedRoute>
+            },
+            {
                 path: nav_paths.delve_card_random,
                 element: <RandomCard />
+            },
+            {
+                path: nav_paths.utilities_menu,
+                element: <ProtectedRoute><UtilitiesMenu /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.utility_delve_card_migration,
+                element: <ProtectedRoute><MigrateToDecks /></ProtectedRoute>
             }
         ]
     }

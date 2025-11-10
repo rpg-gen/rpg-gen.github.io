@@ -3,7 +3,10 @@ const nav_paths = {
   delve_card_list: "/delve-cards",
   delve_card_edit: "/delve-cards/edit",
   delve_card_tags: "/delve-cards/tags",
-  delve_card_random: "/delve-cards/random"
+  delve_card_decks: "/delve-cards/decks",
+  delve_card_random: "/delve-cards/random",
+  utilities_menu: "/utilities",
+  utility_delve_card_migration: "/utilities/delve-card-migration"
 }
 
 const mobile = {

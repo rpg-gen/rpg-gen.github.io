@@ -2,11 +2,33 @@ import { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
 import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
+import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delve_card_decks"
 import DelveCard from "../../types/delve_cards/DelveCard"
 import DelveCardTag from "../../types/delve_cards/DelveCardTag"
+import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import FullPageOverlay from "../../components/full_page_overlay"
+import ChipSelector from "../../components/delve_card_chip_selector"
 import { nav_paths } from "../../configs/constants"
 import { processCardText } from "../../utility/dice_expression_parser"
+
+function getRarityColors(rarity: number): { border: string; background: string } {
+    const colorMap: { [key: number]: { border: string; background: string } } = {
+        1: { border: "#757575", background: "#E8E8E8" },      // Common - Gray
+        2: { border: "#4CAF50", background: "#E8F5E9" },      // Uncommon - Green
+        3: { border: "#2196F3", background: "#E3F2FD" },      // Rare - Blue
+        4: { border: "#9C27B0", background: "#F3E5F5" },      // Epic - Purple
+        5: { border: "#FF9800", background: "#FFF3E0" }       // Legendary - Orange/Gold
+    }
+    return colorMap[rarity] || colorMap[1]
+}
+
+const RARITY_OPTIONS = [
+    { id: "1", name: "Common (1)" },
+    { id: "2", name: "Uncommon (2)" },
+    { id: "3", name: "Rare (3)" },
+    { id: "4", name: "Epic (4)" },
+    { id: "5", name: "Legendary (5)" }
+]
 
 export default function CardEdit() {
     const navigate = useNavigate()
@@ -14,6 +36,7 @@ export default function CardEdit() {
     const { cardId } = useParams<{ cardId: string }>()
     const cardsHook = useFirebaseDelveCards()
     const tagsHook = useFirebaseDelveCardTags()
+    const decksHook = useFirebaseDelveCardDecks()
 
     const isNewCard = cardId === "new"
 
@@ -23,6 +46,7 @@ export default function CardEdit() {
     const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)
     const [availableTags, setAvailableTags] = useState<DelveCardTag[]>([])
+    const [availableDecks, setAvailableDecks] = useState<DelveCardDeck[]>([])
     const [draftSaved, setDraftSaved] = useState(false)
     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
@@ -30,6 +54,7 @@ export default function CardEdit() {
     const [effect, setEffect] = useState("")
     const [description, setDescription] = useState("")
     const [selectedTags, setSelectedTags] = useState<string[]>([])
+    const [selectedDecks, setSelectedDecks] = useState<string[]>([])
     const [rarity, setRarity] = useState(1)
     const [showPreview, setShowPreview] = useState(false)
     const [previewText, setPreviewText] = useState<{ effect: string; description: string } | null>(null)
@@ -48,6 +73,7 @@ export default function CardEdit() {
                 effect,
                 description,
                 selectedTags,
+                selectedDecks,
                 rarity
             }
             localStorage.setItem(draftKey, JSON.stringify(draftData))
@@ -55,13 +81,17 @@ export default function CardEdit() {
             const timer = setTimeout(() => setDraftSaved(false), 1000)
             return () => clearTimeout(timer)
         }
-    // }, [title, effect, description, selectedTags, rarity, isLoading, initialLoadComplete])
-    }, [title, effect, description, selectedTags, rarity])
+    // }, [title, effect, description, selectedTags, selectedDecks, rarity, isLoading, initialLoadComplete])
+    }, [title, effect, description, selectedTags, selectedDecks, rarity])
 
     async function loadData() {
         try {
-            const tags = await tagsHook.getAllTags()
+            const [tags, decks] = await Promise.all([
+                tagsHook.getAllTags(),
+                decksHook.getAllDecks()
+            ])
             setAvailableTags(tags)
+            setAvailableDecks(decks)
 
             // Try to load draft first
             const savedDraft = localStorage.getItem(draftKey)
@@ -83,6 +113,7 @@ export default function CardEdit() {
                         draftData.effect !== card.effect ||
                         draftData.description !== card.description ||
                         JSON.stringify(draftData.selectedTags) !== JSON.stringify(card.tags) ||
+                        JSON.stringify(draftData.selectedDecks) !== JSON.stringify(card.decks) ||
                         draftData.rarity !== card.rarity
                     )) {
                         if (confirm("You have unsaved changes. Do you want to restore them?")) {
@@ -90,6 +121,7 @@ export default function CardEdit() {
                             setEffect(draftData.effect)
                             setDescription(draftData.description)
                             setSelectedTags(draftData.selectedTags)
+                            setSelectedDecks(draftData.selectedDecks || [])
                             setRarity(draftData.rarity)
                         } else {
                             // Load from server
@@ -97,6 +129,7 @@ export default function CardEdit() {
                             setEffect(card.effect)
                             setDescription(card.description)
                             setSelectedTags(card.tags)
+                            setSelectedDecks(card.decks || [])
                             setRarity(card.rarity)
                             localStorage.removeItem(draftKey)
                         }
@@ -106,6 +139,7 @@ export default function CardEdit() {
                         setEffect(card.effect)
                         setDescription(card.description)
                         setSelectedTags(card.tags)
+                        setSelectedDecks(card.decks || [])
                         setRarity(card.rarity)
                     }
                 }
@@ -115,6 +149,7 @@ export default function CardEdit() {
                 setEffect(draftData.effect)
                 setDescription(draftData.description)
                 setSelectedTags(draftData.selectedTags)
+                setSelectedDecks(draftData.selectedDecks || [])
                 setRarity(draftData.rarity)
             }
         } catch (error) {
@@ -137,6 +172,7 @@ export default function CardEdit() {
                 effect: effect.trim(),
                 description: description.trim(),
                 tags: selectedTags,
+                decks: selectedDecks,
                 rarity
             }
 
@@ -189,13 +225,6 @@ export default function CardEdit() {
         }
     }
 
-    function toggleTag(tagId: string) {
-        if (selectedTags.includes(tagId)) {
-            setSelectedTags(selectedTags.filter(t => t !== tagId))
-        } else {
-            setSelectedTags([...selectedTags, tagId])
-        }
-    }
 
     function handlePreview() {
         const processed = processCardText(effect, description)
@@ -311,103 +340,109 @@ export default function CardEdit() {
                     </div>
                 </div>
 
-                {showPreview && previewText && (
-                    <div style={{
-                        marginBottom: "1rem",
-                        padding: "1rem",
-                        border: "2px solid #4CAF50",
-                        backgroundColor: "#f0f8f0",
-                        borderRadius: "4px"
-                    }}>
-                        <h3 style={{ marginTop: 0, color: "#2e7d32" }}>Preview (Random Roll)</h3>
-                        <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem", fontStyle: "italic", color: "#666" }}>
-                            This shows one possible result. Each draw will roll dice randomly.
-                        </div>
+                {showPreview && previewText && (() => {
+                    const rarityColors = getRarityColors(rarity)
+                    return (
+                        <div style={{
+                            marginBottom: "1rem",
+                            padding: "1rem",
+                            border: `3px solid ${rarityColors.border}`,
+                            backgroundColor: rarityColors.background,
+                            borderRadius: "12px"
+                        }}>
+                            <h3 style={{ marginTop: 0, color: rarityColors.border }}>Preview (Random Roll)</h3>
+                            <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem", fontStyle: "italic", color: "#666" }}>
+                                This shows one possible result. Each draw will roll dice randomly.
+                            </div>
 
-                        {previewText.effect && (
-                            <div style={{ marginBottom: "1rem" }}>
-                                <strong>Effect:</strong>
+                            {previewText.effect && (
+                                <div style={{ marginBottom: "1rem" }}>
+                                    <strong>Effect:</strong>
+                                    <div style={{
+                                        marginTop: "0.25rem",
+                                        padding: "0.5rem",
+                                        backgroundColor: "white",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "6px"
+                                    }}>
+                                        {previewText.effect}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div style={{ marginBottom: "0" }}>
+                                <strong>Description:</strong>
                                 <div style={{
                                     marginTop: "0.25rem",
                                     padding: "0.5rem",
                                     backgroundColor: "white",
                                     border: "1px solid #ccc",
-                                    borderRadius: "3px"
+                                    borderRadius: "6px",
+                                    whiteSpace: "pre-wrap"
                                 }}>
-                                    {previewText.effect}
+                                    {previewText.description || "None"}
                                 </div>
                             </div>
-                        )}
 
-                        <div style={{ marginBottom: "0" }}>
-                            <strong>Description:</strong>
-                            <div style={{
-                                marginTop: "0.25rem",
-                                padding: "0.5rem",
-                                backgroundColor: "white",
-                                border: "1px solid #ccc",
-                                borderRadius: "3px",
-                                whiteSpace: "pre-wrap"
-                            }}>
-                                {previewText.description || "None"}
+                            <div style={{ marginTop: "0.75rem" }}>
+                                <button type="button" onClick={handlePreview} style={{ fontSize: "0.9rem" }}>
+                                    Roll Again
+                                </button>
                             </div>
                         </div>
+                    )
+                })()}
 
-                        <div style={{ marginTop: "0.75rem" }}>
-                            <button type="button" onClick={handlePreview} style={{ fontSize: "0.9rem" }}>
-                                Roll Again
-                            </button>
-                        </div>
-                    </div>
-                )}
+                <ChipSelector
+                    label="Rarity"
+                    items={RARITY_OPTIONS}
+                    selectedIds={[rarity.toString()]}
+                    onSelectionChange={(ids) => setRarity(ids.length > 0 ? Number(ids[0]) : 1)}
+                    chipColor={{
+                        border: "#ff9800",
+                        background: "#fff3e0",
+                        prefix: "rarity:"
+                    }}
+                    multiSelect={false}
+                />
 
-                <div style={{ marginBottom: "1rem" }}>
-                    <label style={{ display: "block", marginBottom: "0.25rem" }}>
-                        <strong>Rarity (1=common, 5=rare)</strong>
-                    </label>
-                    <select
-                        value={rarity}
-                        onChange={(e) => setRarity(Number(e.target.value))}
-                        style={{ padding: "0.5rem" }}
-                    >
-                        <option value={1}>1 - Most Common</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                        <option value={5}>5 - Most Rare</option>
-                    </select>
-                </div>
+                <ChipSelector
+                    label="Tags"
+                    items={availableTags}
+                    selectedIds={selectedTags}
+                    onSelectionChange={setSelectedTags}
+                    chipColor={{
+                        border: "#4a90e2",
+                        background: "#f0f7ff",
+                        prefix: "tag:"
+                    }}
+                    multiSelect={true}
+                    manageButton={{
+                        text: "Manage Tags",
+                        onClick: () => navigate(nav_paths.delve_card_tags, {
+                            state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
+                        })
+                    }}
+                />
 
-                <div style={{ marginBottom: "1rem" }}>
-                    <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
-                        <strong>Tags</strong>
-                        <button
-                            onClick={() => navigate(nav_paths.delve_card_tags, {
-                                state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
-                            })}
-                            style={{ marginLeft: "0.5rem", fontSize: "0.85rem" }}
-                        >
-                            Manage Tags
-                        </button>
-                    </div>
-                    <div style={{ border: "1px solid #ccc", padding: "0.5rem", maxHeight: "200px", overflowY: "auto" }}>
-                        {availableTags.length === 0 ? (
-                            <div style={{ color: "#666" }}>No tags available. Create some tags first.</div>
-                        ) : (
-                            availableTags.map(tag => (
-                                <label key={tag.id} style={{ display: "block", marginBottom: "0.25rem" }}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedTags.includes(tag.id)}
-                                        onChange={() => toggleTag(tag.id)}
-                                        style={{ marginRight: "0.5rem" }}
-                                    />
-                                    {tag.name}
-                                </label>
-                            ))
-                        )}
-                    </div>
-                </div>
+                <ChipSelector
+                    label="Decks"
+                    items={availableDecks}
+                    selectedIds={selectedDecks}
+                    onSelectionChange={setSelectedDecks}
+                    chipColor={{
+                        border: "#9c27b0",
+                        background: "#f3e5f5",
+                        prefix: "deck:"
+                    }}
+                    multiSelect={true}
+                    manageButton={{
+                        text: "Manage Decks",
+                        onClick: () => navigate(nav_paths.delve_card_decks, {
+                            state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
+                        })
+                    }}
+                />
             </div>
         </FullPageOverlay>
     )
