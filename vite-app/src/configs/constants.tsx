@@ -13,4 +13,16 @@ const mobile = {
   break_point: 500
 }
 
-export { nav_paths, mobile }
+const page_layout = {
+  // Standard page container style for consistent widths across pages
+  container: {
+    padding: "1rem",
+    width: "100%",
+    maxWidth: "800px",
+    margin: "0 auto",
+    boxSizing: "border-box" as const,
+    minHeight: "100vh"
+  }
+}
+
+export { nav_paths, mobile, page_layout }

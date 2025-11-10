@@ -8,7 +8,7 @@ import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import FullPageOverlay from "../../components/full_page_overlay"
 import ChipSelector from "../../components/delve_card_chip_selector"
-import { nav_paths } from "../../configs/constants"
+import { nav_paths, page_layout } from "../../configs/constants"
 import { processCardText } from "../../utility/dice_expression_parser"
 
 function getRarityColors(rarity: number): { border: string; background: string } {
@@ -58,6 +58,7 @@ export default function CardEdit() {
     const [rarity, setRarity] = useState(1)
     const [showPreview, setShowPreview] = useState(false)
     const [previewText, setPreviewText] = useState<{ effect: string; description: string } | null>(null)
+    const [showSyntaxHelp, setShowSyntaxHelp] = useState(false)
 
     const draftKey = `delve-card-draft-${cardId}`
 
@@ -238,7 +239,7 @@ export default function CardEdit() {
 
     return (
         <FullPageOverlay>
-            <div style={{ padding: "1rem", maxWidth: "800px", margin: "0 auto" }}>
+            <div style={page_layout.container}>
                 <h1>{isNewCard ? "Create New Card" : "Edit Card"}</h1>
 
                 <div style={{
@@ -272,6 +273,25 @@ export default function CardEdit() {
                     </button>
                 </div>
 
+                <ChipSelector
+                    label="Decks"
+                    items={availableDecks}
+                    selectedIds={selectedDecks}
+                    onSelectionChange={setSelectedDecks}
+                    chipColor={{
+                        border: "#9c27b0",
+                        background: "#f3e5f5",
+                        prefix: "deck:"
+                    }}
+                    multiSelect={true}
+                    manageButton={{
+                        text: "Manage Decks",
+                        onClick: () => navigate(nav_paths.delve_card_decks, {
+                            state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
+                        })
+                    }}
+                />
+
                 <div style={{ marginBottom: "1rem" }}>
                     <label style={{ display: "block", marginBottom: "0.25rem" }}>
                         <strong>Title *</strong>
@@ -284,22 +304,45 @@ export default function CardEdit() {
                     />
                 </div>
 
-                <div style={{
-                    marginBottom: "1rem",
-                    padding: "0.75rem",
-                    backgroundColor: "#e3f2fd",
-                    border: "1px solid #90caf9",
-                    borderRadius: "4px",
-                    fontSize: "0.9rem"
-                }}>
-                    <strong>Dice & Variable Syntax:</strong>
-                    <ul style={{ marginTop: "0.5rem", marginBottom: 0, paddingLeft: "1.5rem" }}>
-                        <li>Dice rolls: <code>&lt;1d6&gt;</code>, <code>&lt;2d10&gt;</code>, etc.</li>
-                        <li>Variables in Effect: <code>&lt;supply = 10 - 1d3&gt;</code> (will be hidden when drawn)</li>
-                        <li>Variables can reference other variables: <code>&lt;cost = supply * 2&gt;</code></li>
-                        <li>Use variables in Effect or Description: <code>&lt;supply&gt;</code> (will show the calculated value)</li>
-                        <li>Math operators: +, -, *, /, ()</li>
-                    </ul>
+                <div style={{ marginBottom: "1rem" }}>
+                    <button
+                        type="button"
+                        onClick={() => setShowSyntaxHelp(!showSyntaxHelp)}
+                        style={{
+                            marginBottom: "0.5rem",
+                            padding: "0.4rem 0.8rem",
+                            fontSize: "0.9rem",
+                            backgroundColor: "#e3f2fd",
+                            border: "1px solid #90caf9",
+                            borderRadius: "4px",
+                            cursor: "pointer"
+                        }}
+                    >
+                        {showSyntaxHelp ? "Hide" : "Show"} Dice & Variable Syntax Help
+                    </button>
+
+                    {showSyntaxHelp && (
+                        <div style={{
+                            padding: "0.75rem",
+                            backgroundColor: "#e3f2fd",
+                            border: "1px solid #90caf9",
+                            borderRadius: "4px",
+                            fontSize: "0.9rem",
+                            boxSizing: "border-box",
+                            width: "100%",
+                            overflowWrap: "break-word",
+                            wordWrap: "break-word"
+                        }}>
+                            <strong>Dice & Variable Syntax:</strong>
+                            <ul style={{ marginTop: "0.5rem", marginBottom: 0, paddingLeft: "1.5rem", margin: 0 }}>
+                                <li style={{ marginBottom: "0.25rem" }}>Dice rolls: <code>&lt;1d6&gt;</code>, <code>&lt;2d10&gt;</code>, etc.</li>
+                                <li style={{ marginBottom: "0.25rem" }}>Variables in Effect: <code>&lt;supply = 10 - 1d3&gt;</code> (will be hidden when drawn)</li>
+                                <li style={{ marginBottom: "0.25rem" }}>Variables can reference other variables: <code>&lt;cost = supply * 2&gt;</code></li>
+                                <li style={{ marginBottom: "0.25rem" }}>Use variables in Effect or Description: <code>&lt;supply&gt;</code> (will show the calculated value)</li>
+                                <li>Math operators: +, -, *, /, ()</li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
                 <div style={{ marginBottom: "1rem" }}>
@@ -420,25 +463,6 @@ export default function CardEdit() {
                     manageButton={{
                         text: "Manage Tags",
                         onClick: () => navigate(nav_paths.delve_card_tags, {
-                            state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
-                        })
-                    }}
-                />
-
-                <ChipSelector
-                    label="Decks"
-                    items={availableDecks}
-                    selectedIds={selectedDecks}
-                    onSelectionChange={setSelectedDecks}
-                    chipColor={{
-                        border: "#9c27b0",
-                        background: "#f3e5f5",
-                        prefix: "deck:"
-                    }}
-                    multiSelect={true}
-                    manageButton={{
-                        text: "Manage Decks",
-                        onClick: () => navigate(nav_paths.delve_card_decks, {
                             state: { returnPath: nav_paths.delve_card_edit + "/" + cardId }
                         })
                     }}

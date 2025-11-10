@@ -8,7 +8,7 @@ import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import FullPageOverlay from "../../components/full_page_overlay"
 import DelveCardFilter from "../../components/delve_card_filter"
-import { nav_paths } from "../../configs/constants"
+import { nav_paths, page_layout } from "../../configs/constants"
 import UserContext from "../../contexts/user_context"
 
 function getRarityColors(rarity: number): { border: string; background: string } {
@@ -180,7 +180,7 @@ export default function CardList() {
 
     return (
         <FullPageOverlay>
-            <div style={{ padding: "1rem", width: "100%", maxWidth: "800px", margin: "0 auto", boxSizing: "border-box", minHeight: "100vh" }}>
+            <div style={page_layout.container}>
                 <h1>Delve Cards</h1>
 
                 <div style={{ marginBottom: "1rem" }}>
