@@ -151,8 +151,13 @@ export default function CardEdit() {
                     setEffect(draftData.effect)
                     setDescription(draftData.description)
                     setSelectedTags(draftData.selectedTags)
-                    setSelectedDecks(draftData.selectedDecks || [])
                     setRarity(draftData.rarity)
+                    // If coming from card list with deck filters, prioritize those over draft decks
+                    if (returnState?.selectedDeckIds && returnState.selectedDeckIds.length > 0) {
+                        setSelectedDecks(returnState.selectedDeckIds)
+                    } else {
+                        setSelectedDecks(draftData.selectedDecks || [])
+                    }
                 } else if (returnState?.selectedDeckIds && returnState.selectedDeckIds.length > 0) {
                     // If no draft, but coming from card list with decks selected, auto-populate those decks
                     setSelectedDecks(returnState.selectedDeckIds)

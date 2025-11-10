@@ -176,7 +176,7 @@ export default function CardList() {
     }
 
     if (isLoading) {
-        return <FullPageOverlay><div>Loading cards...</div></FullPageOverlay>
+        return <FullPageOverlay><div style={page_layout.container}>Loading cards...</div></FullPageOverlay>
     }
 
     return (
