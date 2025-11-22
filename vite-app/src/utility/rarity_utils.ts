@@ -2,20 +2,15 @@
  * Shared utility functions for handling card rarity
  */
 
+import { rarityColors } from "../configs/delve_card_colors"
+
 export interface RarityColors {
     border: string
     background: string
 }
 
 export function getRarityColors(rarity: number): RarityColors {
-    const colorMap: { [key: number]: RarityColors } = {
-        5: { border: "#4CAF50", background: "#E8F5E9" },      // Frequent - Light Green
-        4: { border: "#2196F3", background: "#E3F2FD" },      // Boosted - Light Blue
-        3: { border: "#757575", background: "#E8E8E8" },      // Normal - Grey (default)
-        2: { border: "#9C27B0", background: "#F3E5F5" },      // Rare - Purple
-        1: { border: "#E53935", background: "#FFEBEE" }       // Lost - Reddish
-    }
-    return colorMap[rarity] || colorMap[3]
+    return rarityColors[rarity] || rarityColors[3]
 }
 
 export function getRarityName(rarity: number): string {

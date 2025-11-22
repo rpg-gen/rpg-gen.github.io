@@ -1,39 +1,35 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
-import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
-import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delve_card_decks"
+import useDelveCardData from "../../hooks/delve_cards/use_delve_card_data"
 import DelveCard from "../../types/delve_cards/DelveCard"
-import DelveCardTag from "../../types/delve_cards/DelveCardTag"
-import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import DelveCardNavigationState from "../../types/delve_cards/DelveCardNavigationState"
 import FullPageOverlay from "../../components/full_page_overlay"
 import DelveCardFilter from "../../components/delve_card_filter"
 import { nav_paths } from "../../configs/constants"
+import { rarityButtonColors } from "../../configs/delve_card_colors"
 import UserContext from "../../contexts/user_context"
 import DelveCardFilterContext from "../../contexts/delve_card_filter_context"
 import { processCardText } from "../../utility/dice_expression_parser"
 import { getRarityColors, getRarityName } from "../../utility/rarity_utils"
 import { filterCards } from "../../utility/card_filter_utils"
+import { initializeDefaultFilters } from "../../utility/filter_initialization"
+import { formatTagNames, formatDeckNames } from "../../utility/delve_card_helpers"
 
 export default function RandomCard() {
     const navigate = useNavigate()
     const location = useLocation()
-    const cardsHook = useFirebaseDelveCards()
-    const tagsHook = useFirebaseDelveCardTags()
-    const decksHook = useFirebaseDelveCardDecks()
+    const dataHook = useDelveCardData()
     const user_context = useContext(UserContext)
     const filterContext = useContext(DelveCardFilterContext)!
 
-    const [allCards, setAllCards] = useState<DelveCard[]>([])
-    const [tags, setTags] = useState<DelveCardTag[]>([])
-    const [decks, setDecks] = useState<DelveCardDeck[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [randomCard, setRandomCard] = useState<DelveCard | null>(null)
     const [processedCardText, setProcessedCardText] = useState<{ effect: string; description: string } | null>(null)
     const [isShuffling, setIsShuffling] = useState(false)
     const [currentIndex, setCurrentIndex] = useState<number>(-1)
     const [isUpdatingRarity, setIsUpdatingRarity] = useState(false)
+
+    const { cards: allCards, tags, decks } = dataHook.data
+    const isLoading = dataHook.isLoading
 
     // Get filter state from context
     const {
@@ -60,34 +56,14 @@ export default function RandomCard() {
             }
 
             // Load data
-            const { loadedDecks } = await loadData()
+            const loadedData = await dataHook.loadAll()
 
-            // Check if we should apply default deck (only if no filters are set)
-            if (selectedTagIds.length === 0 &&
-                selectedDeckIds.length === 0 &&
-                selectedRarities.length === 0 &&
-                searchTextFilters.length === 0) {
-
-                console.log("No filters set, looking for encounters deck")
-                console.log("Available decks:", loadedDecks.map(d => d.name))
-
-                // Try multiple variations
-                const encountersDeck = loadedDecks.find(deck => {
-                    const deckNameLower = deck.name.toLowerCase()
-                    return deckNameLower === "encounters" ||
-                           deckNameLower === "encounter" ||
-                           deckNameLower.includes("encounter")
-                })
-
-                if (encountersDeck) {
-                    console.log("Found encounters deck:", encountersDeck)
-                    setDefaultDeckIfNeeded(encountersDeck.id)
-                } else {
-                    console.log("No encounters deck found")
-                }
-            } else {
-                console.log("Filters already set from context")
-            }
+            // Initialize default filters if needed
+            initializeDefaultFilters(
+                { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters },
+                loadedData.decks,
+                setDefaultDeckIfNeeded
+            )
         }
 
         init()
@@ -100,25 +76,6 @@ export default function RandomCard() {
         }
     }, [allCards, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, isLoading, searchDeep])
 
-    async function loadData() {
-        setIsLoading(true)
-        try {
-            const [loadedCards, loadedTags, loadedDecks] = await Promise.all([
-                cardsHook.getAllCards(),
-                tagsHook.getAllTags(),
-                decksHook.getAllDecks()
-            ])
-            setAllCards(loadedCards)
-            setTags(loadedTags)
-            setDecks(loadedDecks)
-            return { loadedCards, loadedTags, loadedDecks }
-        } catch (error) {
-            console.error("Error loading data:", error)
-            return { loadedCards: [], loadedTags: [], loadedDecks: [] }
-        } finally {
-            setIsLoading(false)
-        }
-    }
 
     function getFilteredCards(): DelveCard[] {
         return filterCards(allCards, {
@@ -232,30 +189,19 @@ export default function RandomCard() {
         showCardAtIndex(filteredCards.length - 1)
     }
 
-    function getTagName(tagId: string): string {
-        const tag = tags.find(t => t.id === tagId)
-        return tag ? tag.name : tagId
-    }
-
-    function getDeckName(deckId: string): string {
-        const deck = decks.find(d => d.id === deckId)
-        return deck ? deck.name : deckId
-    }
 
     async function handleRarityChange(newRarity: number) {
         if (!randomCard || isUpdatingRarity) return
 
         setIsUpdatingRarity(true)
         try {
-            await cardsHook.updateCard(randomCard.id, { rarity: newRarity })
+            await dataHook.cardsHook.updateCard(randomCard.id, { rarity: newRarity })
 
             // Update the displayed card with new rarity
             setRandomCard({ ...randomCard, rarity: newRarity })
 
-            // Also update in allCards array
-            setAllCards(prev => prev.map(card =>
-                card.id === randomCard.id ? { ...card, rarity: newRarity } : card
-            ))
+            // Reload data to keep everything in sync
+            await dataHook.loadAll()
         } catch (error) {
             console.error("Error updating rarity:", error)
             alert("Failed to update card rarity")
@@ -415,18 +361,12 @@ export default function RandomCard() {
 
                         <div style={{ marginBottom: "1rem", wordWrap: "break-word" }}>
                             <strong>Tags:</strong>{" "}
-                            {randomCard.tags.length > 0
-                                ? randomCard.tags.map(getTagName).join(", ")
-                                : "None"
-                            }
+                            {formatTagNames(randomCard.tags, tags)}
                         </div>
 
                         <div style={{ marginBottom: "1rem", wordWrap: "break-word" }}>
                             <strong>Decks:</strong>{" "}
-                            {(randomCard.decks || []).length > 0
-                                ? (randomCard.decks || []).map(getDeckName).join(", ")
-                                : "None"
-                            }
+                            {formatDeckNames(randomCard.decks || [], decks)}
                         </div>
 
                         <div style={{ marginBottom: "1rem" }}>
@@ -450,9 +390,9 @@ export default function RandomCard() {
                                             fontSize: "1.2rem",
                                             cursor: (isUpdatingRarity || randomCard.rarity >= 5) ? "not-allowed" : "pointer",
                                             opacity: (isUpdatingRarity || randomCard.rarity >= 5) ? 0.5 : 1,
-                                            backgroundColor: "#4CAF50",
+                                            backgroundColor: rarityButtonColors.increase.background,
                                             color: "white",
-                                            border: "1px solid #45a049"
+                                            border: `1px solid ${rarityButtonColors.increase.border}`
                                         }}
                                     >
                                         ▲
@@ -466,9 +406,9 @@ export default function RandomCard() {
                                             fontSize: "1.2rem",
                                             cursor: (isUpdatingRarity || randomCard.rarity <= 1) ? "not-allowed" : "pointer",
                                             opacity: (isUpdatingRarity || randomCard.rarity <= 1) ? 0.5 : 1,
-                                            backgroundColor: "#E53935",
+                                            backgroundColor: rarityButtonColors.decrease.background,
                                             color: "white",
-                                            border: "1px solid #c62828"
+                                            border: `1px solid ${rarityButtonColors.decrease.border}`
                                         }}
                                     >
                                         ▼

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import DelveCardTag from "../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../types/delve_cards/DelveCardDeck"
 import { getRarityName } from "../utility/rarity_utils"
+import { filterChipColors } from "../configs/delve_card_colors"
 
 interface DelveCardFilterProps {
     tags: DelveCardTag[]
@@ -140,18 +141,18 @@ export default function DelveCardFilter({
                             key={`search-${text}`}
                             onClick={() => removeSearchTextFilter(text)}
                             style={{
-                                border: "1px solid #757575",
+                                border: `1px solid ${filterChipColors.search.border}`,
                                 borderRadius: "4px",
                                 padding: "0.2rem 0.5rem",
                                 fontSize: "0.85rem",
-                                backgroundColor: "#f5f5f5",
+                                backgroundColor: filterChipColors.search.background,
                                 display: "inline-flex",
                                 alignItems: "center",
                                 gap: "0.3rem",
                                 cursor: "pointer"
                             }}
                         >
-                            <span style={{ fontWeight: "600", color: "#757575" }}>search:</span> {text}
+                            <span style={{ fontWeight: "600", color: filterChipColors.search.border }}>{filterChipColors.search.prefix}</span> {text}
                             <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
                         </span>
                     ))}
@@ -165,18 +166,18 @@ export default function DelveCardFilter({
                                 key={`deck-${deckId}`}
                                 onClick={() => toggleDeck(deckId)}
                                 style={{
-                                    border: "1px solid #9c27b0",
+                                    border: `1px solid ${filterChipColors.deck.border}`,
                                     borderRadius: "4px",
                                     padding: "0.2rem 0.5rem",
                                     fontSize: "0.85rem",
-                                    backgroundColor: "#f3e5f5",
+                                    backgroundColor: filterChipColors.deck.background,
                                     display: "inline-flex",
                                     alignItems: "center",
                                     gap: "0.3rem",
                                     cursor: "pointer"
                                 }}
                             >
-                                <span style={{ fontWeight: "600", color: "#9c27b0" }}>deck:</span> {deck.name}
+                                <span style={{ fontWeight: "600", color: filterChipColors.deck.border }}>{filterChipColors.deck.prefix}</span> {deck.name}
                                 <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
                             </span>
                         )
@@ -191,18 +192,18 @@ export default function DelveCardFilter({
                                 key={`tag-${tagId}`}
                                 onClick={() => toggleTag(tagId)}
                                 style={{
-                                    border: "1px solid #4a90e2",
+                                    border: `1px solid ${filterChipColors.tag.border}`,
                                     borderRadius: "4px",
                                     padding: "0.2rem 0.5rem",
                                     fontSize: "0.85rem",
-                                    backgroundColor: "#f0f7ff",
+                                    backgroundColor: filterChipColors.tag.background,
                                     display: "inline-flex",
                                     alignItems: "center",
                                     gap: "0.3rem",
                                     cursor: "pointer"
                                 }}
                             >
-                                <span style={{ fontWeight: "600", color: "#4a90e2" }}>tag:</span> {tag.name}
+                                <span style={{ fontWeight: "600", color: filterChipColors.tag.border }}>{filterChipColors.tag.prefix}</span> {tag.name}
                                 <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
                             </span>
                         )
@@ -214,18 +215,18 @@ export default function DelveCardFilter({
                             key={`rarity-${rarity}`}
                             onClick={() => toggleRarity(rarity)}
                             style={{
-                                border: "1px solid #ff9800",
+                                border: `1px solid ${filterChipColors.rarity.border}`,
                                 borderRadius: "4px",
                                 padding: "0.2rem 0.5rem",
                                 fontSize: "0.85rem",
-                                backgroundColor: "#fff3e0",
+                                backgroundColor: filterChipColors.rarity.background,
                                 display: "inline-flex",
                                 alignItems: "center",
                                 gap: "0.3rem",
                                 cursor: "pointer"
                             }}
                         >
-                            <span style={{ fontWeight: "600", color: "#ff9800" }}>rarity:</span> {getRarityName(rarity)}
+                            <span style={{ fontWeight: "600", color: filterChipColors.rarity.border }}>{filterChipColors.rarity.prefix}</span> {getRarityName(rarity)}
                             <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
                         </span>
                     ))}
@@ -278,7 +279,7 @@ export default function DelveCardFilter({
                                     padding: "0.5rem",
                                     border: "none",
                                     backgroundColor: dropdownTab === "decks" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "decks" ? "2px solid #9c27b0" : "none",
+                                    borderBottom: dropdownTab === "decks" ? `2px solid ${filterChipColors.deck.border}` : "none",
                                     cursor: "pointer",
                                     fontWeight: dropdownTab === "decks" ? "bold" : "normal"
                                 }}
@@ -292,7 +293,7 @@ export default function DelveCardFilter({
                                     padding: "0.5rem",
                                     border: "none",
                                     backgroundColor: dropdownTab === "tags" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "tags" ? "2px solid #4a90e2" : "none",
+                                    borderBottom: dropdownTab === "tags" ? `2px solid ${filterChipColors.tag.border}` : "none",
                                     cursor: "pointer",
                                     fontWeight: dropdownTab === "tags" ? "bold" : "normal"
                                 }}
@@ -306,7 +307,7 @@ export default function DelveCardFilter({
                                     padding: "0.5rem",
                                     border: "none",
                                     backgroundColor: dropdownTab === "rarities" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "rarities" ? "2px solid #ff9800" : "none",
+                                    borderBottom: dropdownTab === "rarities" ? `2px solid ${filterChipColors.rarity.border}` : "none",
                                     cursor: "pointer",
                                     fontWeight: dropdownTab === "rarities" ? "bold" : "normal"
                                 }}
@@ -327,15 +328,15 @@ export default function DelveCardFilter({
                                     </div>
                                 ) : (
                                     decks.map(deck => (
-                                        <label key={deck.id} style={{
+                                        <                                        label key={deck.id} style={{
                                             display: "block",
                                             padding: "0.5rem",
                                             cursor: "pointer",
                                             borderBottom: "1px solid #f0f0f0",
-                                            backgroundColor: selectedDeckIds.includes(deck.id) ? "#f3e5f5" : "transparent"
+                                            backgroundColor: selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "transparent"
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? "#f3e5f5" : "#f5f5f5"}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? "#f3e5f5" : "transparent"}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "#f5f5f5"}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "transparent"}
                                         >
                                             <input
                                                 type="checkbox"
@@ -356,15 +357,15 @@ export default function DelveCardFilter({
                                     </div>
                                 ) : (
                                     tags.map(tag => (
-                                        <label key={tag.id} style={{
+                                        <                                        label key={tag.id} style={{
                                             display: "block",
                                             padding: "0.5rem",
                                             cursor: "pointer",
                                             borderBottom: "1px solid #f0f0f0",
-                                            backgroundColor: selectedTagIds.includes(tag.id) ? "#f0f7ff" : "transparent"
+                                            backgroundColor: selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "transparent"
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? "#f0f7ff" : "#f5f5f5"}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? "#f0f7ff" : "transparent"}
+                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "#f5f5f5"}
+                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "transparent"}
                                         >
                                             <input
                                                 type="checkbox"
@@ -380,15 +381,15 @@ export default function DelveCardFilter({
 
                             {dropdownTab === "rarities" && (
                                 [5, 4, 3, 2, 1].map(rarity => (
-                                    <label key={rarity} style={{
+                                    <                                    label key={rarity} style={{
                                         display: "block",
                                         padding: "0.5rem",
                                         cursor: "pointer",
                                         borderBottom: "1px solid #f0f0f0",
-                                        backgroundColor: selectedRarities.includes(rarity) ? "#fff3e0" : "transparent"
+                                        backgroundColor: selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "transparent"
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? "#fff3e0" : "#f5f5f5"}
-                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? "#fff3e0" : "transparent"}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "#f5f5f5"}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "transparent"}
                                     >
                                         <input
                                             type="checkbox"

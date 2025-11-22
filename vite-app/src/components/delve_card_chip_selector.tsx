@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react"
+import { filterChipColors } from "../configs/delve_card_colors"
 
 interface ChipSelectorItem {
     id: string
     name: string
+}
+
+export interface ChipColorScheme {
+    border: string
+    background: string
+    prefix: string
 }
 
 interface ChipSelectorProps {
@@ -10,7 +17,8 @@ interface ChipSelectorProps {
     items: ChipSelectorItem[]
     selectedIds: string[]
     onSelectionChange: (ids: string[]) => void
-    chipColor: { border: string; background: string; prefix: string }
+    chipColor?: ChipColorScheme
+    chipColorType?: "deck" | "tag"
     multiSelect?: boolean
     manageButton?: {
         text: string
@@ -24,10 +32,14 @@ export default function ChipSelector({
     selectedIds,
     onSelectionChange,
     chipColor,
+    chipColorType = "deck",
     multiSelect = true,
     manageButton
 }: ChipSelectorProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+    // Use provided chipColor or fall back to type-based default
+    const activeChipColor = chipColor || filterChipColors[chipColorType]
 
     // Close dropdown when clicking outside or pressing Escape
     useEffect(() => {
@@ -118,19 +130,19 @@ export default function ChipSelector({
                                         toggleItem(itemId)
                                     }}
                                     style={{
-                                        border: `1px solid ${chipColor.border}`,
+                                        border: `1px solid ${activeChipColor.border}`,
                                         borderRadius: "4px",
                                         padding: "0.2rem 0.5rem",
                                         fontSize: "0.85rem",
-                                        backgroundColor: chipColor.background,
+                                        backgroundColor: activeChipColor.background,
                                         display: "inline-flex",
                                         alignItems: "center",
                                         gap: "0.3rem",
                                         cursor: "pointer"
                                     }}
                                 >
-                                    <span style={{ fontWeight: "600", color: chipColor.border }}>
-                                        {chipColor.prefix}
+                                    <span style={{ fontWeight: "600", color: activeChipColor.border }}>
+                                        {activeChipColor.prefix}
                                     </span>
                                     {item.name}
                                     <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
@@ -171,10 +183,10 @@ export default function ChipSelector({
                                         padding: "0.5rem",
                                         cursor: "pointer",
                                         borderBottom: "1px solid #f0f0f0",
-                                        backgroundColor: selectedIds.includes(item.id) ? chipColor.background : "transparent"
+                                        backgroundColor: selectedIds.includes(item.id) ? activeChipColor.background : "transparent"
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedIds.includes(item.id) ? chipColor.background : "#f5f5f5"}
-                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedIds.includes(item.id) ? chipColor.background : "transparent"}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedIds.includes(item.id) ? activeChipColor.background : "#f5f5f5"}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedIds.includes(item.id) ? activeChipColor.background : "transparent"}
                                 >
                                     <input
                                         type={multiSelect ? "checkbox" : "radio"}

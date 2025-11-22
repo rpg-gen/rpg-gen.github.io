@@ -1,37 +1,31 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
-import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
-import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delve_card_decks"
+import useDelveCardData from "../../hooks/delve_cards/use_delve_card_data"
 import DelveCard from "../../types/delve_cards/DelveCard"
-import DelveCardTag from "../../types/delve_cards/DelveCardTag"
-import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import DelveCardNavigationState from "../../types/delve_cards/DelveCardNavigationState"
 import FullPageOverlay from "../../components/full_page_overlay"
 import DelveCardFilter from "../../components/delve_card_filter"
+import DelveCardDisplay from "../../components/delve_card_display"
 import { nav_paths, page_layout } from "../../configs/constants"
 import UserContext from "../../contexts/user_context"
 import DelveCardFilterContext from "../../contexts/delve_card_filter_context"
-import { getRarityColors, getRarityName } from "../../utility/rarity_utils"
 import { filterCards } from "../../utility/card_filter_utils"
+import { initializeDefaultFilters } from "../../utility/filter_initialization"
 
 export default function CardList() {
     const navigate = useNavigate()
     const location = useLocation()
-    const cardsHook = useFirebaseDelveCards()
-    const tagsHook = useFirebaseDelveCardTags()
-    const decksHook = useFirebaseDelveCardDecks()
+    const dataHook = useDelveCardData()
     const user_context = useContext(UserContext)
     const filterContext = useContext(DelveCardFilterContext)!
 
     const [cards, setCards] = useState<DelveCard[]>([])
-    const [allCards, setAllCards] = useState<DelveCard[]>([])
-    const [tags, setTags] = useState<DelveCardTag[]>([])
-    const [decks, setDecks] = useState<DelveCardDeck[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [lastReload, setLastReload] = useState<Date | null>(null)
     const [searchText, setSearchText] = useState("")
     const [currentIndex, setCurrentIndex] = useState<number>(-1)
+
+    const { cards: allCards, tags, decks } = dataHook.data
+    const isLoading = dataHook.isLoading
 
     // Get filter state from context
     const {
@@ -58,26 +52,15 @@ export default function CardList() {
             }
 
             // Load data
-            const { loadedDecks } = await loadData()
+            const loadedData = await dataHook.loadAll()
+            setLastReload(new Date())
 
-            // Check if we should apply default deck (only if no filters are set)
-            if (selectedTagIds.length === 0 &&
-                selectedDeckIds.length === 0 &&
-                selectedRarities.length === 0 &&
-                searchTextFilters.length === 0) {
-
-                // Try to find encounters deck in the loaded decks
-                const encountersDeck = loadedDecks.find(deck => {
-                    const deckNameLower = deck.name.toLowerCase()
-                    return deckNameLower === "encounters" ||
-                           deckNameLower === "encounter" ||
-                           deckNameLower.includes("encounter")
-                })
-
-                if (encountersDeck) {
-                    setDefaultDeckIfNeeded(encountersDeck.id)
-                }
-            }
+            // Initialize default filters if needed
+            initializeDefaultFilters(
+                { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters },
+                loadedData.decks,
+                setDefaultDeckIfNeeded
+            )
         }
 
         init()
@@ -88,25 +71,8 @@ export default function CardList() {
     }, [searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, allCards, tags, decks, searchDeep])
 
     async function loadData() {
-        setIsLoading(true)
-        try {
-            const [loadedCards, loadedTags, loadedDecks] = await Promise.all([
-                cardsHook.getAllCards(),
-                tagsHook.getAllTags(),
-                decksHook.getAllDecks()
-            ])
-            setAllCards(loadedCards)
-            setCards(loadedCards)
-            setTags(loadedTags)
-            setDecks(loadedDecks)
-            setLastReload(new Date())
-            return { loadedCards, loadedTags, loadedDecks }
-        } catch (error) {
-            console.error("Error loading cards:", error)
-            return { loadedCards: [], loadedTags: [], loadedDecks: [] }
-        } finally {
-            setIsLoading(false)
-        }
+        await dataHook.loadAll()
+        setLastReload(new Date())
     }
 
     function applyFilters() {
@@ -211,43 +177,16 @@ export default function CardList() {
                 </div>
 
                 <div style={{ minHeight: "200px" }}>
-                    {cards.map(card => {
-                        const rarityColors = getRarityColors(card.rarity)
-                        return (
-                            <div
-                                key={card.id}
-                                onClick={user_context.is_logged_in ? () => handleCardClick(card.id) : undefined}
-                                style={{
-                                    border: `3px solid ${rarityColors.border}`,
-                                    borderRadius: "12px",
-                                    padding: "1rem",
-                                    marginBottom: "0.5rem",
-                                    cursor: user_context.is_logged_in ? "pointer" : "default",
-                                    backgroundColor: rarityColors.background
-                                }}
-                            >
-                                <h3 style={{ margin: "0 0 0.5rem 0" }}>{card.title}</h3>
-                                <div style={{ marginBottom: "0.5rem", fontSize: "0.9rem" }}>
-                                    <strong>Effect:</strong> {card.effect}
-                                </div>
-                                <div style={{ fontSize: "0.85rem", color: "#666", marginBottom: "0.25rem" }}>
-                                    <strong>Tags:</strong> {card.tags.map(tagId => {
-                                        const tag = tags.find(t => t.id === tagId)
-                                        return tag ? tag.name : tagId
-                                    }).join(", ") || "None"}
-                                </div>
-                                <div style={{ fontSize: "0.85rem", color: "#666", marginBottom: "0.25rem" }}>
-                                    <strong>Decks:</strong> {(card.decks || []).map(deckId => {
-                                        const deck = decks.find(d => d.id === deckId)
-                                        return deck ? deck.name : deckId
-                                    }).join(", ") || "None"}
-                                </div>
-                                <div style={{ fontSize: "0.85rem", color: "#666" }}>
-                                    <strong>Rarity:</strong> {getRarityName(card.rarity)} ({card.rarity})
-                                </div>
-                            </div>
-                        )
-                    })}
+                    {cards.map(card => (
+                        <DelveCardDisplay
+                            key={card.id}
+                            card={card}
+                            tags={tags}
+                            decks={decks}
+                            onClick={user_context.is_logged_in ? () => handleCardClick(card.id) : undefined}
+                            style={{ marginBottom: "0.5rem" }}
+                        />
+                    ))}
 
                     {cards.length === 0 && (
                         <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>

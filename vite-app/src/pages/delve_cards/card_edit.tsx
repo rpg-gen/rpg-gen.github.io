@@ -1,11 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
-import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
-import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
-import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delve_card_decks"
+import useDelveCardData from "../../hooks/delve_cards/use_delve_card_data"
 import DelveCard from "../../types/delve_cards/DelveCard"
-import DelveCardTag from "../../types/delve_cards/DelveCardTag"
-import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
 import DelveCardNavigationState from "../../types/delve_cards/DelveCardNavigationState"
 import FullPageOverlay from "../../components/full_page_overlay"
 import ChipSelector from "../../components/delve_card_chip_selector"
@@ -18,9 +14,7 @@ export default function CardEdit() {
     const navigate = useNavigate()
     const location = useLocation()
     const { cardId } = useParams<{ cardId: string }>()
-    const cardsHook = useFirebaseDelveCards()
-    const tagsHook = useFirebaseDelveCardTags()
-    const decksHook = useFirebaseDelveCardDecks()
+    const dataHook = useDelveCardData()
     const filterContext = useContext(DelveCardFilterContext)!
 
     const isNewCard = cardId === "new"
@@ -28,12 +22,12 @@ export default function CardEdit() {
     // Store navigation state for index tracking only
     const returnState = location.state as DelveCardNavigationState | null
 
-    const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)
-    const [availableTags, setAvailableTags] = useState<DelveCardTag[]>([])
-    const [availableDecks, setAvailableDecks] = useState<DelveCardDeck[]>([])
     const [draftSaved, setDraftSaved] = useState(false)
     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+
+    const { tags: availableTags, decks: availableDecks } = dataHook.data
+    const isLoading = dataHook.isLoading && !isNewCard
 
     const [title, setTitle] = useState("")
     const [effect, setEffect] = useState("")
@@ -71,12 +65,7 @@ export default function CardEdit() {
 
     async function loadData() {
         try {
-            const [tags, decks] = await Promise.all([
-                tagsHook.getAllTags(),
-                decksHook.getAllDecks()
-            ])
-            setAvailableTags(tags)
-            setAvailableDecks(decks)
+            await dataHook.loadAll()
 
             // Try to load draft first
             const savedDraft = localStorage.getItem(draftKey)
@@ -90,7 +79,7 @@ export default function CardEdit() {
             }
 
             if (!isNewCard && cardId) {
-                const card = await cardsHook.getCard(cardId)
+                const card = await dataHook.cardsHook.getCard(cardId)
                 if (card) {
                     // If there's a draft, ask user if they want to restore it
                     if (draftData && (
@@ -153,7 +142,6 @@ export default function CardEdit() {
         } catch (error) {
             console.error("Error loading data:", error)
         }
-        setIsLoading(false)
         setInitialLoadComplete(true)
     }
 
@@ -175,7 +163,7 @@ export default function CardEdit() {
             }
 
             if (isNewCard) {
-                const newId = await cardsHook.createCard(cardData)
+                const newId = await dataHook.cardsHook.createCard(cardData)
                 localStorage.removeItem(draftKey)
                 if (closeAfterSave) {
                     // Filters are stored globally in localStorage
@@ -188,7 +176,7 @@ export default function CardEdit() {
                     })
                 }
             } else if (cardId) {
-                await cardsHook.updateCard(cardId, cardData)
+                await dataHook.cardsHook.updateCard(cardId, cardData)
                 localStorage.removeItem(draftKey)
                 if (closeAfterSave) {
                     // Filters are stored globally in localStorage
@@ -221,7 +209,7 @@ export default function CardEdit() {
                 rarity
             }
 
-            await cardsHook.createCard(cardData)
+            await dataHook.cardsHook.createCard(cardData)
 
             // Store the decks we want to keep selected
             const decksToKeep = selectedDecks
@@ -248,7 +236,7 @@ export default function CardEdit() {
 
         if (confirm("Are you sure you want to delete this card?")) {
             try {
-                await cardsHook.deleteCard(cardId)
+                await dataHook.cardsHook.deleteCard(cardId)
                 localStorage.removeItem(draftKey)
                 // Filters are stored globally in localStorage
                 navigate(nav_paths.delve_card_list, {
@@ -340,11 +328,7 @@ export default function CardEdit() {
                     items={availableDecks}
                     selectedIds={selectedDecks}
                     onSelectionChange={setSelectedDecks}
-                    chipColor={{
-                        border: "#9c27b0",
-                        background: "#f3e5f5",
-                        prefix: "deck:"
-                    }}
+                    chipColorType="deck"
                     multiSelect={true}
                     manageButton={{
                         text: "Manage Decks",
@@ -542,11 +526,7 @@ export default function CardEdit() {
                     items={availableTags}
                     selectedIds={selectedTags}
                     onSelectionChange={setSelectedTags}
-                    chipColor={{
-                        border: "#4a90e2",
-                        background: "#f0f7ff",
-                        prefix: "tag:"
-                    }}
+                    chipColorType="tag"
                     multiSelect={true}
                     manageButton={{
                         text: "Manage Tags",
