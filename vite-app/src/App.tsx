@@ -5,6 +5,7 @@ import { useContext, useState, useEffect } from "react"
 import DataContext from "./contexts/DataContext"
 import UserContext from "./contexts/user_context"
 import scale_context from './contexts/scale_context'
+import { DelveCardFilterProvider } from './contexts/delve_card_filter_context'
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
 import useFirebaseMap from "./hooks/use_firebase_map"
@@ -74,9 +75,11 @@ function App() {
         <UserContext.Provider value={user_context}>
         <scale_context.Provider value={app_scale_context}>
         <DataContext.Provider value={data_context}>
+        <DelveCardFilterProvider>
 
             { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
 
+        </DelveCardFilterProvider>
         </DataContext.Provider>
         </scale_context.Provider>
         </UserContext.Provider>

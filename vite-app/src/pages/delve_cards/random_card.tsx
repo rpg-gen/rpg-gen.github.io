@@ -6,22 +6,15 @@ import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delv
 import DelveCard from "../../types/delve_cards/DelveCard"
 import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
+import DelveCardNavigationState from "../../types/delve_cards/DelveCardNavigationState"
 import FullPageOverlay from "../../components/full_page_overlay"
 import DelveCardFilter from "../../components/delve_card_filter"
 import { nav_paths } from "../../configs/constants"
 import UserContext from "../../contexts/user_context"
+import DelveCardFilterContext from "../../contexts/delve_card_filter_context"
 import { processCardText } from "../../utility/dice_expression_parser"
-
-function getRarityColors(rarity: number): { border: string; background: string } {
-    const colorMap: { [key: number]: { border: string; background: string } } = {
-        5: { border: "#4CAF50", background: "#E8F5E9" },      // Frequent - Light Green
-        4: { border: "#2196F3", background: "#E3F2FD" },      // Boosted - Light Blue
-        3: { border: "#757575", background: "#E8E8E8" },      // Normal - Grey (default)
-        2: { border: "#9C27B0", background: "#F3E5F5" },      // Rare - Purple
-        1: { border: "#E53935", background: "#FFEBEE" }       // Lost - Reddish
-    }
-    return colorMap[rarity] || colorMap[3]
-}
+import { getRarityColors, getRarityName } from "../../utility/rarity_utils"
+import { filterCards } from "../../utility/card_filter_utils"
 
 export default function RandomCard() {
     const navigate = useNavigate()
@@ -30,41 +23,74 @@ export default function RandomCard() {
     const tagsHook = useFirebaseDelveCardTags()
     const decksHook = useFirebaseDelveCardDecks()
     const user_context = useContext(UserContext)
+    const filterContext = useContext(DelveCardFilterContext)!
 
     const [allCards, setAllCards] = useState<DelveCard[]>([])
     const [tags, setTags] = useState<DelveCardTag[]>([])
     const [decks, setDecks] = useState<DelveCardDeck[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
-    const [selectedDeckIds, setSelectedDeckIds] = useState<string[]>([])
-    const [selectedRarities, setSelectedRarities] = useState<number[]>([])
-    const [searchTextFilters, setSearchTextFilters] = useState<string[]>([])
     const [randomCard, setRandomCard] = useState<DelveCard | null>(null)
     const [processedCardText, setProcessedCardText] = useState<{ effect: string; description: string } | null>(null)
     const [isShuffling, setIsShuffling] = useState(false)
     const [currentIndex, setCurrentIndex] = useState<number>(-1)
     const [isUpdatingRarity, setIsUpdatingRarity] = useState(false)
-    const [searchDeep, setSearchDeep] = useState(false)
+
+    // Get filter state from context
+    const {
+        selectedTagIds,
+        selectedDeckIds,
+        selectedRarities,
+        searchTextFilters,
+        searchDeep,
+        setSelectedTagIds,
+        setSelectedDeckIds,
+        setSelectedRarities,
+        setSearchTextFilters,
+        setSearchDeep,
+        clearAllFilters,
+        setDefaultDeckIfNeeded
+    } = filterContext
 
     useEffect(() => {
-        // Restore filter state if coming from card list
-        const state = location.state as {
-            selectedTagIds?: string[];
-            selectedDeckIds?: string[];
-            selectedRarities?: number[];
-            searchTextFilters?: string[];
-            currentIndex?: number;
-            searchDeep?: boolean;
-        } | null
-        if (state) {
-            if (state.selectedTagIds !== undefined) setSelectedTagIds(state.selectedTagIds)
-            if (state.selectedDeckIds !== undefined) setSelectedDeckIds(state.selectedDeckIds)
-            if (state.selectedRarities !== undefined) setSelectedRarities(state.selectedRarities)
-            if (state.searchTextFilters !== undefined) setSearchTextFilters(state.searchTextFilters)
-            if (state.currentIndex !== undefined) setCurrentIndex(state.currentIndex)
-            if (state.searchDeep !== undefined) setSearchDeep(state.searchDeep)
+        async function init() {
+            // Navigation state only used for index tracking (not filters)
+            const state = location.state as DelveCardNavigationState | null
+            if (state) {
+                if (state.currentIndex !== undefined) setCurrentIndex(state.currentIndex)
+            }
+
+            // Load data
+            const { loadedDecks } = await loadData()
+
+            // Check if we should apply default deck (only if no filters are set)
+            if (selectedTagIds.length === 0 &&
+                selectedDeckIds.length === 0 &&
+                selectedRarities.length === 0 &&
+                searchTextFilters.length === 0) {
+
+                console.log("No filters set, looking for encounters deck")
+                console.log("Available decks:", loadedDecks.map(d => d.name))
+
+                // Try multiple variations
+                const encountersDeck = loadedDecks.find(deck => {
+                    const deckNameLower = deck.name.toLowerCase()
+                    return deckNameLower === "encounters" ||
+                           deckNameLower === "encounter" ||
+                           deckNameLower.includes("encounter")
+                })
+
+                if (encountersDeck) {
+                    console.log("Found encounters deck:", encountersDeck)
+                    setDefaultDeckIfNeeded(encountersDeck.id)
+                } else {
+                    console.log("No encounters deck found")
+                }
+            } else {
+                console.log("Filters already set from context")
+            }
         }
-        loadData()
+
+        init()
     }, [])
 
     useEffect(() => {
@@ -85,72 +111,28 @@ export default function RandomCard() {
             setAllCards(loadedCards)
             setTags(loadedTags)
             setDecks(loadedDecks)
+            return { loadedCards, loadedTags, loadedDecks }
         } catch (error) {
             console.error("Error loading data:", error)
+            return { loadedCards: [], loadedTags: [], loadedDecks: [] }
+        } finally {
+            setIsLoading(false)
         }
-        setIsLoading(false)
     }
 
     function getFilteredCards(): DelveCard[] {
-        let filtered = allCards
-
-        // Free-form text search filters - each must match
-        if (searchTextFilters.length > 0) {
-            filtered = filtered.filter(card => {
-                return searchTextFilters.every(searchTerm => {
-                    const searchLower = searchTerm.toLowerCase()
-                    let textMatch: boolean
-
-                    if (searchDeep) {
-                        // Search in title, effect, and description
-                        textMatch =
-                            card.title.toLowerCase().includes(searchLower) ||
-                            card.effect.toLowerCase().includes(searchLower) ||
-                            card.description.toLowerCase().includes(searchLower)
-                    } else {
-                        // Search only in title
-                        textMatch = card.title.toLowerCase().includes(searchLower)
-                    }
-
-                    const tagMatch = card.tags.some(tagId => {
-                        const tag = tags.find(t => t.id === tagId)
-                        return tag ? tag.name.toLowerCase().includes(searchLower) : false
-                    })
-
-                    return textMatch || tagMatch
-                })
-            })
-        }
-
-        // Filter by tags - card must have at least one of the selected tags
-        if (selectedTagIds.length > 0) {
-            filtered = filtered.filter(card =>
-                selectedTagIds.some(tagId => card.tags.includes(tagId))
-            )
-        }
-
-        // Filter by decks
-        if (selectedDeckIds.length > 0) {
-            filtered = filtered.filter(card =>
-                selectedDeckIds.some(deckId => (card.decks || []).includes(deckId))
-            )
-        }
-
-        // Filter by rarities
-        if (selectedRarities.length > 0) {
-            filtered = filtered.filter(card =>
-                selectedRarities.includes(card.rarity)
-            )
-        }
-
-        return filtered
+        return filterCards(allCards, {
+            searchTextFilters,
+            selectedTagIds,
+            selectedDeckIds,
+            selectedRarities,
+            searchDeep,
+            tags
+        })
     }
 
-    function clearAllFilters() {
-        setSelectedTagIds([])
-        setSelectedDeckIds([])
-        setSelectedRarities([])
-        setSearchTextFilters([])
+    function handleClearAllFilters() {
+        clearAllFilters()
         setCurrentIndex(-1)
         setRandomCard(null)
         setProcessedCardText(null)
@@ -306,7 +288,7 @@ export default function RandomCard() {
 
                 <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                     <button onClick={() => navigate(nav_paths.delve_card_list, {
-                        state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, currentIndex, searchDeep }
+                        state: { currentIndex }
                     })}>
                         Back to Card List
                     </button>
@@ -328,7 +310,7 @@ export default function RandomCard() {
                     onRaritiesChange={setSelectedRarities}
                     onSearchTextFiltersChange={setSearchTextFilters}
                     onSearchDeepChange={setSearchDeep}
-                    onClearAll={clearAllFilters}
+                    onClearAll={handleClearAllFilters}
                 />
 
                 <div style={{ marginBottom: "1rem", fontSize: "0.9rem", color: "#666", textAlign: "center" }}>
@@ -448,22 +430,13 @@ export default function RandomCard() {
                         </div>
 
                         <div style={{ marginBottom: "1rem" }}>
-                            <strong>Rarity:</strong> {(() => {
-                                const rarityNames: { [key: number]: string } = {
-                                    5: "Frequent",
-                                    4: "Boosted",
-                                    3: "Normal",
-                                    2: "Rare",
-                                    1: "Lost"
-                                }
-                                return rarityNames[randomCard.rarity] || "Normal"
-                            })()} ({randomCard.rarity})
+                            <strong>Rarity:</strong> {getRarityName(randomCard.rarity)} ({randomCard.rarity})
                         </div>
 
                         {user_context.is_logged_in && (
                             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
                                 <button onClick={() => navigate(nav_paths.delve_card_edit + "/" + randomCard.id, {
-                                    state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, currentIndex, searchDeep }
+                                    state: { currentIndex }
                                 })}>
                                     Edit This Card
                                 </button>

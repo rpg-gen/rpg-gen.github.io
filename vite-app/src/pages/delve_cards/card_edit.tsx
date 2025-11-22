@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import useFirebaseDelveCards from "../../hooks/delve_cards/use_firebase_delve_cards"
 import useFirebaseDelveCardTags from "../../hooks/delve_cards/use_firebase_delve_card_tags"
@@ -6,43 +6,13 @@ import useFirebaseDelveCardDecks from "../../hooks/delve_cards/use_firebase_delv
 import DelveCard from "../../types/delve_cards/DelveCard"
 import DelveCardTag from "../../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../../types/delve_cards/DelveCardDeck"
+import DelveCardNavigationState from "../../types/delve_cards/DelveCardNavigationState"
 import FullPageOverlay from "../../components/full_page_overlay"
 import ChipSelector from "../../components/delve_card_chip_selector"
 import { nav_paths, page_layout } from "../../configs/constants"
+import DelveCardFilterContext from "../../contexts/delve_card_filter_context"
 import { processCardText } from "../../utility/dice_expression_parser"
-
-function getRarityColors(rarity: number): { border: string; background: string } {
-    const colorMap: { [key: number]: { border: string; background: string } } = {
-        5: { border: "#4CAF50", background: "#E8F5E9" },      // Frequent - Light Green
-        4: { border: "#2196F3", background: "#E3F2FD" },      // Boosted - Light Blue
-        3: { border: "#757575", background: "#E8E8E8" },      // Normal - Grey (default)
-        2: { border: "#9C27B0", background: "#F3E5F5" },      // Rare - Purple
-        1: { border: "#E53935", background: "#FFEBEE" }       // Lost - Reddish
-    }
-    return colorMap[rarity] || colorMap[3]
-}
-
-function getRarityName(rarity: number): string {
-    const rarityNames: { [key: number]: string } = {
-        5: "Frequent",
-        4: "Boosted",
-        3: "Normal",
-        2: "Rare",
-        1: "Lost"
-    }
-    return rarityNames[rarity] || "Normal"
-}
-
-function getRarityIcon(rarity: number): string {
-    const rarityIcons: { [key: number]: string } = {
-        5: "⏫",  // 2 up carets - most frequent
-        4: "⬆",   // 1 up caret
-        3: "⏺",   // filled circle
-        2: "⬇",   // 1 down caret
-        1: "⏬"   // 2 down carets - most rare
-    }
-    return rarityIcons[rarity] || "⏺"
-}
+import { getRarityColors, getRarityName, getRarityIcon } from "../../utility/rarity_utils"
 
 export default function CardEdit() {
     const navigate = useNavigate()
@@ -51,11 +21,12 @@ export default function CardEdit() {
     const cardsHook = useFirebaseDelveCards()
     const tagsHook = useFirebaseDelveCardTags()
     const decksHook = useFirebaseDelveCardDecks()
+    const filterContext = useContext(DelveCardFilterContext)!
 
     const isNewCard = cardId === "new"
 
-    // Store filter state to preserve when returning to card list, and use selectedDeckIds for pre-populating new cards
-    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[]; currentIndex?: number; searchDeep?: boolean } | null
+    // Store navigation state for index tracking only
+    const returnState = location.state as DelveCardNavigationState | null
 
     const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)
@@ -96,8 +67,7 @@ export default function CardEdit() {
             const timer = setTimeout(() => setDraftSaved(false), 1000)
             return () => clearTimeout(timer)
         }
-    // }, [title, effect, description, selectedTags, selectedDecks, rarity, isLoading, initialLoadComplete])
-    }, [title, effect, description, selectedTags, selectedDecks, rarity])
+    }, [title, effect, description, selectedTags, selectedDecks, rarity, draftKey, initialLoadComplete])
 
     async function loadData() {
         try {
@@ -159,6 +129,9 @@ export default function CardEdit() {
                     }
                 }
             } else if (isNewCard) {
+                // Get global filter state from context for pre-populating new cards
+                const globalDeckIds = filterContext.selectedDeckIds
+
                 if (draftData) {
                     // For new cards, restore draft if available
                     setTitle(draftData.title)
@@ -166,15 +139,15 @@ export default function CardEdit() {
                     setDescription(draftData.description)
                     setSelectedTags(draftData.selectedTags)
                     setRarity(draftData.rarity)
-                    // If coming from card list with deck filters, prioritize those over draft decks
-                    if (returnState?.selectedDeckIds && returnState.selectedDeckIds.length > 0) {
-                        setSelectedDecks(returnState.selectedDeckIds)
+                    // If global deck filters exist, prioritize those over draft decks
+                    if (globalDeckIds.length > 0) {
+                        setSelectedDecks(globalDeckIds)
                     } else {
                         setSelectedDecks(draftData.selectedDecks || [])
                     }
-                } else if (returnState?.selectedDeckIds && returnState.selectedDeckIds.length > 0) {
-                    // If no draft, but coming from card list with decks selected, auto-populate those decks
-                    setSelectedDecks(returnState.selectedDeckIds)
+                } else if (globalDeckIds.length > 0) {
+                    // If no draft, but global deck filters exist, auto-populate those decks
+                    setSelectedDecks(globalDeckIds)
                 }
             }
         } catch (error) {
@@ -205,15 +178,23 @@ export default function CardEdit() {
                 const newId = await cardsHook.createCard(cardData)
                 localStorage.removeItem(draftKey)
                 if (closeAfterSave) {
-                    navigate(nav_paths.delve_card_list, { state: returnState })
+                    // Filters are stored globally in localStorage
+                    navigate(nav_paths.delve_card_list, {
+                        state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                    })
                 } else {
-                    navigate(nav_paths.delve_card_edit + "/" + newId, { state: returnState })
+                    navigate(nav_paths.delve_card_edit + "/" + newId, {
+                        state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                    })
                 }
             } else if (cardId) {
                 await cardsHook.updateCard(cardId, cardData)
                 localStorage.removeItem(draftKey)
                 if (closeAfterSave) {
-                    navigate(nav_paths.delve_card_list, { state: returnState })
+                    // Filters are stored globally in localStorage
+                    navigate(nav_paths.delve_card_list, {
+                        state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                    })
                 }
             }
         } catch (error) {
@@ -269,7 +250,10 @@ export default function CardEdit() {
             try {
                 await cardsHook.deleteCard(cardId)
                 localStorage.removeItem(draftKey)
-                navigate(nav_paths.delve_card_list, { state: returnState })
+                // Filters are stored globally in localStorage
+                navigate(nav_paths.delve_card_list, {
+                    state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                })
             } catch (error) {
                 console.error("Error deleting card:", error)
                 alert("Error deleting card")
@@ -281,7 +265,10 @@ export default function CardEdit() {
         if (confirm("Are you sure you want to discard all unsaved changes?")) {
             localStorage.removeItem(draftKey)
             if (isNewCard) {
-                navigate(nav_paths.delve_card_list, { state: returnState })
+                // Filters are stored globally in localStorage
+                navigate(nav_paths.delve_card_list, {
+                    state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                })
             } else {
                 setInitialLoadComplete(false)
                 loadData()
@@ -336,10 +323,14 @@ export default function CardEdit() {
                     <button onClick={handleDiscard} style={{ marginLeft: "0.5rem" }}>
                         Discard Changes
                     </button>
-                    <button onClick={() => navigate(nav_paths.delve_card_list, { state: returnState })} style={{ marginLeft: "0.5rem" }}>
+                    <button onClick={() => navigate(nav_paths.delve_card_list, {
+                        state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                    })} style={{ marginLeft: "0.5rem" }}>
                         Back to List
                     </button>
-                    <button onClick={() => navigate(nav_paths.delve_card_random, { state: returnState })} style={{ marginLeft: "0.5rem" }}>
+                    <button onClick={() => navigate(nav_paths.delve_card_random, {
+                        state: returnState?.currentIndex !== undefined ? { currentIndex: returnState.currentIndex } : undefined
+                    })} style={{ marginLeft: "0.5rem" }}>
                         Back to Random Card
                     </button>
                 </div>

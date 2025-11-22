@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import DelveCardTag from "../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../types/delve_cards/DelveCardDeck"
+import { getRarityName } from "../utility/rarity_utils"
 
 interface DelveCardFilterProps {
     tags: DelveCardTag[]
@@ -109,17 +110,6 @@ export default function DelveCardFilter({
 
     function getTotalFilterCount() {
         return selectedTagIds.length + selectedDeckIds.length + selectedRarities.length + searchTextFilters.length
-    }
-
-    function getRarityName(rarity: number): string {
-        const rarityNames: { [key: number]: string } = {
-            5: "Frequent",
-            4: "Boosted",
-            3: "Normal",
-            2: "Rare",
-            1: "Lost"
-        }
-        return rarityNames[rarity] || ""
     }
 
     return (
