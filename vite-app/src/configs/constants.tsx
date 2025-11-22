@@ -6,7 +6,9 @@ const nav_paths = {
   delve_card_decks: "/delve-cards/decks",
   delve_card_random: "/delve-cards/random",
   utilities_menu: "/utilities",
-  utility_delve_card_migration: "/utilities/delve-card-migration"
+  utility_delve_card_migration: "/utilities/delve-card-migration",
+  utility_delve_card_rarity_migration: "/utilities/delve-card-rarity-migration",
+  utility_delve_card_rarity_flip: "/utilities/delve-card-rarity-flip"
 }
 
 const mobile = {

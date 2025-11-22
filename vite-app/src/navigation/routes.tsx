@@ -13,6 +13,8 @@ import DeckManagement from "../pages/delve_cards/deck_management"
 import RandomCard from "../pages/delve_cards/random_card"
 import UtilitiesMenu from "../pages/utilities/utilities_menu"
 import MigrateToDecks from "../pages/delve_cards/migrate_to_decks"
+import MigrateRarities from "../pages/delve_cards/migrate_rarities"
+import MigrateFlipRarities from "../pages/delve_cards/migrate_flip_rarities"
 import ProtectedRoute from "../components/protected_route"
 
 const router = createBrowserRouter([
@@ -68,6 +70,14 @@ const router = createBrowserRouter([
             {
                 path: nav_paths.utility_delve_card_migration,
                 element: <ProtectedRoute><MigrateToDecks /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.utility_delve_card_rarity_migration,
+                element: <ProtectedRoute><MigrateRarities /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.utility_delve_card_rarity_flip,
+                element: <ProtectedRoute><MigrateFlipRarities /></ProtectedRoute>
             }
         ]
     }

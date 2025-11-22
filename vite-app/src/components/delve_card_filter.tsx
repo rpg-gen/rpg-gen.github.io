@@ -9,10 +9,12 @@ interface DelveCardFilterProps {
     selectedDeckIds: string[]
     selectedRarities: number[]
     searchTextFilters: string[]
+    searchDeep: boolean
     onTagsChange: (tagIds: string[]) => void
     onDecksChange: (deckIds: string[]) => void
     onRaritiesChange: (rarities: number[]) => void
     onSearchTextFiltersChange: (filters: string[]) => void
+    onSearchDeepChange: (searchDeep: boolean) => void
     onClearAll: () => void
 }
 
@@ -23,10 +25,12 @@ export default function DelveCardFilter({
     selectedDeckIds,
     selectedRarities,
     searchTextFilters,
+    searchDeep,
     onTagsChange,
     onDecksChange,
     onRaritiesChange,
     onSearchTextFiltersChange,
+    onSearchDeepChange,
     onClearAll
 }: DelveCardFilterProps) {
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false)
@@ -63,6 +67,7 @@ export default function DelveCardFilter({
         } else {
             onTagsChange([...selectedTagIds, tagId])
         }
+        setIsFilterDropdownOpen(false)
     }
 
     function toggleDeck(deckId: string) {
@@ -71,6 +76,7 @@ export default function DelveCardFilter({
         } else {
             onDecksChange([...selectedDeckIds, deckId])
         }
+        setIsFilterDropdownOpen(false)
     }
 
     function toggleRarity(rarity: number) {
@@ -79,6 +85,7 @@ export default function DelveCardFilter({
         } else {
             onRaritiesChange([...selectedRarities, rarity])
         }
+        setIsFilterDropdownOpen(false)
     }
 
     function handleFilterInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -86,6 +93,7 @@ export default function DelveCardFilter({
             e.preventDefault()
             addSearchTextFilter(filterInputText.trim())
             setFilterInputText("")
+            setIsFilterDropdownOpen(false)
         }
     }
 
@@ -105,11 +113,11 @@ export default function DelveCardFilter({
 
     function getRarityName(rarity: number): string {
         const rarityNames: { [key: number]: string } = {
-            1: "Common",
-            2: "Uncommon",
-            3: "Rare",
-            4: "Epic",
-            5: "Legendary"
+            5: "Frequent",
+            4: "Boosted",
+            3: "Normal",
+            2: "Rare",
+            1: "Lost"
         }
         return rarityNames[rarity] || ""
     }
@@ -381,7 +389,7 @@ export default function DelveCardFilter({
                             )}
 
                             {dropdownTab === "rarities" && (
-                                [1, 2, 3, 4, 5].map(rarity => (
+                                [5, 4, 3, 2, 1].map(rarity => (
                                     <label key={rarity} style={{
                                         display: "block",
                                         padding: "0.5rem",
@@ -430,15 +438,26 @@ export default function DelveCardFilter({
                     </div>
                 )}
 
-                {/* Clear all button */}
-                {getTotalFilterCount() > 0 && (
-                    <button
-                        onClick={onClearAll}
-                        style={{ marginTop: "0.5rem", fontSize: "0.85rem" }}
-                    >
-                        Clear All Filters
-                    </button>
-                )}
+                {/* Clear all button and deep search checkbox */}
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "0.5rem" }}>
+                    {getTotalFilterCount() > 0 && (
+                        <button
+                            onClick={onClearAll}
+                            style={{ fontSize: "0.85rem" }}
+                        >
+                            Clear All Filters
+                        </button>
+                    )}
+                    <label style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.85rem", cursor: "pointer" }}>
+                        <input
+                            type="checkbox"
+                            checked={searchDeep}
+                            onChange={(e) => onSearchDeepChange(e.target.checked)}
+                            style={{ cursor: "pointer" }}
+                        />
+                        Search in title, effect & description
+                    </label>
+                </div>
             </div>
         </div>
     )

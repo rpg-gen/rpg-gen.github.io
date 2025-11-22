@@ -11,9 +11,21 @@ interface UtilityItem {
 
 const utilities: UtilityItem[] = [
     {
-        title: "Delve Card Migration",
+        title: "Delve Card Deck Migration",
         description: "Migrate existing delve cards to the deck system. Adds all cards without deck assignments to the 'encounters' deck.",
         path: nav_paths.utility_delve_card_migration,
+        category: "migration"
+    },
+    {
+        title: "Delve Card Rarity Migration",
+        description: "Update card rarity system to the new format. Changes rarity 1 and 2 cards to rarity 3 (Normal), making 3 the new default.",
+        path: nav_paths.utility_delve_card_rarity_migration,
+        category: "migration"
+    },
+    {
+        title: "Delve Card Rarity Flip Migration",
+        description: "Flip the rarity numbering system so 5 is most frequent and 1 is most rare. Converts: 1↔5, 2↔4, 3 stays 3.",
+        path: nav_paths.utility_delve_card_rarity_flip,
         category: "migration"
     }
 ]

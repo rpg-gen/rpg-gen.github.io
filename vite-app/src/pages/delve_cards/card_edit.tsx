@@ -13,22 +13,36 @@ import { processCardText } from "../../utility/dice_expression_parser"
 
 function getRarityColors(rarity: number): { border: string; background: string } {
     const colorMap: { [key: number]: { border: string; background: string } } = {
-        1: { border: "#757575", background: "#E8E8E8" },      // Common - Gray
-        2: { border: "#4CAF50", background: "#E8F5E9" },      // Uncommon - Green
-        3: { border: "#2196F3", background: "#E3F2FD" },      // Rare - Blue
-        4: { border: "#9C27B0", background: "#F3E5F5" },      // Epic - Purple
-        5: { border: "#FF9800", background: "#FFF3E0" }       // Legendary - Orange/Gold
+        5: { border: "#4CAF50", background: "#E8F5E9" },      // Frequent - Light Green
+        4: { border: "#2196F3", background: "#E3F2FD" },      // Boosted - Light Blue
+        3: { border: "#757575", background: "#E8E8E8" },      // Normal - Grey (default)
+        2: { border: "#9C27B0", background: "#F3E5F5" },      // Rare - Purple
+        1: { border: "#E53935", background: "#FFEBEE" }       // Lost - Reddish
     }
-    return colorMap[rarity] || colorMap[1]
+    return colorMap[rarity] || colorMap[3]
 }
 
-const RARITY_OPTIONS = [
-    { id: "1", name: "Common (1)" },
-    { id: "2", name: "Uncommon (2)" },
-    { id: "3", name: "Rare (3)" },
-    { id: "4", name: "Epic (4)" },
-    { id: "5", name: "Legendary (5)" }
-]
+function getRarityName(rarity: number): string {
+    const rarityNames: { [key: number]: string } = {
+        5: "Frequent",
+        4: "Boosted",
+        3: "Normal",
+        2: "Rare",
+        1: "Lost"
+    }
+    return rarityNames[rarity] || "Normal"
+}
+
+function getRarityIcon(rarity: number): string {
+    const rarityIcons: { [key: number]: string } = {
+        5: "⏫",  // 2 up carets - most frequent
+        4: "⬆",   // 1 up caret
+        3: "⏺",   // filled circle
+        2: "⬇",   // 1 down caret
+        1: "⏬"   // 2 down carets - most rare
+    }
+    return rarityIcons[rarity] || "⏺"
+}
 
 export default function CardEdit() {
     const navigate = useNavigate()
@@ -41,7 +55,7 @@ export default function CardEdit() {
     const isNewCard = cardId === "new"
 
     // Store filter state to preserve when returning to card list, and use selectedDeckIds for pre-populating new cards
-    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[] } | null
+    const returnState = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[]; currentIndex?: number; searchDeep?: boolean } | null
 
     const [isLoading, setIsLoading] = useState(!isNewCard)
     const [isSaving, setIsSaving] = useState(false)
@@ -55,7 +69,7 @@ export default function CardEdit() {
     const [description, setDescription] = useState("")
     const [selectedTags, setSelectedTags] = useState<string[]>([])
     const [selectedDecks, setSelectedDecks] = useState<string[]>([])
-    const [rarity, setRarity] = useState(1)
+    const [rarity, setRarity] = useState(3)
     const [showPreview, setShowPreview] = useState(false)
     const [previewText, setPreviewText] = useState<{ effect: string; description: string } | null>(null)
     const [showSyntaxHelp, setShowSyntaxHelp] = useState(false)
@@ -237,7 +251,7 @@ export default function CardEdit() {
             setEffect("")
             setDescription("")
             setSelectedTags([])
-            setRarity(1)
+            setRarity(3)
 
             // Keep the same decks selected
             setSelectedDecks(decksToKeep)
@@ -324,6 +338,9 @@ export default function CardEdit() {
                     </button>
                     <button onClick={() => navigate(nav_paths.delve_card_list, { state: returnState })} style={{ marginLeft: "0.5rem" }}>
                         Back to List
+                    </button>
+                    <button onClick={() => navigate(nav_paths.delve_card_random, { state: returnState })} style={{ marginLeft: "0.5rem" }}>
+                        Back to Random Card
                     </button>
                 </div>
 
@@ -490,18 +507,44 @@ export default function CardEdit() {
                     )
                 })()}
 
-                <ChipSelector
-                    label="Rarity"
-                    items={RARITY_OPTIONS}
-                    selectedIds={[rarity.toString()]}
-                    onSelectionChange={(ids) => setRarity(ids.length > 0 ? Number(ids[0]) : 1)}
-                    chipColor={{
-                        border: "#ff9800",
-                        background: "#fff3e0",
-                        prefix: "rarity:"
-                    }}
-                    multiSelect={false}
-                />
+                <div style={{ marginBottom: "1rem" }}>
+                    <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                        <strong>Rarity</strong>
+                    </label>
+                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                        {[5, 4, 3, 2, 1].map(rarityValue => {
+                            const colors = getRarityColors(rarityValue)
+                            const isSelected = rarity === rarityValue
+                            return (
+                                <button
+                                    key={rarityValue}
+                                    type="button"
+                                    onClick={() => setRarity(rarityValue)}
+                                    style={{
+                                        padding: "0.75rem 1rem",
+                                        border: `2px solid ${colors.border}`,
+                                        backgroundColor: isSelected ? colors.background : "white",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                        minWidth: "90px",
+                                        fontWeight: isSelected ? "bold" : "normal",
+                                        boxShadow: isSelected ? `0 0 0 3px ${colors.border}` : "none",
+                                        opacity: isSelected ? 1 : 0.4,
+                                        transform: isSelected ? "scale(1.05)" : "scale(1)",
+                                        transition: "all 0.2s ease"
+                                    }}
+                                >
+                                    <div style={{ fontSize: "1.5rem" }}>{getRarityIcon(rarityValue)}</div>
+                                    <div style={{ fontSize: "0.9rem" }}>{getRarityName(rarityValue)}</div>
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
 
                 <ChipSelector
                     label="Tags"

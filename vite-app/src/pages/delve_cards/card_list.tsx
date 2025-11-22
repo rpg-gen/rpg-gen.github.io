@@ -13,24 +13,24 @@ import UserContext from "../../contexts/user_context"
 
 function getRarityColors(rarity: number): { border: string; background: string } {
     const colorMap: { [key: number]: { border: string; background: string } } = {
-        1: { border: "#757575", background: "#E8E8E8" },      // Common - Gray
-        2: { border: "#4CAF50", background: "#E8F5E9" },      // Uncommon - Green
-        3: { border: "#2196F3", background: "#E3F2FD" },      // Rare - Blue
-        4: { border: "#9C27B0", background: "#F3E5F5" },      // Epic - Purple
-        5: { border: "#FF9800", background: "#FFF3E0" }       // Legendary - Orange/Gold
+        5: { border: "#4CAF50", background: "#E8F5E9" },      // Frequent - Light Green
+        4: { border: "#2196F3", background: "#E3F2FD" },      // Boosted - Light Blue
+        3: { border: "#757575", background: "#E8E8E8" },      // Normal - Grey (default)
+        2: { border: "#9C27B0", background: "#F3E5F5" },      // Rare - Purple
+        1: { border: "#E53935", background: "#FFEBEE" }       // Lost - Reddish
     }
-    return colorMap[rarity] || colorMap[1]
+    return colorMap[rarity] || colorMap[3]
 }
 
 function getRarityName(rarity: number): string {
     const rarityNames: { [key: number]: string } = {
-        1: "Common",
-        2: "Uncommon",
-        3: "Rare",
-        4: "Epic",
-        5: "Legendary"
+        5: "Frequent",
+        4: "Boosted",
+        3: "Normal",
+        2: "Rare",
+        1: "Lost"
     }
-    return rarityNames[rarity] || "Common"
+    return rarityNames[rarity] || "Normal"
 }
 
 export default function CardList() {
@@ -52,23 +52,27 @@ export default function CardList() {
     const [selectedDeckIds, setSelectedDeckIds] = useState<string[]>([])
     const [selectedRarities, setSelectedRarities] = useState<number[]>([])
     const [searchTextFilters, setSearchTextFilters] = useState<string[]>([])
+    const [currentIndex, setCurrentIndex] = useState<number>(-1)
+    const [searchDeep, setSearchDeep] = useState(false)
 
     useEffect(() => {
         // Restore filter state if coming from edit page or random card page
-        const state = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[] } | null
+        const state = location.state as { searchText?: string; selectedTagIds?: string[]; selectedDeckIds?: string[]; selectedRarities?: number[]; searchTextFilters?: string[]; currentIndex?: number; searchDeep?: boolean } | null
         if (state) {
             if (state.searchText !== undefined) setSearchText(state.searchText)
             if (state.selectedTagIds !== undefined) setSelectedTagIds(state.selectedTagIds)
             if (state.selectedDeckIds !== undefined) setSelectedDeckIds(state.selectedDeckIds)
             if (state.selectedRarities !== undefined) setSelectedRarities(state.selectedRarities)
             if (state.searchTextFilters !== undefined) setSearchTextFilters(state.searchTextFilters)
+            if (state.currentIndex !== undefined) setCurrentIndex(state.currentIndex)
+            if (state.searchDeep !== undefined) setSearchDeep(state.searchDeep)
         }
         loadData()
     }, [])
 
     useEffect(() => {
         filterCards()
-    }, [searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, allCards, tags, decks])
+    }, [searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, allCards, tags, decks, searchDeep])
 
     async function loadData() {
         setIsLoading(true)
@@ -117,10 +121,18 @@ export default function CardList() {
             filtered = filtered.filter(card => {
                 return searchTextFilters.every(searchTerm => {
                     const searchLower = searchTerm.toLowerCase()
-                    const textMatch =
-                        card.title.toLowerCase().includes(searchLower) ||
-                        card.effect.toLowerCase().includes(searchLower) ||
-                        card.description.toLowerCase().includes(searchLower)
+                    let textMatch: boolean
+
+                    if (searchDeep) {
+                        // Search in title, effect, and description
+                        textMatch =
+                            card.title.toLowerCase().includes(searchLower) ||
+                            card.effect.toLowerCase().includes(searchLower) ||
+                            card.description.toLowerCase().includes(searchLower)
+                    } else {
+                        // Search only in title
+                        textMatch = card.title.toLowerCase().includes(searchLower)
+                    }
 
                     const tagMatch = card.tags.some(tagId => {
                         const tag = tags.find(t => t.id === tagId)
@@ -158,13 +170,13 @@ export default function CardList() {
 
     function handleCreateNew() {
         navigate(nav_paths.delve_card_edit + "/new", {
-            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, currentIndex, searchDeep }
         })
     }
 
     function handleCardClick(cardId: string) {
         navigate(nav_paths.delve_card_edit + "/" + cardId, {
-            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+            state: { searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, currentIndex, searchDeep }
         })
     }
 
@@ -193,7 +205,7 @@ export default function CardList() {
                         </>
                     )}
                     <button onClick={() => navigate(nav_paths.delve_card_random, {
-                        state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters }
+                        state: { selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, currentIndex, searchDeep }
                     })} style={{ marginLeft: user_context.is_logged_in ? "0.5rem" : "0" }}>Random Card</button>
                     <button onClick={loadData} style={{ marginLeft: "0.5rem" }}>Refresh</button>
                     <button onClick={() => navigate("/")} style={{ marginLeft: "0.5rem" }}>Back to Menu</button>
@@ -212,10 +224,12 @@ export default function CardList() {
                     selectedDeckIds={selectedDeckIds}
                     selectedRarities={selectedRarities}
                     searchTextFilters={searchTextFilters}
+                    searchDeep={searchDeep}
                     onTagsChange={setSelectedTagIds}
                     onDecksChange={setSelectedDeckIds}
                     onRaritiesChange={setSelectedRarities}
                     onSearchTextFiltersChange={setSearchTextFilters}
+                    onSearchDeepChange={setSearchDeep}
                     onClearAll={clearAllFilters}
                 />
 
