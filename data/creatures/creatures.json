@@ -1,0 +1,1322 @@
+[
+    {
+      "name": "Wolf",
+      "description": "A fierce canine predator that hunts in packs, known for its keen senses and pack tactics.",
+      "category": "Animals"
+    },
+    {
+      "name": "Bear",
+      "description": "A large, powerful omnivore with tremendous strength and resilience, territorial and protective.",
+      "category": "Animals"
+    },
+    {
+      "name": "Eagle",
+      "description": "A majestic bird of prey with exceptional eyesight and aerial hunting prowess.",
+      "category": "Animals"
+    },
+    {
+      "name": "Stag",
+      "description": "A noble deer with impressive antlers, symbolizing grace and wilderness majesty.",
+      "category": "Animals"
+    },
+    {
+      "name": "Boar",
+      "description": "A wild pig with dangerous tusks and an aggressive temperament when threatened.",
+      "category": "Animals"
+    },
+    {
+      "name": "Lion",
+      "description": "A powerful feline predator known as the king of beasts, with a commanding roar.",
+      "category": "Animals"
+    },
+    {
+      "name": "Tiger",
+      "description": "A solitary striped cat with incredible stealth and devastating pouncing ability.",
+      "category": "Animals"
+    },
+    {
+      "name": "Elephant",
+      "description": "A massive, intelligent pachyderm with remarkable memory and social bonds.",
+      "category": "Animals"
+    },
+    {
+      "name": "Owl",
+      "description": "A nocturnal bird of prey with silent flight and exceptional night vision.",
+      "category": "Animals"
+    },
+    {
+      "name": "Raven",
+      "description": "An intelligent black bird often associated with omens and dark magic.",
+      "category": "Animals"
+    },
+    {
+      "name": "Hawk",
+      "description": "A swift raptor with razor-sharp talons and incredible diving speed.",
+      "category": "Animals"
+    },
+    {
+      "name": "Bat",
+      "description": "A flying mammal that navigates through echolocation, active during night hours.",
+      "category": "Animals"
+    },
+    {
+      "name": "Spider",
+      "description": "An eight-legged arachnid that weaves webs to trap prey and inject venom.",
+      "category": "Animals"
+    },
+    {
+      "name": "Scorpion",
+      "description": "A desert arthropod with pincers and a venomous stinger on its segmented tail.",
+      "category": "Animals"
+    },
+    {
+      "name": "Snake",
+      "description": "A limbless reptile that can constrict or inject venom through fanged bites.",
+      "category": "Animals"
+    },
+    {
+      "name": "Crocodile",
+      "description": "A semi-aquatic reptile with powerful jaws and armored hide, ancient and patient.",
+      "category": "Animals"
+    },
+    {
+      "name": "Shark",
+      "description": "An oceanic predator with rows of sharp teeth and an incredible sense of smell.",
+      "category": "Animals"
+    },
+    {
+      "name": "Octopus",
+      "description": "An intelligent cephalopod with eight arms and remarkable camouflage abilities.",
+      "category": "Animals"
+    },
+    {
+      "name": "Giant Rat",
+      "description": "An oversized rodent with disease-carrying bite and surprising cunning.",
+      "category": "Animals"
+    },
+    {
+      "name": "Dire Wolf",
+      "description": "A prehistoric wolf of enormous size with pack hunting instincts.",
+      "category": "Animals"
+    },
+    {
+      "name": "Giant Spider",
+      "description": "A massive arachnid capable of spinning webs large enough to trap humanoids.",
+      "category": "Animals"
+    },
+    {
+      "name": "Giant Eagle",
+      "description": "A colossal bird of prey intelligent enough to serve as a mount or ally.",
+      "category": "Animals"
+    },
+    {
+      "name": "Dragon",
+      "description": "A mighty winged reptile with breath weapons, ancient wisdom, and immense magical power.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Unicorn",
+      "description": "A pure white horse with a spiraling horn, symbolizing innocence and healing magic.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Griffin",
+      "description": "A majestic creature with the head and wings of an eagle and body of a lion.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Phoenix",
+      "description": "A legendary firebird that burns to ash and rises reborn from its own flames.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Chimera",
+      "description": "A three-headed monster with lion, goat, and dragon heads sharing one body.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Sphinx",
+      "description": "A riddle-loving creature with human head, lion body, and eagle wings.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Manticore",
+      "description": "A beast with human face, lion body, and scorpion tail that shoots venomous spikes.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Pegasus",
+      "description": "A divine winged horse capable of flight and legendary for its pure spirit.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Centaur",
+      "description": "Half-human, half-horse beings known for wisdom, archery, and wild nature.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Minotaur",
+      "description": "A bull-headed humanoid of immense strength, often guarding ancient labyrinths.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Medusa",
+      "description": "A snake-haired woman whose gaze turns living creatures into stone.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Cyclops",
+      "description": "A one-eyed giant known for incredible strength and masterful craftsmanship.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Kraken",
+      "description": "A colossal sea monster with massive tentacles capable of destroying ships.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Leviathan",
+      "description": "An enormous sea serpent of primordial origin with control over ocean storms.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Behemoth",
+      "description": "A massive land beast of incredible size and unstoppable destructive force.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Wendigo",
+      "description": "A cannibalistic creature of eternal hunger with gaunt frame and antler crown.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Banshee",
+      "description": "A wailing spirit whose mournful cry foretells death and brings overwhelming sorrow.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Kelpie",
+      "description": "A shape-shifting water horse that lures riders to drowning in deep waters.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Selkie",
+      "description": "A seal-person who can shed their skin to take human form on land.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Valkyrie",
+      "description": "A warrior maiden who guides fallen heroes to the afterlife's great halls.",
+      "category": "Mythological"
+    },
+    {
+      "name": "Goblin",
+      "description": "A small, mischievous humanoid with cunning intelligence and pack mentality.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Orc",
+      "description": "A fierce warrior humanoid with tusks, known for strength and tribal warfare.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Kobold",
+      "description": "A small draconic humanoid that compensates for weakness with traps and cunning.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Gnoll",
+      "description": "A hyena-like humanoid driven by insatiable hunger and pack hunting instincts.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Bugbear",
+      "description": "A large, hairy goblinoid that excels at stealth despite its imposing size.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Hobgoblin",
+      "description": "A disciplined and militaristic goblinoid with tactical prowess and honor codes.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Ogre",
+      "description": "A large, dim-witted giant with tremendous strength and appetite for violence.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Troll",
+      "description": "A massive humanoid with incredible regenerative abilities and ravenous hunger.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Giant",
+      "description": "An enormous humanoid of various types, from hill giants to storm giants.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Beholder",
+      "description": "A floating sphere covered in eyes, each capable of casting different magical effects.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Mind Flayer",
+      "description": "A tentacle-faced aberration that feeds on brains and controls minds.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Gelatinous Cube",
+      "description": "A transparent, acidic ooze that fills dungeon corridors and dissolves organic matter.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Owlbear",
+      "description": "A fierce hybrid of owl and bear, combining flight capability with raw strength.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Displacer Beast",
+      "description": "A panther-like creature with tentacles that creates illusions to confuse prey.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Rust Monster",
+      "description": "An insectoid creature that corrodes and devours metal with its touch.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Bulette",
+      "description": "A massive burrowing creature known as a 'land shark' with armored hide.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Tarrasque",
+      "description": "A legendary kaiju-sized monster of unparalleled destructive power.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Mimic",
+      "description": "A shapeshifting predator that disguises itself as treasure chests or objects.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Doppelganger",
+      "description": "A shapeshifter that assumes the forms and memories of other humanoids.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Stirge",
+      "description": "A blood-sucking flying pest with a needle-like proboscis.",
+      "category": "D&D Classics"
+    },
+    {
+      "name": "Skeleton",
+      "description": "Animated bones of the dead, mindless servants wielding weapons from life.",
+      "category": "Undead"
+    },
+    {
+      "name": "Zombie",
+      "description": "A shambling corpse reanimated by necromancy, driven by hunger for flesh.",
+      "category": "Undead"
+    },
+    {
+      "name": "Ghost",
+      "description": "The restless spirit of the deceased, bound to the material world by unfinished business.",
+      "category": "Undead"
+    },
+    {
+      "name": "Vampire",
+      "description": "An undead bloodsucker with supernatural charm, strength, and eternal unlife.",
+      "category": "Undead"
+    },
+    {
+      "name": "Lich",
+      "description": "A powerful undead spellcaster who achieved immortality through dark rituals.",
+      "category": "Undead"
+    },
+    {
+      "name": "Wraith",
+      "description": "An incorporeal undead spirit that drains life force from the living.",
+      "category": "Undead"
+    },
+    {
+      "name": "Specter",
+      "description": "A hateful spirit that phases through matter and chills souls with its touch.",
+      "category": "Undead"
+    },
+    {
+      "name": "Wight",
+      "description": "An intelligent undead warrior that retains combat skills and drains life energy.",
+      "category": "Undead"
+    },
+    {
+      "name": "Mummy",
+      "description": "A preserved corpse wrapped in bandages, animated by ancient curses.",
+      "category": "Undead"
+    },
+    {
+      "name": "Ghoul",
+      "description": "A flesh-eating undead with paralytic claws and insatiable hunger.",
+      "category": "Undead"
+    },
+    {
+      "name": "Revenant",
+      "description": "An undead seeking vengeance, relentlessly pursuing those who wronged it in life.",
+      "category": "Undead"
+    },
+    {
+      "name": "Death Knight",
+      "description": "A fallen paladin bound in undeath, wielding unholy power and dark magic.",
+      "category": "Undead"
+    },
+    {
+      "name": "Banshee",
+      "description": "A wailing undead spirit whose keening cry brings fear and foretells doom.",
+      "category": "Undead"
+    },
+    {
+      "name": "Shadow",
+      "description": "A living shadow that drains strength and creates more of its kind.",
+      "category": "Undead"
+    },
+    {
+      "name": "Demilich",
+      "description": "The remains of a lich whose body has decayed, leaving only a floating skull.",
+      "category": "Undead"
+    },
+    {
+      "name": "Pixie",
+      "description": "A tiny winged fey with powerful magic and mischievous personality.",
+      "category": "Fey"
+    },
+    {
+      "name": "Sprite",
+      "description": "A small nature spirit with delicate wings and connection to forest magic.",
+      "category": "Fey"
+    },
+    {
+      "name": "Dryad",
+      "description": "A tree spirit bound to ancient forests, beautiful and protective of nature.",
+      "category": "Fey"
+    },
+    {
+      "name": "Satyr",
+      "description": "A goat-legged fey known for music, revelry, and wild forest parties.",
+      "category": "Fey"
+    },
+    {
+      "name": "Nymph",
+      "description": "An incredibly beautiful nature spirit tied to specific locations like springs or groves.",
+      "category": "Fey"
+    },
+    {
+      "name": "Treant",
+      "description": "An ancient tree awakened to consciousness, guardian of the forest.",
+      "category": "Fey"
+    },
+    {
+      "name": "Faerie Dragon",
+      "description": "A tiny dragon with butterfly wings and powerful illusion magic.",
+      "category": "Fey"
+    },
+    {
+      "name": "Redcap",
+      "description": "A violent fey that dyes its cap red with the blood of victims.",
+      "category": "Fey"
+    },
+    {
+      "name": "Hag",
+      "description": "An evil fey crone with powerful magic and taste for corrupting innocents.",
+      "category": "Fey"
+    },
+    {
+      "name": "Wild Hunt",
+      "description": "A spectral hunting party that rides through the night claiming souls.",
+      "category": "Fey"
+    },
+    {
+      "name": "Brownies",
+      "description": "Helpful household fey that perform chores in exchange for simple offerings.",
+      "category": "Fey"
+    },
+    {
+      "name": "Boggart",
+      "description": "A shapeshifting fey that takes the form of one's greatest fear.",
+      "category": "Fey"
+    },
+    {
+      "name": "Will-o'-Wisp",
+      "description": "A floating ball of light that leads travelers astray into dangerous swamps.",
+      "category": "Fey"
+    },
+    {
+      "name": "Seelie Court Noble",
+      "description": "A beautiful and benevolent fey aristocrat with potent magical abilities.",
+      "category": "Fey"
+    },
+    {
+      "name": "Unseelie Court Noble",
+      "description": "A cruel and malevolent fey aristocrat delighting in mortal suffering.",
+      "category": "Fey"
+    },
+    {
+      "name": "Fire Elemental",
+      "description": "A living manifestation of flame with scorching touch and blazing temperament.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Water Elemental",
+      "description": "A fluid being of pure water that can flow and crash with tidal force.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Earth Elemental",
+      "description": "A creature of stone and soil with incredible strength and endurance.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Air Elemental",
+      "description": "A whirling vortex of wind capable of flight and devastating gusts.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Ice Elemental",
+      "description": "A crystalline being of frozen water with chilling presence and frost magic.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Lightning Elemental",
+      "description": "A crackling entity of pure electrical energy with shocking attacks.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Magma Elemental",
+      "description": "A fusion of earth and fire, molten rock given sentient form.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Mud Elemental",
+      "description": "A combination of earth and water that can entrap and suffocate foes.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Steam Elemental",
+      "description": "A scalding mist creature formed from heated water vapor.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Dust Elemental",
+      "description": "A swirling cloud of particles that blinds and chokes enemies.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Salamander",
+      "description": "A fire-dwelling lizard creature immune to flames and heat.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Undine",
+      "description": "A graceful water spirit with healing powers and aquatic mastery.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Sylph",
+      "description": "An airy being of wind and sky with ethereal beauty and flight.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Gnome",
+      "description": "An earth-dwelling creature connected to minerals and underground secrets.",
+      "category": "Elementals"
+    },
+    {
+      "name": "Aboleth",
+      "description": "An ancient aquatic being with tentacles and mind-controlling mucus.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Illithid",
+      "description": "A tentacle-faced brain eater from beyond the stars with psionic powers.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Beholder",
+      "description": "A floating orb with a central eye and multiple smaller eyes with magical rays.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Gibbering Mouther",
+      "description": "A mass of eyes and mouths that babbles maddening sounds.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Chuul",
+      "description": "A lobster-like aberration with paralytic tentacles and ancient intelligence.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Otyugh",
+      "description": "A tentacled waste-dweller with three legs and massive appetite.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Cloaker",
+      "description": "A flying ray-like creature that disguises itself as a cloak.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Grick",
+      "description": "A worm-like predator with tentacle arms and stone-camouflaged hide.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Roper",
+      "description": "A cone-shaped creature that resembles a stalagmite with grasping tendrils.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Flumph",
+      "description": "A benevolent floating jellyfish creature with telepathic abilities.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Slaad",
+      "description": "A chaotic frog-like being from the plane of Limbo with random mutations.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Star Spawn",
+      "description": "A cosmic horror servant of entities from beyond reality.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Dolgrim",
+      "description": "A four-armed aberrant humanoid created through twisted experiments.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Intellect Devourer",
+      "description": "A brain creature that inhabits and controls host bodies.",
+      "category": "Aberrations"
+    },
+    {
+      "name": "Balrog",
+      "description": "A massive demon of shadow and flame with whip and sword.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Succubus",
+      "description": "A seductive demon that drains life force through temptation and charm.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Imp",
+      "description": "A small, mischievous devil that serves as familiar or messenger.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Quasit",
+      "description": "A tiny demon that delights in corrupting mortals with whispered temptations.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Pit Fiend",
+      "description": "An archdevil of tremendous power with wings, claws, and hellish magic.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Balor",
+      "description": "A powerful demon lord wreathed in flames with death-dealing sword.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Vrock",
+      "description": "A vulture-like demon with stunning screech and spore-releasing powers.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Hezrou",
+      "description": "A toad-like demon that spreads disease and chaos through its presence.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Glabrezu",
+      "description": "A four-armed demon that grants wishes in exchange for souls.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Marilith",
+      "description": "A six-armed snake-bodied demon general wielding multiple weapons.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Bone Devil",
+      "description": "A skeletal fiend with stinger tail and ability to see through illusions.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Chain Devil",
+      "description": "A devil wrapped in animated chains that bind and torment victims.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Lemure",
+      "description": "The lowest form of devil, a blob-like mass of tormented souls.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Barbed Devil",
+      "description": "A spined devil that grapples foes with its razor-sharp body.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Ice Devil",
+      "description": "A cold-dwelling fiend with spear and walls of ice magic.",
+      "category": "Fiends"
+    },
+    {
+      "name": "Horse",
+      "description": "A noble steed bred for riding, with speed, endurance, and loyal temperament.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Warhorse",
+      "description": "A specially trained destrier bred for battle with courage and strength.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Pony",
+      "description": "A smaller horse breed, hardy and sure-footed, ideal for rough terrain.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Mule",
+      "description": "A hybrid of horse and donkey, known for stubbornness but incredible endurance.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Donkey",
+      "description": "A patient pack animal with loud bray and surprising intelligence.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Ox",
+      "description": "A large bovine trained for heavy labor and pulling loads.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Cow",
+      "description": "A gentle farm animal providing milk, leather, and meat for communities.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Bull",
+      "description": "A powerful male bovine with dangerous horns and territorial nature.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Goat",
+      "description": "An agile farm animal that can climb steep terrain and eat almost anything.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Sheep",
+      "description": "A woolly farm animal known for flocking behavior and providing wool.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Pig",
+      "description": "An intelligent farm animal with excellent sense of smell and omnivorous diet.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Chicken",
+      "description": "A common fowl that provides eggs and meat, with pecking order social structure.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Duck",
+      "description": "A waterfowl with webbed feet that can swim, walk, and fly.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Goose",
+      "description": "A large waterfowl known for aggressive territorial behavior and honking calls.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Dog",
+      "description": "A loyal canine companion with pack instincts and fierce devotion to humans.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Cat",
+      "description": "An independent feline hunter that keeps vermin away and shows affection selectively.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Falcon",
+      "description": "A trained raptor used for hunting, with incredible speed and sharp vision.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Pigeon",
+      "description": "A reliable messenger bird capable of finding its way home across vast distances.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Ferret",
+      "description": "A small, playful carnivore used for hunting rabbits in their burrows.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Mastiff",
+      "description": "A large guard dog breed with protective instincts and powerful bite.",
+      "category": "Domesticated"
+    },
+    {
+      "name": "Clay Golem",
+      "description": "An animated clay figure with immense strength and immunity to most magic.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Stone Golem",
+      "description": "A carved stone automaton with incredible durability and crushing fists.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Iron Golem",
+      "description": "A metallic construct of supreme toughness with poisonous breath weapon.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Flesh Golem",
+      "description": "A stitched-together creation animated by lightning with berserk potential.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Wood Golem",
+      "description": "A carved wooden construct vulnerable to fire but resistant to piercing.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Glass Golem",
+      "description": "A transparent construct that reflects spells and shatters into sharp fragments.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Animated Armor",
+      "description": "Empty plate mail given life through enchantment, retaining combat training.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Animated Weapon",
+      "description": "A weapon granted sentience that fights independently with skilled technique.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Shield Guardian",
+      "description": "A protective construct bonded to a master with defensive capabilities.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Scarecrow",
+      "description": "A straw guardian animated to protect crops from both pests and thieves.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Gargoyle",
+      "description": "A stone creature that comes to life, often mistaken for architectural decoration.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Homunculus",
+      "description": "A tiny artificial being created by alchemists to serve as familiar.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Clockwork Soldier",
+      "description": "A mechanical warrior powered by gears and springs with precise movements.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Automaton",
+      "description": "An advanced mechanical being with complex programming and various functions.",
+      "category": "Constructs"
+    },
+    {
+      "name": "Black Pudding",
+      "description": "A corrosive ooze that dissolves organic matter and splits when struck.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Ochre Jelly",
+      "description": "A yellow ooze immune to slashing attacks and capable of squeezing through cracks.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Gray Ooze",
+      "description": "A camouflaged ooze that corrodes metal and appears like wet stone.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Green Slime",
+      "description": "A hanging ooze that drops on victims and slowly dissolves them.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Gelatinous Cube",
+      "description": "A transparent, cube-shaped ooze that fills corridors and preserves victims.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Crystal Ooze",
+      "description": "A translucent slime that forms crystalline structures and refracts light.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Acid Slime",
+      "description": "A highly corrosive ooze that burns through almost any material.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Frost Ooze",
+      "description": "A cold-based ooze that freezes water and slows victims with icy touch.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Magma Ooze",
+      "description": "A molten slime creature that ignites flammable materials with contact.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Psychic Ooze",
+      "description": "A mental-energy based slime that feeds on thoughts and emotions.",
+      "category": "Oozes"
+    },
+    {
+      "name": "Angel",
+      "description": "A divine messenger with radiant wings and holy powers of healing and protection.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Archangel",
+      "description": "A powerful angelic general with flaming sword and command over lesser angels.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Deva",
+      "description": "A celestial administrator with shape-changing ability and divine magic.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Solar",
+      "description": "The most powerful angel with devastating radiance and reality-altering abilities.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Planetar",
+      "description": "A warrior angel with emerald skin and powers over healing and destruction.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Pegasus",
+      "description": "A divine winged horse with pure spirit and ability to detect evil.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Ki-rin",
+      "description": "An oriental celestial with dragon-like appearance and benevolent nature.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Couatl",
+      "description": "A feathered serpent with colorful plumage and powerful divine magic.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Unicorn",
+      "description": "A pure creature of the forest with healing horn and immunity to evil.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Cherub",
+      "description": "A child-like celestial with innocent appearance but serious divine purpose.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Seraph",
+      "description": "A six-winged celestial burning with holy fire and absolute devotion.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Valkyrie",
+      "description": "A warrior maiden who guides worthy souls to eternal rest in divine halls.",
+      "category": "Celestials"
+    },
+    {
+      "name": "Werewolf",
+      "description": "A cursed humanoid that transforms into wolf form during full moons.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Werebear",
+      "description": "A gentle lycanthrope that becomes a massive bear with protective instincts.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Weretiger",
+      "description": "A solitary shapeshifter with tiger form and predatory hunting skills.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Wererat",
+      "description": "A disease-spreading lycanthrope that takes rat form and lives in sewers.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Wereboar",
+      "description": "An aggressive shapeshifter with boar form and irascible temperament.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Wereraven",
+      "description": "A lycanthrope with raven form, often serving as scouts or messengers.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Wereshark",
+      "description": "A aquatic lycanthrope with shark form and insatiable hunger for blood.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Doppelganger",
+      "description": "A perfect mimic that copies appearance and memories of other humanoids.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Changeling",
+      "description": "A natural shapeshifter raised among humans with identity struggles.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Mimic",
+      "description": "A predator that disguises itself as objects to ambush unsuspecting prey.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Jackalwere",
+      "description": "A jackal-humanoid shapeshifter with hypnotic gaze and pack mentality.",
+      "category": "Lycanthropes"
+    },
+    {
+      "name": "Giant Ant",
+      "description": "An oversized ant with powerful mandibles and unwavering dedication to the colony.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Beetle",
+      "description": "A massive insect with armored carapace and horn-like protrusions.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Centipede",
+      "description": "A many-legged vermin with venomous bite and incredible speed.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Wasp",
+      "description": "A buzzing predator with paralytic stinger and aggressive territorial nature.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Mantis",
+      "description": "A patient hunter with razor-sharp claws and swiveling head.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Locust",
+      "description": "A swarming insect capable of devastating crops and making tremendous leaps.",
+      "category": "Insects"
+    },
+    {
+      "name": "Giant Cockroach",
+      "description": "A resilient vermin that survives almost anything and spreads disease.",
+      "category": "Insects"
+    },
+    {
+      "name": "Phase Spider",
+      "description": "A spider that phases between dimensions to hunt unsuspecting prey.",
+      "category": "Insects"
+    },
+    {
+      "name": "Stirge",
+      "description": "A blood-sucking flying pest with mosquito-like proboscis.",
+      "category": "Insects"
+    },
+    {
+      "name": "Ankheg",
+      "description": "A burrowing insectoid with acid spray and powerful mandibles.",
+      "category": "Insects"
+    },
+    {
+      "name": "Bulezau",
+      "description": "A demon-insect hybrid with rotting flesh and diseased claws.",
+      "category": "Insects"
+    },
+    {
+      "name": "Web Golem",
+      "description": "A construct made of animated spider webs with entangling attacks.",
+      "category": "Insects"
+    },
+    {
+      "name": "Merfolk",
+      "description": "Half-human, half-fish beings with underwater cities and trident weapons.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Sahuagin",
+      "description": "Shark-like humanoids with fierce loyalty and bloodthirsty nature.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Kuo-toa",
+      "description": "Fish-people with sticky hands and ability to manifest gods through belief.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Sea Hag",
+      "description": "An evil aquatic crone with death gaze and horrifying appearance.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Siren",
+      "description": "A beautiful sea creature whose song lures sailors to their doom.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Kraken",
+      "description": "A colossal sea monster with massive tentacles and ship-destroying power.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Sea Serpent",
+      "description": "A legendary marine dragon with crushing coils and storm-calling magic.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Aboleth",
+      "description": "An ancient aquatic being with mind control and tentacled horror.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Chuul",
+      "description": "A lobster-like aberration that paralyzes prey with tentacles.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Water Weird",
+      "description": "A living water formation that drowns victims in pools or wells.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Scrag",
+      "description": "An aquatic troll with regeneration and underwater adaptation.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Giant Squid",
+      "description": "A massive cephalopod with incredible reach and crushing embrace.",
+      "category": "Aquatic"
+    },
+    {
+      "name": "Tyrannosaurus Rex",
+      "description": "A massive apex predator with bone-crushing jaws and tiny arms.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Triceratops",
+      "description": "A three-horned herbivore with protective frill and charging attacks.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Velociraptor",
+      "description": "A cunning pack hunter with sickle claws and tactical intelligence.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Pteranodon",
+      "description": "A flying reptile with massive wingspan and fishing expertise.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Stegosaurus",
+      "description": "A plated dinosaur with spiked tail and defensive armor.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Brontosaurus",
+      "description": "A long-necked giant with tremendous size and earthquake-making steps.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Allosaurus",
+      "description": "A large carnivorous dinosaur with powerful legs and slashing claws.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Ankylosaurus",
+      "description": "A heavily armored herbivore with club tail and defensive capabilities.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Dire Wolf",
+      "description": "A prehistoric wolf much larger than modern wolves with pack tactics.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Saber-tooth Tiger",
+      "description": "A prehistoric cat with massive fangs and powerful pouncing ability.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Mammoth",
+      "description": "A woolly elephant with tusks and adaptation to cold climates.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Giant Beaver",
+      "description": "An oversized rodent with dam-building skills and powerful teeth.",
+      "category": "Prehistoric"
+    },
+    {
+      "name": "Swarm of Rats",
+      "description": "A writhing mass of disease-carrying rodents that overwhelm through numbers.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Swarm of Bats",
+      "description": "A cloud of flying mammals that disorient foes with chaotic movement.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Swarm of Insects",
+      "description": "A buzzing mass of stinging, biting bugs that cover everything.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Swarm of Ravens",
+      "description": "A murder of intelligent birds that can speak and coordinate attacks.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Locust Swarm",
+      "description": "A devastating cloud of crop-eating insects that darkens the sky.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Spider Swarm",
+      "description": "A carpet of venomous arachnids that bite and poison en masse.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Bee Swarm",
+      "description": "A protective cluster of stinging insects defending their hive.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Army Ants",
+      "description": "A column of soldier ants that devours everything in their path.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Piranha School",
+      "description": "A group of flesh-eating fish that strips prey to bone in seconds.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Fairy Swarm",
+      "description": "A glittering cloud of tiny fey with collective magic and mischief.",
+      "category": "Swarms"
+    },
+    {
+      "name": "Pseudodragon",
+      "description": "A tiny dragon with telepathy and loyal service as a familiar.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Hippogriff",
+      "description": "A hybrid of eagle and horse with majestic flight and proud nature.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Owlbear",
+      "description": "A fierce fusion of owl and bear with territorial instincts.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Peryton",
+      "description": "A deer-bird hybrid with humanoid shadow and antler crown.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Cockatrice",
+      "description": "A rooster-lizard creature with petrifying bite and crowing call.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Basilisk",
+      "description": "A serpentine monster whose gaze turns victims to stone.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Medusa",
+      "description": "A snake-haired woman whose eyes petrify all who meet her gaze.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Lamia",
+      "description": "A lion-bodied creature with human torso and enchanting abilities.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Chimera",
+      "description": "A three-headed monster combining lion, goat, and dragon features.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Wyvern",
+      "description": "A two-legged dragon with venomous stinger and aerial hunting skills.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Drake",
+      "description": "A lesser dragon without wings but with elemental breath weapons.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Behir",
+      "description": "A multi-legged electrical creature that swallows prey whole.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Bulette",
+      "description": "A land shark that burrows underground and leaps at surface prey.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Gorgon",
+      "description": "A metallic bull whose breath turns flesh to stone.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Manticore",
+      "description": "A human-faced lion with scorpion tail that shoots spikes.",
+      "category": "Exotic"
+    },
+    {
+      "name": "Ant",
+      "description": "just a regular ant",
+      "category": "Insects"
+    }
+]
