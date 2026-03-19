@@ -8,6 +8,7 @@ import scale_context from './contexts/scale_context'
 import { DelveCardFilterProvider } from './contexts/delve_card_filter_context'
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
+import FeedbackButton from "./components/feedback_button"
 
 function App() {
 
@@ -67,6 +68,7 @@ function App() {
         <DelveCardFilterProvider>
 
             { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
+            <FeedbackButton />
 
         </DelveCardFilterProvider>
         </DataContext.Provider>

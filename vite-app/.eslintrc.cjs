@@ -14,5 +14,14 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'max-lines': ['error', { max: 400, skipBlankLines: true, skipComments: true }],
   },
+  overrides: [
+    {
+      files: ['src/configs/**/*', 'src/types/**/*'],
+      rules: {
+        'max-lines': 'off',
+      },
+    },
+  ],
 }

@@ -5,7 +5,7 @@ import MainMenu from "../pages/main_menu"
 import Map from "../pages/map"
 import Account from "../pages/account"
 import { nav_paths } from "../configs/constants"
-import Tagger from "../pages/Tagger"
+import Tagger from "../pages/tagger/tagger"
 import CardList from "../pages/delve_cards/card_list"
 import CardEdit from "../pages/delve_cards/card_edit"
 import TagManagement from "../pages/delve_cards/tag_management"
@@ -16,6 +16,10 @@ import MigrateToDecks from "../pages/delve_cards/migrate_to_decks"
 import MigrateRarities from "../pages/delve_cards/migrate_rarities"
 import MigrateFlipRarities from "../pages/delve_cards/migrate_flip_rarities"
 import ProtectedRoute from "../components/protected_route"
+import CampaignList from "../pages/ttrpg/campaign_list"
+import CampaignDetail from "../pages/ttrpg/campaign_detail"
+import SessionDetail from "../pages/ttrpg/session_detail"
+import FeedbackManagement from "../pages/feedback_management"
 
 const router = createBrowserRouter([
     {
@@ -78,6 +82,22 @@ const router = createBrowserRouter([
             {
                 path: nav_paths.utility_delve_card_rarity_flip,
                 element: <ProtectedRoute><MigrateFlipRarities /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.rpg_notes,
+                element: <ProtectedRoute><CampaignList /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.rpg_notes + "/:campaignId",
+                element: <ProtectedRoute><CampaignDetail /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.rpg_notes + "/:campaignId/session/:sessionId",
+                element: <ProtectedRoute><SessionDetail /></ProtectedRoute>
+            },
+            {
+                path: nav_paths.feedback_management,
+                element: <ProtectedRoute><FeedbackManagement /></ProtectedRoute>
             }
         ]
     }

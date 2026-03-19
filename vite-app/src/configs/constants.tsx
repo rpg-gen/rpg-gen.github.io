@@ -8,7 +8,9 @@ const nav_paths = {
   utilities_menu: "/utilities",
   utility_delve_card_migration: "/utilities/delve-card-migration",
   utility_delve_card_rarity_migration: "/utilities/delve-card-rarity-migration",
-  utility_delve_card_rarity_flip: "/utilities/delve-card-rarity-flip"
+  utility_delve_card_rarity_flip: "/utilities/delve-card-rarity-flip",
+  rpg_notes: "/rpg-notes",
+  feedback_management: "/feedback"
 }
 
 const mobile = {
@@ -19,6 +21,7 @@ const page_layout = {
   // Standard page container style for consistent widths across pages
   container: {
     padding: "1rem",
+    paddingBottom: 80,
     width: "100%",
     maxWidth: "800px",
     margin: "0 auto",

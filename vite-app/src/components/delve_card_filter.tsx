@@ -2,7 +2,9 @@ import { useState, useEffect } from "react"
 import DelveCardTag from "../types/delve_cards/DelveCardTag"
 import DelveCardDeck from "../types/delve_cards/DelveCardDeck"
 import { getRarityName } from "../utility/rarity_utils"
-import { filterChipColors } from "../configs/delve_card_colors"
+import FilterChip from "./delve_cards/filter_chip"
+import FilterDropdownPanel from "./delve_cards/filter_dropdown_panel"
+import { DropdownTab } from "./delve_cards/filter_dropdown_panel"
 
 interface DelveCardFilterProps {
     tags: DelveCardTag[]
@@ -37,7 +39,7 @@ export default function DelveCardFilter({
 }: DelveCardFilterProps) {
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false)
     const [filterInputText, setFilterInputText] = useState("")
-    const [dropdownTab, setDropdownTab] = useState<"tags" | "decks" | "rarities">("decks")
+    const [dropdownTab, setDropdownTab] = useState<DropdownTab>("decks")
 
     // Close dropdown when clicking outside or pressing Escape
     useEffect(() => {
@@ -137,24 +139,12 @@ export default function DelveCardFilter({
                 >
                     {/* Search text chips */}
                     {searchTextFilters.map(text => (
-                        <span
+                        <FilterChip
                             key={`search-${text}`}
-                            onClick={() => removeSearchTextFilter(text)}
-                            style={{
-                                border: `1px solid ${filterChipColors.search.border}`,
-                                borderRadius: "4px",
-                                padding: "0.2rem 0.5rem",
-                                fontSize: "0.85rem",
-                                backgroundColor: filterChipColors.search.background,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "0.3rem",
-                                cursor: "pointer"
-                            }}
-                        >
-                            <span style={{ fontWeight: "600", color: filterChipColors.search.border }}>{filterChipColors.search.prefix}</span> {text}
-                            <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
-                        </span>
+                            label={text}
+                            colorKey="search"
+                            onRemove={() => removeSearchTextFilter(text)}
+                        />
                     ))}
 
                     {/* Deck chips */}
@@ -162,24 +152,12 @@ export default function DelveCardFilter({
                         const deck = decks.find(d => d.id === deckId)
                         if (!deck) return null
                         return (
-                            <span
+                            <FilterChip
                                 key={`deck-${deckId}`}
-                                onClick={() => toggleDeck(deckId)}
-                                style={{
-                                    border: `1px solid ${filterChipColors.deck.border}`,
-                                    borderRadius: "4px",
-                                    padding: "0.2rem 0.5rem",
-                                    fontSize: "0.85rem",
-                                    backgroundColor: filterChipColors.deck.background,
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: "0.3rem",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                <span style={{ fontWeight: "600", color: filterChipColors.deck.border }}>{filterChipColors.deck.prefix}</span> {deck.name}
-                                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
-                            </span>
+                                label={deck.name}
+                                colorKey="deck"
+                                onRemove={() => toggleDeck(deckId)}
+                            />
                         )
                     })}
 
@@ -188,47 +166,23 @@ export default function DelveCardFilter({
                         const tag = tags.find(t => t.id === tagId)
                         if (!tag) return null
                         return (
-                            <span
+                            <FilterChip
                                 key={`tag-${tagId}`}
-                                onClick={() => toggleTag(tagId)}
-                                style={{
-                                    border: `1px solid ${filterChipColors.tag.border}`,
-                                    borderRadius: "4px",
-                                    padding: "0.2rem 0.5rem",
-                                    fontSize: "0.85rem",
-                                    backgroundColor: filterChipColors.tag.background,
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: "0.3rem",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                <span style={{ fontWeight: "600", color: filterChipColors.tag.border }}>{filterChipColors.tag.prefix}</span> {tag.name}
-                                <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
-                            </span>
+                                label={tag.name}
+                                colorKey="tag"
+                                onRemove={() => toggleTag(tagId)}
+                            />
                         )
                     })}
 
                     {/* Rarity chips */}
                     {selectedRarities.map(rarity => (
-                        <span
+                        <FilterChip
                             key={`rarity-${rarity}`}
-                            onClick={() => toggleRarity(rarity)}
-                            style={{
-                                border: `1px solid ${filterChipColors.rarity.border}`,
-                                borderRadius: "4px",
-                                padding: "0.2rem 0.5rem",
-                                fontSize: "0.85rem",
-                                backgroundColor: filterChipColors.rarity.background,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "0.3rem",
-                                cursor: "pointer"
-                            }}
-                        >
-                            <span style={{ fontWeight: "600", color: filterChipColors.rarity.border }}>{filterChipColors.rarity.prefix}</span> {getRarityName(rarity)}
-                            <span style={{ fontWeight: "bold", fontSize: "1rem" }}>×</span>
-                        </span>
+                            label={getRarityName(rarity)}
+                            colorKey="rarity"
+                            onRemove={() => toggleRarity(rarity)}
+                        />
                     ))}
 
                     {/* Input field */}
@@ -252,181 +206,19 @@ export default function DelveCardFilter({
 
                 {/* Dropdown with tabs */}
                 {isFilterDropdownOpen && (
-                    <div
-                        data-filter-panel
-                        style={{
-                            position: "absolute",
-                            top: "100%",
-                            left: 0,
-                            right: 0,
-                            border: "1px solid #ccc",
-                            backgroundColor: "white",
-                            zIndex: 1000,
-                            marginTop: "0.25rem",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-                        }}
-                    >
-                        {/* Tabs */}
-                        <div style={{
-                            display: "flex",
-                            borderBottom: "1px solid #ccc",
-                            backgroundColor: "#f9f9f9"
-                        }}>
-                            <button
-                                onClick={() => setDropdownTab("decks")}
-                                style={{
-                                    flex: 1,
-                                    padding: "0.5rem",
-                                    border: "none",
-                                    backgroundColor: dropdownTab === "decks" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "decks" ? `2px solid ${filterChipColors.deck.border}` : "none",
-                                    cursor: "pointer",
-                                    fontWeight: dropdownTab === "decks" ? "bold" : "normal"
-                                }}
-                            >
-                                Decks
-                            </button>
-                            <button
-                                onClick={() => setDropdownTab("tags")}
-                                style={{
-                                    flex: 1,
-                                    padding: "0.5rem",
-                                    border: "none",
-                                    backgroundColor: dropdownTab === "tags" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "tags" ? `2px solid ${filterChipColors.tag.border}` : "none",
-                                    cursor: "pointer",
-                                    fontWeight: dropdownTab === "tags" ? "bold" : "normal"
-                                }}
-                            >
-                                Tags
-                            </button>
-                            <button
-                                onClick={() => setDropdownTab("rarities")}
-                                style={{
-                                    flex: 1,
-                                    padding: "0.5rem",
-                                    border: "none",
-                                    backgroundColor: dropdownTab === "rarities" ? "white" : "transparent",
-                                    borderBottom: dropdownTab === "rarities" ? `2px solid ${filterChipColors.rarity.border}` : "none",
-                                    cursor: "pointer",
-                                    fontWeight: dropdownTab === "rarities" ? "bold" : "normal"
-                                }}
-                            >
-                                Rarities
-                            </button>
-                        </div>
-
-                        {/* Tab content */}
-                        <div style={{
-                            maxHeight: "250px",
-                            overflowY: "auto"
-                        }}>
-                            {dropdownTab === "decks" && (
-                                decks.length === 0 ? (
-                                    <div style={{ padding: "1rem", color: "#666", textAlign: "center" }}>
-                                        No decks available
-                                    </div>
-                                ) : (
-                                    decks.map(deck => (
-                                        <                                        label key={deck.id} style={{
-                                            display: "block",
-                                            padding: "0.5rem",
-                                            cursor: "pointer",
-                                            borderBottom: "1px solid #f0f0f0",
-                                            backgroundColor: selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "transparent"
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "#f5f5f5"}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedDeckIds.includes(deck.id) ? filterChipColors.deck.background : "transparent"}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedDeckIds.includes(deck.id)}
-                                                onChange={() => toggleDeck(deck.id)}
-                                                style={{ marginRight: "0.5rem" }}
-                                            />
-                                            {deck.name}
-                                        </label>
-                                    ))
-                                )
-                            )}
-
-                            {dropdownTab === "tags" && (
-                                tags.length === 0 ? (
-                                    <div style={{ padding: "1rem", color: "#666", textAlign: "center" }}>
-                                        No tags available
-                                    </div>
-                                ) : (
-                                    tags.map(tag => (
-                                        <                                        label key={tag.id} style={{
-                                            display: "block",
-                                            padding: "0.5rem",
-                                            cursor: "pointer",
-                                            borderBottom: "1px solid #f0f0f0",
-                                            backgroundColor: selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "transparent"
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "#f5f5f5"}
-                                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedTagIds.includes(tag.id) ? filterChipColors.tag.background : "transparent"}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedTagIds.includes(tag.id)}
-                                                onChange={() => toggleTag(tag.id)}
-                                                style={{ marginRight: "0.5rem" }}
-                                            />
-                                            {tag.name}
-                                        </label>
-                                    ))
-                                )
-                            )}
-
-                            {dropdownTab === "rarities" && (
-                                [5, 4, 3, 2, 1].map(rarity => (
-                                    <                                    label key={rarity} style={{
-                                        display: "block",
-                                        padding: "0.5rem",
-                                        cursor: "pointer",
-                                        borderBottom: "1px solid #f0f0f0",
-                                        backgroundColor: selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "transparent"
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "#f5f5f5"}
-                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = selectedRarities.includes(rarity) ? filterChipColors.rarity.background : "transparent"}
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedRarities.includes(rarity)}
-                                            onChange={() => toggleRarity(rarity)}
-                                            style={{ marginRight: "0.5rem" }}
-                                        />
-                                        <span style={{ fontWeight: "600" }}>{getRarityName(rarity)}</span> <span style={{ color: "#666" }}>({rarity})</span>
-                                    </label>
-                                ))
-                            )}
-                        </div>
-
-                        {/* Dropdown footer with close button */}
-                        <div style={{
-                            padding: "0.5rem",
-                            borderTop: "1px solid #ccc",
-                            backgroundColor: "#f9f9f9",
-                            display: "flex",
-                            justifyContent: "flex-end"
-                        }}>
-                            <button
-                                onClick={() => setIsFilterDropdownOpen(false)}
-                                style={{
-                                    padding: "0.4rem 1rem",
-                                    fontSize: "0.85rem",
-                                    cursor: "pointer",
-                                    backgroundColor: "#4a90e2",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "4px"
-                                }}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
+                    <FilterDropdownPanel
+                        tags={tags}
+                        decks={decks}
+                        selectedTagIds={selectedTagIds}
+                        selectedDeckIds={selectedDeckIds}
+                        selectedRarities={selectedRarities}
+                        dropdownTab={dropdownTab}
+                        onDropdownTabChange={setDropdownTab}
+                        onToggleTag={toggleTag}
+                        onToggleDeck={toggleDeck}
+                        onToggleRarity={toggleRarity}
+                        onClose={() => setIsFilterDropdownOpen(false)}
+                    />
                 )}
 
                 {/* Clear all button and deep search checkbox */}
@@ -453,4 +245,3 @@ export default function DelveCardFilter({
         </div>
     )
 }
-

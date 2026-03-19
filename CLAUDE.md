@@ -47,6 +47,7 @@ Firebase email/password auth managed by `useFirebaseAuth` hook → `UserContext`
 
 ## Conventions
 
+- **File size limit:** Files must stay under 400 lines (enforced by ESLint `max-lines`). Target 300 lines or fewer — when a file exceeds 300 lines, proactively split it into smaller modules (extract components, hooks, or helpers into separate files) before it hits the 400-line hard limit. Never reduce line count by removing blank lines, compressing formatting, or inlining code — the goal is modularization, not minification. Data-oriented files (`src/configs/`, `src/types/`) are exempt from the line limit since they are pure declarations that don't benefit from splitting.
 - File naming: `snake_case.tsx` throughout (except `App.tsx`, `Tagger.tsx`)
 - Firebase hooks follow `use_firebase_*.tsx` pattern
 - Card-related code is namespaced under `delve_cards/` subdirectories in pages and hooks

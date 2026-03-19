@@ -23,10 +23,12 @@ export default function FullPageOverlay(props: {
                 left: 0,
                 right: 0,
                 backgroundColor: "rgba(0, 0, 0, .75)",
+                color: "#fff",
                 zIndex: 100,
                 display: "flex",
                 paddingTop: spacing.hex_grid_top_border + "px",
                 paddingLeft: spacing.top_bar_margin + "rem",
+                paddingBottom: 80,
                 flexDirection: "column",
                 boxSizing: "border-box",
                 overflow: "auto"
