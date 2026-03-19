@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, AuthError } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import useFirebaseProject from "./use_firebase_project.jsx";
 import type_firebase_auth_hook from "../types/type_firebase_auth_hook.js"
 
@@ -31,7 +30,7 @@ export default function useFirebaseAuth() {
         return signOut(firebase_auth);
     }
 
-    function set_user_listener(auth_changed_callback: Function) {
+    function set_user_listener(auth_changed_callback: (user: unknown) => void) {
         onAuthStateChanged(firebase_auth, (user) => {
             auth_changed_callback(user);
         });

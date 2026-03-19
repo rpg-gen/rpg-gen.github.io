@@ -80,7 +80,7 @@ class Hexagon {
   /* ------------------------- Firebase serialization ------------------------- */
 
   get_firebase_serialization_indexes() {
-    const attribute_array: String[] = []
+    const attribute_array: string[] = []
     attribute_array.push('background_color_hexidecimal')
     attribute_array.push('text')
     attribute_array.push('icon_name')
@@ -101,7 +101,7 @@ class Hexagon {
   get_firebase_serialization_index(attribute_name: string) {
     let return_value = 0
 
-    this.firebase_serialization_indexes.forEach((value: String, index: number) => {
+    this.firebase_serialization_indexes.forEach((value: string, index: number) => {
 
       if (value == attribute_name) {
         return_value = index
@@ -127,7 +127,7 @@ class Hexagon {
   }
 
   get_firebase_hex_data() {
-    let hex_data_array: [number, string][] = []
+    const hex_data_array: [number, string][] = []
 
     hex_data_array.push([this.get_firebase_serialization_index('background_color_hexidecimal'), this.background_color_hexidecimal])
     hex_data_array.push([this.get_firebase_serialization_index('text'), this.text])

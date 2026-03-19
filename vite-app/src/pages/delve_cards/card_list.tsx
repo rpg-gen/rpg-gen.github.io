@@ -21,7 +21,7 @@ export default function CardList() {
 
     const [cards, setCards] = useState<DelveCard[]>([])
     const [lastReload, setLastReload] = useState<Date | null>(null)
-    const [searchText, setSearchText] = useState("")
+    const [searchText] = useState("")
     const [currentIndex, setCurrentIndex] = useState<number>(-1)
 
     const { cards: allCards, tags, decks } = dataHook.data
@@ -64,10 +64,12 @@ export default function CardList() {
         }
 
         init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         applyFilters()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, allCards, tags, decks, searchDeep])
 
     async function loadData() {

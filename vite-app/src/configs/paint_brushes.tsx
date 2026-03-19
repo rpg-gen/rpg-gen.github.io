@@ -12,11 +12,7 @@ import svg_url_unset from "../assets/unset.svg"
 // import svg_url_desert from "../assets/desert.svg"
 // import svg_url_hills from "../assets/hills.svg"
 
-import svg_url_village_black from "../assets/village_black.svg"
-import svg_url_village_white from "../assets/village_white.svg"
 import svg_url_village from "../assets/village.svg"
-import svg_url_town from "../assets/town.svg"
-import svg_url_city from "../assets/city.svg"
 
 import svg_url_river from "../assets/river.svg"
 import svg_url_road from "../assets/road.svg"

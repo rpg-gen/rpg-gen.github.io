@@ -1,20 +1,15 @@
-import { memo, useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { memo } from "react"
 
 // import top_bar_button_style from "./top_bar_button_style"
 import spacing from "../../configs/spacing"
 import paint_brushes from "../../configs/paint_brushes"
 import { nav_paths } from "../../configs/constants"
 
-
-import scale_context from "../../contexts/scale_context"
-
+// eslint-disable-next-line react-refresh/only-export-components
 export default memo(function EditBrushButton(props: {
     paint_brush_id: string,
-    navigate_away_from_map: Function
+    navigate_away_from_map: (url: string) => void
 }) {
-
-    const current_scale_context = useContext(scale_context)
 
     const this_paint_brush = paint_brushes[props.paint_brush_id]
 

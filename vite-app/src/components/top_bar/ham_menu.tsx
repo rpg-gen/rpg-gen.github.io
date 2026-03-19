@@ -1,13 +1,13 @@
 import { memo } from "react"
-import { useNavigate } from "react-router-dom"
 
 import spacing from "../../configs/spacing"
 import ham_menu_black from "../../assets/ham_menu_black.svg"
 import top_bar_button_style from "./top_bar_button_style"
 import { nav_paths } from "../../configs/constants"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default memo(function HamMenu(props: {
-    navigate_away_from_map: Function
+    navigate_away_from_map: (url: string) => void
 }) {
 
     function click_action() {

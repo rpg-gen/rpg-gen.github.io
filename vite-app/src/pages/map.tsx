@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect } from "react"
+import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
 import Hexagon from "../classes/Hexagon"
@@ -11,15 +11,9 @@ import EditBrushButton from "../components/top_bar/edit_brush_button"
 import ZoomButton from "../components/top_bar/zoom_button"
 import Loading from "../pages/loading"
 
-import scale_context from "../contexts/scale_context"
-import UserContext from "../contexts/user_context"
-
-import Account from "../pages/account"
 import MainMenu from "../pages/main_menu"
 import { useParams } from "react-router-dom"
 import defaults from "../configs/defaults"
-
-function noop() {}
 
 export default function Map () {
 
@@ -37,9 +31,7 @@ export default function Map () {
     const ref_clicked_hexagon = useRef<Hexagon>()
     const ref_previous_clicked_hexagon = useRef<Hexagon>()
     const ref_paint_brush_id = useRef(paint_brush_id)// This is using so processes can know what the current paint brush is without having to re-render every time the paint brush changes
-    const ref_is_loading = useRef<Boolean>(false)
-
-    const loading_function_ref = useRef<Function>(noop)
+    const ref_is_loading = useRef<boolean>(false)
 
     function set_loading_state(new_state: boolean) {
         // We want to avoid setting the state if it's already what it needs to be, to avoid unecessary renders
@@ -124,7 +116,7 @@ export default function Map () {
 
         {
             is_show_loading
-            ? <Loading loading_function_ref={loading_function_ref} set_is_show_loading={set_is_show_loading} />
+            ? <Loading />
             : ""
         }
 

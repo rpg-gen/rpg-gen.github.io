@@ -1,9 +1,4 @@
-import { useEffect, MutableRefObject, useLayoutEffect } from "react"
-
-export default function Loading(props: {
-    loading_function_ref: MutableRefObject<Function>,
-    set_is_show_loading: Function
-}) {
+export default function Loading() {
     return (
         <div style={{
             position: "fixed",

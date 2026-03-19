@@ -37,7 +37,8 @@ export default function useFirebaseDelveCardTags() {
 
     async function updateTag(id: string, tag: Partial<DelveCardTag>): Promise<void> {
         const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        const { id: _, ...tagData } = tag as DelveCardTag
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _id, ...tagData } = tag as DelveCardTag
         await setDoc(docRef, tagData, { merge: true })
     }
 

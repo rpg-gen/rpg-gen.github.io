@@ -1,12 +1,12 @@
 import top_bar_button_style from "./top_bar_button_style"
 import { memo, useContext } from "react"
 import scale_context from "../../contexts/scale_context"
-import { useNavigate } from "react-router-dom"
 import defaults from "../../configs/defaults"
 import { nav_paths } from "../../configs/constants"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default memo(function ZoomButton(props: {
-    navigate_away_from_map: Function
+    navigate_away_from_map: (url: string) => void
 }) {
 
     const current_scale_context = useContext(scale_context)

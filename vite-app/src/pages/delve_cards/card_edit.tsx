@@ -43,6 +43,7 @@ export default function CardEdit() {
 
     useEffect(() => {
         loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // Auto-save draft to localStorage (but not during initial load)
@@ -61,6 +62,7 @@ export default function CardEdit() {
             const timer = setTimeout(() => setDraftSaved(false), 1000)
             return () => clearTimeout(timer)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [title, effect, description, selectedTags, selectedDecks, rarity, draftKey, initialLoadComplete])
 
     async function loadData() {

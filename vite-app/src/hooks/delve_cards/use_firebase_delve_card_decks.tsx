@@ -37,7 +37,8 @@ export default function useFirebaseDelveCardDecks() {
 
     async function updateDeck(id: string, deck: Partial<DelveCardDeck>): Promise<void> {
         const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        const { id: _, ...deckData } = deck as DelveCardDeck
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _id, ...deckData } = deck as DelveCardDeck
         await setDoc(docRef, deckData, { merge: true })
     }
 

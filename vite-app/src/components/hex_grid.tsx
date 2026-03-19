@@ -1,27 +1,23 @@
-import { useEffect, memo, useContext, useRef, MouseEvent, MouseEventHandler, MutableRefObject } from "react"
-
-import { get_hexagon_short_diagonal_length } from "../helpers/geometry"
-import feature_flags from "../configs/feature_flags"
+import { useEffect, memo, useContext, useRef, MouseEvent, MutableRefObject } from "react"
 
 import Hexagon from "../classes/Hexagon"
-import userContext from "../contexts/user_context"
 import scale_context from "../contexts/scale_context"
 import spacing from "../configs/spacing"
 import limits from "../configs/limits"
 import worker_url from "../worker/worker?worker&url"
 import useFirebaseMap from "../hooks/use_firebase_map"
-import Matrix from "../classes/Matrix"
 import { calculate_canvas_height, calculate_canvas_width } from "../helpers/sizing"
 import paint_brushes from "../configs/paint_brushes"
 import { paint_category } from "../types/type_paint_brush"
 import DataContext from "../contexts/DataContext"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default memo(function HexGrid(props: {
-    set_loading_state: Function,
+    set_loading_state: (state: boolean) => void,
     ref_paint_brush_id: MutableRefObject<string>,
     ref_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
     ref_previous_clicked_hexagon: MutableRefObject<Hexagon | undefined>,
-    reset_path_edit: Function,
+    reset_path_edit: () => void,
 }) {
 
     // Hooks
@@ -34,7 +30,7 @@ export default memo(function HexGrid(props: {
     // Refs
     const ref_html_canvas = useRef<HTMLCanvasElement>(null)
     const ref_html_canvas_container = useRef<HTMLDivElement>(null)
-    const is_after_first_map_draw = useRef<Boolean>(false)
+    const is_after_first_map_draw = useRef<boolean>(false)
 
     // Constants
     const CANVAS_ID = "canvas_id"
@@ -171,7 +167,8 @@ export default memo(function HexGrid(props: {
         // Create a listener that will populate fields whenever the firebase database changes
         // This does a initial load when it's created, so we won't don't need to do that separately
         // This is done here so that the map doesn't load unless they are on the map page
-        const unsub = firebase_map_hook.create_listener(function(data: any) {
+        const unsub = firebase_map_hook.create_listener(function(data: Record<string, string> | undefined) {
+            if (!data) return
             const is_initial_load = (Object.keys(matrix.firebase_map_doc).length == 0)
 
             if (is_initial_load) {
@@ -191,6 +188,7 @@ export default memo(function HexGrid(props: {
         // so that we aren't getting firebase updates anymore once the hex map unmounts
         return unsub
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     // Anytime the scale context changes, we need to redraw the whole map
@@ -203,6 +201,7 @@ export default memo(function HexGrid(props: {
             )
             draw_map()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[current_scale_context])
 
     return (
@@ -241,7 +240,7 @@ export default memo(function HexGrid(props: {
 },
 
 // Memo arePropsEqual function
-function (previous_props, new_props) {
+function () {
     return true
 }
 )

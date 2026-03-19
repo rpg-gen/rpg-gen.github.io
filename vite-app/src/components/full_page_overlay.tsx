@@ -1,15 +1,11 @@
 import { ReactNode, MouseEvent } from "react"
-import { useNavigate } from "react-router-dom"
 
 import spacing from "../configs/spacing"
 import class_names from "../configs/class_names"
-import { nav_paths } from "../configs/constants"
 
 export default function FullPageOverlay(props: {
     children: ReactNode|ReactNode[]
 }) {
-
-    const navigate = useNavigate()
 
     function handle_off_click(event: MouseEvent) {
         if ((event.target as HTMLDivElement).classList.contains(class_names.count_as_off_click)) {

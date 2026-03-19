@@ -100,7 +100,7 @@ class Color {
         ]);
     }
 
-    multiply(matrix: any) {
+    multiply(matrix: number[]) {
         const newR = this.clamp(this.r * matrix[0] + this.g * matrix[1] + this.b * matrix[2]);
         const newG = this.clamp(this.r * matrix[3] + this.g * matrix[4] + this.b * matrix[5]);
         const newB = this.clamp(this.r * matrix[6] + this.g * matrix[7] + this.b * matrix[8]);
@@ -135,7 +135,8 @@ class Color {
         const b = this.b / 255;
         const max = Math.max(r, g, b);
         const min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
+        let h, s;
+        const l = (max + min) / 2;
 
         if (max === min) {
             h = s = 0;
@@ -180,11 +181,11 @@ class Color {
 }
 
 class Solver {
-    target: any
-    targetHSL: any
-    reusedColor: any
+    target: Color
+    targetHSL: { h: number; s: number; l: number } | undefined
+    reusedColor: Color
 
-    constructor(target: any) {
+    constructor(target: Color) {
         this.target = target;
         this.targetHSL = target.hsl();
         this.reusedColor = new Color(0, 0, 0);
@@ -195,7 +196,7 @@ class Solver {
         return {
             values: result.values,
             loss: result.loss,
-            filter: this.css(result.values),
+            filter: this.css(result.values!),
         };
     }
 
@@ -204,7 +205,7 @@ class Solver {
         const c = 15;
         const a = [60, 180, 18000, 600, 1.2, 1.2];
 
-        let best = { loss: Infinity };
+        let best: { values: number[] | null; loss: number } = { values: null, loss: Infinity };
         for (let i = 0; best.loss > 25 && i < 3; i++) {
             const initial = [50, 20, 3750, 50, 100, 100];
             const result = this.spsa(A, a, c, initial, 1000);
@@ -215,15 +216,15 @@ class Solver {
         return best;
     }
 
-    solveNarrow(wide: any) {
+    solveNarrow(wide: { values: number[] | null; loss: number }) {
         const A = wide.loss;
         const c = 2;
         const A1 = A + 1;
         const a = [0.25 * A1, 0.25 * A1, A1, 0.25 * A1, 0.2 * A1, 0.2 * A1];
-        return this.spsa(A, a, c, wide.values, 500);
+        return this.spsa(A, a, c, wide.values!, 500);
     }
 
-    spsa(A: any, a: any, c: any, values: any, iters: any) {
+    spsa(A: number, a: number[], c: number, values: number[], iters: number) {
         const alpha = 1;
         const gamma = 0.16666666666666666;
 
@@ -256,7 +257,7 @@ class Solver {
         }
         return { values: best, loss: bestLoss };
 
-        function fix(value: any, idx: any) {
+        function fix(value: number, idx: number) {
             let max = 100;
             if (idx === 2 /* saturate */) {
                 max = 7500;
@@ -279,7 +280,7 @@ class Solver {
         }
     }
 
-    loss(filters: any) {
+    loss(filters: number[]) {
         // Argument is array of percentages.
         const color = this.reusedColor;
         color.set(0, 0, 0);
@@ -291,19 +292,19 @@ class Solver {
         color.brightness(filters[4] / 100);
         color.contrast(filters[5] / 100);
 
-        const colorHSL = color.hsl();
+        const colorHSL = color.hsl()!;
         return (
             Math.abs(color.r - this.target.r) +
             Math.abs(color.g - this.target.g) +
             Math.abs(color.b - this.target.b) +
-            Math.abs(colorHSL.h - this.targetHSL.h) +
-            Math.abs(colorHSL.s - this.targetHSL.s) +
-            Math.abs(colorHSL.l - this.targetHSL.l)
+            Math.abs(colorHSL.h - this.targetHSL!.h) +
+            Math.abs(colorHSL.s - this.targetHSL!.s) +
+            Math.abs(colorHSL.l - this.targetHSL!.l)
             );
         }
 
-        css(filters: any) {
-            function fmt(idx: any, multiplier: any = 1) {
+        css(filters: number[]) {
+            function fmt(idx: number, multiplier: number = 1) {
                 return Math.round(filters[idx] * multiplier);
             }
             return `invert(${fmt(0)}%) sepia(${fmt(1)}%) saturate(${fmt(2)}%) hue-rotate(${fmt(3, 3.6)}deg) brightness(${fmt(4)}%) contrast(${fmt(5)}%)`;

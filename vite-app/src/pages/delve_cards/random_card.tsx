@@ -67,6 +67,7 @@ export default function RandomCard() {
         }
 
         init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -74,6 +75,7 @@ export default function RandomCard() {
         if (!isLoading && currentIndex >= 0) {
             showCardAtIndex(currentIndex)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allCards, selectedTagIds, selectedDeckIds, selectedRarities, searchTextFilters, isLoading, searchDeep])
 
 

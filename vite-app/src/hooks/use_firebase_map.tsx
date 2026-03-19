@@ -1,10 +1,9 @@
 import { useContext } from "react"
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc, onSnapshot, DocumentData } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, DocumentData } from "firebase/firestore";
 
 import UserContext from "../contexts/user_context.tsx";
 import useFirebaseProject from "./use_firebase_project.jsx";
 import feature_flags from "../configs/feature_flags.tsx"
-import Matrix from "../classes/Matrix.tsx";
 import Hexagon from "../classes/Hexagon.tsx";
 
 export default function useFirebaseMap() {
@@ -46,7 +45,7 @@ export default function useFirebaseMap() {
         }
     }
 
-    function create_listener(listen_action: Function) {
+    function create_listener(listen_action: (data: Record<string, string> | undefined) => void) {
         // If firebase is turned on and we're logged in, create the listener
         if (is_save_to_firebase()) {
             const unsub = onSnapshot(doc(FIRESTORE_DATABASE, MAP_COLLECTION_NAME, MAP_DOCUMENT_KEY), (doc) => {

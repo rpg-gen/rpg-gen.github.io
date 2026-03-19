@@ -1,10 +1,11 @@
-import { useState, MouseEvent, memo } from "react"
+import { useState, memo } from "react"
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default memo(function MapSize(props: {
     default_edge_length: number,
     default_num_rows: number,
-    set_edge_length: Function,
-    set_num_rows: Function,
+    set_edge_length: (val: number) => void,
+    set_num_rows: (val: number) => void,
     is_show_loading: boolean
 }) {
     const [edge_length, set_edge_length] = useState(props.default_edge_length)

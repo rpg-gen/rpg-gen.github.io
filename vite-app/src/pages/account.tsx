@@ -5,11 +5,10 @@ import colors from "../configs/colors"
 import userContext from "../contexts/user_context"
 import useFirebaseAuth from "../hooks/use_firebase_auth"
 
-export default function Account(props: {
-    // set_is_show_loading: Function
-}) {
+export default function Account() {
     const user_context = useContext(userContext)
     const navigate = useNavigate()
+    const firebase_auth_hook = useFirebaseAuth()
     const [is_logging_out, set_is_logging_out] = useState(false)
 
     function successful_login_action() {
@@ -22,9 +21,7 @@ export default function Account(props: {
     }
 
     function logout_action() {
-        // props.set_is_show_loading(true)
         set_is_logging_out(true)
-        const firebase_auth_hook = useFirebaseAuth()
         firebase_auth_hook.logout_firebase_user().then(function() {
             // navigate("/")
             set_is_logging_out(false)
@@ -74,11 +71,12 @@ export default function Account(props: {
     )
 }
 
-function LoginForm(props: {successful_login_action: Function}) {
+function LoginForm(props: {successful_login_action: () => void}) {
     const firebase_auth_hook = useFirebaseAuth()
     const [username, set_username] = useState("")
     const [password, set_password] = useState("")
     const [is_loading, set_is_loading] = useState(false)
+    const [is_show_password, set_is_show_password] = useState(false)
     const [error_message, set_error_message] = useState("")
 
     function handle_username_input(event: FormEvent<HTMLInputElement>) {
@@ -117,7 +115,12 @@ function LoginForm(props: {successful_login_action: Function}) {
                 </div>
                 <div>
                     <label htmlFor="password">password: </label>
-                    <input id="password" type="password" value={password} onChange={handle_password_input}/>
+                    <input id="password" type={is_show_password ? "text" : "password"} value={password} onChange={handle_password_input}/>
+                    <button
+                        type="button"
+                        onClick={() => set_is_show_password(!is_show_password)}
+                        style={{background: "transparent", border: "none", cursor: "pointer", fontSize: "16px", padding: "2px 4px"}}
+                    >{is_show_password ? "👁" : "👁‍🗨"}</button>
                 </div>
                 {
                     is_loading

@@ -21,6 +21,7 @@ export default function TagManagement() {
 
     useEffect(() => {
         loadTags()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     async function loadTags() {

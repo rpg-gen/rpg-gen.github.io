@@ -1,7 +1,7 @@
 // Library Imports
 import useFirebaseProject from "../hooks/use_firebase_project"
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, DocumentData, getCountFromServer, collection, getDocs } from "firebase/firestore"
-import { useState, useEffect, MouseEventHandler, ReactNode, CSSProperties, useRef } from "react"
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, DocumentData, getCountFromServer, collection } from "firebase/firestore"
+import { useState, useEffect, ReactNode, CSSProperties, useRef } from "react"
 
 // rpg-gen imports
 import { mobile } from "../configs/constants"
@@ -53,8 +53,8 @@ export default function Tagger() {
     const [is_waiting_on_firebase, set_is_waiting_on_firebase] = useState(true)
     const [loaded_word, set_loaded_word] = useState<string>()
     const [saved_word_count, set_saved_word_count] = useState<number>()
-    const [has_bookmark, set_has_bookmark] = useState<Boolean>(false)
-    const [word_animation_state, set_word_animation_state] = useState<'normal' | 'falling'>('normal')
+    const [, set_has_bookmark] = useState<boolean>(false)
+    const [word_animation_state] = useState<'normal' | 'falling'>('normal')
     const [selected_tags, set_selected_tags] = useState<string[]>([])
     const [is_word_torched, set_is_word_torched] = useState<boolean>(false)
     //const [first_word_of_today, set_first_word_of_today] = useState()
@@ -152,7 +152,6 @@ export default function Tagger() {
                 return 0
             }
             else {
-                let starting_index = undefined
                 return get_index_of_word(loaded_word) - get_index_of_word(first_word_of_today.current)
             }
         }
@@ -259,43 +258,6 @@ export default function Tagger() {
             await setDoc(doc_ref, new_doc_data)
         } catch (error) {
             console.error("Error saving tags:", error)
-        }
-    }
-
-    async function download_saved_words() {
-        try {
-            // Get all documents from the words collection
-            const collection_ref = collection(FIRESTORE_DATABASE, COLLECTION_KEEP);
-            const querySnapshot = await getDocs(collection_ref);
-            
-            // Extract word keys from documents
-            const words: string[] = [];
-            querySnapshot.forEach((doc: any) => {
-                const data = doc.data();
-                if (data.word_key) {
-                    words.push(data.word_key);
-                }
-            });
-            
-            // Sort words alphabetically
-            words.sort();
-            
-            // Create text content
-            const textContent = words.join('\n');
-            
-            // Create and download file
-            const blob = new Blob([textContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `saved_words_${new Date().toISOString().split('T')[0]}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-        } catch (error) {
-            console.error("Error downloading words:", error);
         }
     }
 
@@ -422,6 +384,7 @@ export default function Tagger() {
         Promise.all([load_initial_word(), load_saved_word_count()]).then(() => {
             set_is_waiting_on_firebase(false)
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     // Load tags and check torched status whenever the loaded word changes
@@ -430,10 +393,11 @@ export default function Tagger() {
             Promise.all([
                 load_tags_for_word(loaded_word),
                 check_if_word_is_torched(loaded_word)
-            ]).then(([_, isTorched]) => {
+            ]).then(([, isTorched]) => {
                 set_is_word_torched(isTorched)
             })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loaded_word])
 
     return (
@@ -481,7 +445,7 @@ export default function Tagger() {
 }
 
 function Button(props: {
-    on_click_action: Function,
+    on_click_action: () => void,
     children: ReactNode,
     background_color?: string,
     font_color?: string,
@@ -557,19 +521,19 @@ function Menu() {
 
 function LoadedWord(props: {
     loaded_word: string | undefined,
-    keep_word: Function,
-    discard_word: Function,
-    restore_word: Function,
-    load_previous_word: Function,
-    load_next_word: Function,
-    get_previous_word: Function,
-    get_next_word: Function,
-    update_loaded_word: Function,
-    update_bookmark: Function,
+    keep_word: () => void,
+    discard_word: () => Promise<void>,
+    restore_word: () => Promise<void>,
+    load_previous_word: () => void,
+    load_next_word: () => void,
+    get_previous_word: () => string,
+    get_next_word: () => string,
+    update_loaded_word: (word: string) => void,
+    update_bookmark: (word: string | undefined) => void,
     is_mobile: boolean,
     animation_state: 'normal' | 'falling',
     selected_tags: string[],
-    toggle_tag: Function,
+    toggle_tag: (tag: string) => void,
     is_word_torched: boolean
 }) {
 
@@ -582,7 +546,6 @@ function LoadedWord(props: {
     const [word_y_offset, set_word_y_offset] = useState(0)
     const [word_x_offset, set_word_x_offset] = useState(0)
     const [is_animating, set_is_animating] = useState(false)
-    const [slide_direction, set_slide_direction] = useState<'left' | 'right' | 'none'>('none')
     const [old_word, set_old_word] = useState<string>("")
     const [new_word, set_new_word] = useState<string>("")
     const [old_word_x, set_old_word_x] = useState(0)
@@ -615,7 +578,6 @@ function LoadedWord(props: {
         set_word_y_offset(0)
         set_word_x_offset(0)
         set_is_animating(false)
-        set_slide_direction('none')
         set_showing_both_words(false)
         set_old_word("")
         set_new_word("")
@@ -623,6 +585,7 @@ function LoadedWord(props: {
         set_old_word_opacity(1)
         set_new_word_x(0)
         set_new_word_opacity(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.loaded_word])
 
     // Handlers
@@ -631,7 +594,6 @@ function LoadedWord(props: {
         if (is_animating) return
         
         set_is_animating(true)
-        set_slide_direction('right')
         
         // Store current word and get new word
         const currentWord = props.loaded_word || ""
@@ -667,14 +629,12 @@ function LoadedWord(props: {
         // Reset animation state
         set_showing_both_words(false)
         set_is_animating(false)
-        set_slide_direction('none')
     }
 
     async function handle_next_click() {
         if (is_animating) return
         
         set_is_animating(true)
-        set_slide_direction('left')
         
         // Store current word and get new word
         const currentWord = props.loaded_word || ""
@@ -710,11 +670,6 @@ function LoadedWord(props: {
         // Reset animation state
         set_showing_both_words(false)
         set_is_animating(false)
-        set_slide_direction('none')
-    }
-
-    function handle_click_keep() {
-        props.keep_word()
     }
 
     async function handle_click_discard() {
@@ -732,7 +687,6 @@ function LoadedWord(props: {
             const base_timing = defaults.torch_animation_base_timing
             const fast_timing = base_timing
             const medium_timing = base_timing * 2
-            const slow_timing = base_timing * 4
             
             // Phase 1: Grow flame and fade in, word starts disappearing earlier
             for (let i = 0; i <= 20; i++) {
@@ -1013,24 +967,6 @@ function LoadingDiv() {
     return <div style={{marginTop: "1rem"}}>
     <img height="20px" width="auto" src={loading_gif} />
     </div>
-}
-
-function ResetBookmark(props: {
-    is_waiting_on_firebase: boolean,
-    update_bookmark: Function,
-    set_loaded_word: Function
-}) {
-
-    function handle_click_reset_bookmark() {
-        props.update_bookmark(get_first_word_from_list())
-        props.set_loaded_word(get_first_word_from_list())
-    }
-
-    return (
-        <div style={{marginTop: "2rem"}}>
-            <button disabled={props.is_waiting_on_firebase} onClick={handle_click_reset_bookmark}>Reset Bookmark to First Word</button>
-        </div>
-    )
 }
 
 // Independent Functions
