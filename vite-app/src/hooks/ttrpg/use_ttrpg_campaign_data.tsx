@@ -59,7 +59,8 @@ function parseLoreMap(campaignId: string, map: Record<string, TtrpgLoreData>): T
         campaign_id: campaignId,
         type: l.type,
         name: l.name,
-        notes: l.notes,
+        subtitle: l.notes,
+        created_at: l.created_at || "",
         ...(l.session_id ? { session_id: l.session_id } : {})
     })).reverse()
 }

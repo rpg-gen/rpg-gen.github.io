@@ -24,6 +24,21 @@ export const primaryButtonSmallStyle: React.CSSProperties = {
     fontSize: "0.8rem"
 }
 
+export const textareaStyle: React.CSSProperties = {
+    width: "100%",
+    minHeight: "60px",
+    padding: "0.5rem",
+    boxSizing: "border-box",
+    backgroundColor: "#fff",
+    border: "2px solid #555",
+    borderRadius: "4px",
+    resize: "none",
+    overflow: "hidden",
+    fontFamily: "inherit",
+    fontSize: "inherit",
+    lineHeight: "inherit"
+}
+
 export function tabStyle(activeTab: string, tab: string): React.CSSProperties {
     return {
         padding: "0.5rem 1rem",

@@ -19,6 +19,7 @@ export interface TtrpgLoreData {
     type: LoreEntryType
     name: string
     notes: string
+    created_at?: string
     session_id?: string
 }
 

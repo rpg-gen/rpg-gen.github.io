@@ -3,8 +3,8 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
-import SlashCommandTextarea from "./slash_command_textarea"
 import LoreNoteText from "./lore_note_text"
+import NoteEditModal from "./note_edit_modal"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
 
 interface CampaignData {
@@ -41,7 +41,6 @@ export default function SessionDetailContent({
     username,
     highlightNoteId
 }: SessionDetailContentProps) {
-    const [newNoteText, setNewNoteText] = useState("")
     const highlightRef = useRef<HTMLDivElement>(null)
     const [flashNoteId, setFlashNoteId] = useState<string | null>(null)
 
@@ -57,72 +56,63 @@ export default function SessionDetailContent({
     }, [highlightNoteId])
     const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
     const [editingNoteText, setEditingNoteText] = useState("")
-    const [movingNoteId, setMovingNoteId] = useState<string | null>(null)
+    const [errorBanner, setErrorBanner] = useState<string | null>(null)
 
     const sessionNotes = data.notes.filter(n => n.session_id === sessionId)
     const otherSessions = [...data.sessions]
         .filter(s => s.id !== sessionId)
         .sort((a, b) => a.date.localeCompare(b.date))
 
-    async function handleCreateNote() {
-        if (!newNoteText.trim()) {
-            alert("Note text is required")
-            return
-        }
-        try {
-            await notesHook.createNote({
-                session_id: sessionId,
-                text: newNoteText.trim(),
-                author: username
-            })
-            setNewNoteText("")
-        } catch (error) {
-            console.error("Error creating note:", error)
-            alert("Error creating note")
-        }
+    function closeModal() {
+        setEditingNoteId(null)
+        setEditingNoteText("")
     }
 
-    async function handleUpdateNote(noteId: string) {
-        if (!editingNoteText.trim()) {
-            alert("Note text is required")
-            return
-        }
-        try {
-            await notesHook.updateNote(noteId, { text: editingNoteText.trim() })
-            setEditingNoteId(null)
-            setEditingNoteText("")
-        } catch (error) {
-            console.error("Error updating note:", error)
-            alert("Error updating note")
-        }
+    function handleCreateNote() {
+        if (!editingNoteText.trim()) return
+        closeModal()
+        notesHook.createNote({ session_id: sessionId, text: editingNoteText.trim(), author: username })
+            .catch(() => setErrorBanner("Failed to create note"))
     }
 
-    async function handleDeleteNote(noteId: string) {
-        if (confirm("Delete this note?")) {
-            try {
-                await notesHook.deleteNote(noteId)
-            } catch (error) {
-                console.error("Error deleting note:", error)
-                alert("Error deleting note")
-            }
-        }
+    function handleUpdateNote(noteId: string) {
+        if (!editingNoteText.trim()) return
+        closeModal()
+        notesHook.updateNote(noteId, { text: editingNoteText.trim() })
+            .catch(() => setErrorBanner("Failed to update note"))
     }
 
-    async function handleMoveNote(noteId: string, targetSessionId: string) {
-        try {
-            await notesHook.updateNote(noteId, { session_id: targetSessionId })
-            setEditingNoteId(null)
-            setEditingNoteText("")
-            setMovingNoteId(null)
-        } catch (error) {
-            console.error("Error moving note:", error)
-            alert("Error moving note")
-        }
+    function handleDeleteNote(noteId: string) {
+        if (!confirm("Delete this note?")) return
+        closeModal()
+        notesHook.deleteNote(noteId)
+            .catch(() => setErrorBanner("Failed to delete note"))
+    }
+
+    function handleMoveNote(noteId: string, targetSessionId: string) {
+        closeModal()
+        notesHook.updateNote(noteId, { session_id: targetSessionId })
+            .catch(() => setErrorBanner("Failed to move note"))
     }
 
     return (
         <div style={{ backgroundColor: "#fff", color: "#222", border: "1px solid #ccc", borderRadius: "4px", padding: "0.75rem" }}>
             <h4 style={{ marginTop: 0 }}>Notes ({sessionNotes.length})</h4>
+            {errorBanner && (
+                <div style={{
+                    backgroundColor: "#fdecea", color: "#611a15", border: "1px solid #f5c6cb",
+                    borderRadius: "4px", padding: "0.5rem 0.75rem", marginBottom: "0.5rem",
+                    display: "flex", justifyContent: "space-between", alignItems: "center"
+                }}>
+                    <span>{errorBanner}</span>
+                    <button
+                        onClick={() => setErrorBanner(null)}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#611a15" }}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
             {sessionNotes.map(note => {
                 const isHighlighted = flashNoteId === note.id
                 return (
@@ -131,88 +121,47 @@ export default function SessionDetailContent({
                     ref={highlightNoteId === note.id ? highlightRef : undefined}
                     style={{
                         border: isHighlighted ? "2px solid #f39c12" : "1px solid #ddd",
-                        backgroundColor: isHighlighted ? "#fef9e7" : editingNoteId === note.id ? "#fff" : "#f5f5f5",
+                        backgroundColor: isHighlighted ? "#fef9e7" : "#f5f5f5",
                         color: "#222",
                         borderRadius: "4px",
                         padding: "0.5rem",
                         marginBottom: "0.5rem",
-                        cursor: editingNoteId === note.id ? "default" : "pointer",
+                        cursor: "pointer",
                         transition: "border-color 0.5s, background-color 0.5s"
                     }}
                     onClick={() => {
-                        if (editingNoteId !== note.id) {
-                            setEditingNoteId(note.id)
-                            setEditingNoteText(note.text)
-                        }
+                        setEditingNoteId(note.id)
+                        setEditingNoteText(note.text)
                     }}
                 >
-                    {editingNoteId === note.id ? (
-                        <div>
-                            <SlashCommandTextarea
-                                value={editingNoteText}
-                                onChange={setEditingNoteText}
-                                loreEntries={data.lore}
-                                members={data.members}
-                                onCreateLore={(name, type) => handleSlashCreateLore(name, type, sessionId)}
-                                style={{ width: "100%", minHeight: "60px", padding: "0.5rem", boxSizing: "border-box" }}
-                            />
-                            <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
-                                <button onClick={() => handleUpdateNote(note.id)} style={primaryButtonStyle}>Save</button>
-                                <button onClick={() => { setEditingNoteId(null); setEditingNoteText(""); setMovingNoteId(null) }}>Cancel</button>
-                                {movingNoteId === note.id ? (
-                                    <select
-                                        ref={(el) => {
-                                            if (el) { try { (el as any).showPicker() } catch { /* unsupported */ } }
-                                        }}
-                                        autoFocus
-                                        defaultValue=""
-                                        onChange={(e) => { if (e.target.value) handleMoveNote(note.id, e.target.value) }}
-                                        onBlur={() => setMovingNoteId(null)}
-                                        style={{ padding: "0.25rem" }}
-                                    >
-                                        <option value="" disabled>Select session...</option>
-                                        {otherSessions.map(s => (
-                                            <option key={s.id} value={s.id}>
-                                                {s.title || `Session ${s.session_number}`} — {s.date}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <button onClick={() => setMovingNoteId(note.id)}>Move to Session</button>
-                                )}
-                                <button
-                                    onClick={() => handleDeleteNote(note.id)}
-                                    style={{ marginLeft: "auto", backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 0.75rem", borderRadius: "3px", cursor: "pointer" }}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div>
-                            <div style={{ whiteSpace: "pre-wrap" }}>
-                                <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
-                            </div>
-                        </div>
-                    )}
+                    <div style={{ whiteSpace: "pre-wrap" }}>
+                        <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
+                    </div>
                 </div>
                 )
             })}
 
-            <div style={{ marginTop: "0.5rem" }}>
-                <SlashCommandTextarea
-                    value={newNoteText}
-                    onChange={setNewNoteText}
-                    placeholder="Add a note... (type [[ to link lore or players)"
+            <button
+                onClick={() => { setEditingNoteId("new"); setEditingNoteText("") }}
+                style={{ ...primaryButtonStyle, marginTop: "0.5rem" }}
+            >
+                Add Note
+            </button>
+
+            {editingNoteId && (
+                <NoteEditModal
+                    noteText={editingNoteText}
+                    onChangeText={setEditingNoteText}
+                    onSave={editingNoteId === "new" ? handleCreateNote : () => handleUpdateNote(editingNoteId)}
+                    onCancel={() => { setEditingNoteId(null); setEditingNoteText("") }}
+                    onDelete={editingNoteId === "new" ? undefined : () => handleDeleteNote(editingNoteId)}
+                    onMove={editingNoteId === "new" ? undefined : (targetId) => handleMoveNote(editingNoteId, targetId)}
+                    otherSessions={otherSessions}
                     loreEntries={data.lore}
                     members={data.members}
                     onCreateLore={(name, type) => handleSlashCreateLore(name, type, sessionId)}
-                    style={{ width: "100%", minHeight: "60px", padding: "0.5rem", boxSizing: "border-box" }}
                 />
-                <button onClick={handleCreateNote} style={{ ...primaryButtonStyle, marginTop: "0.25rem" }}>
-                    Add Note
-                </button>
-            </div>
+            )}
         </div>
     )
 }

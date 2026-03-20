@@ -55,12 +55,15 @@ export default function LoreDetailView({
             </div>
 
             <div style={{ ...cardStyle, backgroundColor: LORE_COLORS[entry.type] }}>
-                <div style={{ marginBottom: "0.5rem" }}>
-                    <strong style={{ fontSize: "1.2rem" }}>{entry.name}</strong>
-                    <span style={{ color: "#666", marginLeft: "0.5rem" }}>({LORE_LABELS[entry.type]})</span>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                    <div>
+                        <strong style={{ fontSize: "1.2rem" }}>{entry.name}</strong>
+                        <span style={{ color: "#666", marginLeft: "0.5rem" }}>({LORE_LABELS[entry.type]})</span>
+                    </div>
+                    <button onClick={() => onEdit(entry)}>Edit</button>
                 </div>
-                {entry.notes && (
-                    <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{entry.notes}</div>
+                {entry.subtitle && (
+                    <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{entry.subtitle}</div>
                 )}
 
                 {entrySession && (
@@ -102,9 +105,6 @@ export default function LoreDetailView({
                     </div>
                 )}
 
-                <div style={{ marginTop: "1rem" }}>
-                    <button onClick={() => onEdit(entry)}>Edit</button>
-                </div>
             </div>
         </div>
     )

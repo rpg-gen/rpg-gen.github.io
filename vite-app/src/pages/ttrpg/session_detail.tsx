@@ -66,7 +66,8 @@ export default function SessionDetail() {
             await loreHook.createLoreEntry({
                 type,
                 name: name.trim(),
-                notes: "",
+                subtitle: "",
+                created_at: "",
                 ...(sid ? { session_id: sid } : {})
             })
         } catch (error) {

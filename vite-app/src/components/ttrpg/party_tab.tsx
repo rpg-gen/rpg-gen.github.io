@@ -6,6 +6,7 @@ import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import LoreNoteText from "./lore_note_text"
 import MemberInventory from "./member_inventory"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import AutoResizeTextarea from "./auto_resize_textarea"
 
 interface CampaignData {
     sessions: TtrpgSession[]
@@ -59,7 +60,7 @@ export default function PartyTab({
 }: PartyTabProps) {
 
     // Member detail view
-    const [memberDetailId, setMemberDetailId] = useState<string | null>(null)
+    const [memberDetailId, setMemberDetailId] = useState<string | null>(pendingDetailId)
 
     // Member form state: null = list view, "add" = adding, member id = editing
     const [memberFormMode, setMemberFormMode] = useState<string | null>(null)
@@ -77,10 +78,10 @@ export default function PartyTab({
     }, [pendingDetailId])
 
     useEffect(() => {
-        if (resetSignal > 0) {
+        if (resetSignal > 0 && !pendingDetailId) {
             setMemberDetailId(null)
         }
-    }, [resetSignal])
+    }, [resetSignal, pendingDetailId])
 
     // ==================== MEMBER CRUD ====================
 
@@ -187,9 +188,12 @@ export default function PartyTab({
                 </div>
 
                 <div style={{ ...cardStyle, backgroundColor: "#f3e8ff" }}>
-                    <div style={{ marginBottom: "0.5rem" }}>
-                        <strong style={{ fontSize: "1.2rem" }}>{member.name}</strong>
-                        {member.played_by && <span style={{ fontStyle: "italic", color: "#666", marginLeft: "0.5rem" }}>({member.played_by})</span>}
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                        <div>
+                            <strong style={{ fontSize: "1.2rem" }}>{member.name}</strong>
+                            {member.played_by && <span style={{ fontStyle: "italic", color: "#666", marginLeft: "0.5rem" }}>({member.played_by})</span>}
+                        </div>
+                        <button onClick={() => { setMemberDetailId(null); setMemberFormMode(member.id); setMemberFormName(member.name); setMemberFormPlayedBy(member.played_by || ""); setMemberFormNotes(member.notes || "") }}>Edit</button>
                     </div>
                     {member.notes && (
                         <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{member.notes}</div>
@@ -292,11 +296,10 @@ export default function PartyTab({
                 style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box" }}
             />
             <label style={{ display: "block", marginTop: "0.75rem", marginBottom: "0.25rem" }}>Notes</label>
-            <textarea
+            <AutoResizeTextarea
                 value={memberFormNotes}
                 onChange={(e) => setMemberFormNotes(e.target.value)}
                 placeholder="Notes about this member..."
-                style={{ width: "100%", minHeight: "60px", padding: "0.5rem", boxSizing: "border-box" }}
             />
             <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
                 {isEditing && editingMember ? (

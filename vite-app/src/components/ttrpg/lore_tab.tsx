@@ -5,7 +5,9 @@ import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import LoreDetailView from "./lore_detail_view"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
-import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
+import AutoResizeTextarea from "./auto_resize_textarea"
+import { LORE_COLORS, LORE_LABELS, LORE_LABELS_PLURAL, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
+import { filterLoreBySearch } from "../../utility/lore_filter_utils"
 
 interface CampaignData {
     sessions: TtrpgSession[]
@@ -55,17 +57,18 @@ export default function LoreTab({
 }: LoreTabProps) {
 
     // Lore detail view
-    const [loreDetailId, setLoreDetailId] = useState<string | null>(null)
+    const [loreDetailId, setLoreDetailId] = useState<string | null>(pendingDetailId)
 
     // Lore form state: null = list view, "add" = adding, entry id = editing
     const [loreFormMode, setLoreFormMode] = useState<string | null>(null)
     const [loreFormType, setLoreFormType] = useState<LoreEntryType>("person")
     const [loreFormName, setLoreFormName] = useState("")
-    const [loreFormNotes, setLoreFormNotes] = useState("")
+    const [loreFormSubtitle, setLoreFormSubtitle] = useState("")
     const [loreFormSessionId, setLoreFormSessionId] = useState<string | undefined>(undefined)
 
-    // Lore filter
+    // Lore filter & search
     const [loreFilter, setLoreFilter] = useState<LoreEntryType | null>(null)
+    const [loreSearchText, setLoreSearchText] = useState("")
 
     useEffect(() => {
         if (pendingDetailId) {
@@ -77,15 +80,15 @@ export default function LoreTab({
     }, [pendingDetailId])
 
     useEffect(() => {
-        if (resetSignal > 0) {
+        if (resetSignal > 0 && !pendingDetailId) {
             setLoreDetailId(null)
         }
-    }, [resetSignal])
+    }, [resetSignal, pendingDetailId])
 
     function resetLoreForm() {
         setLoreFormMode(null)
         setLoreFormName("")
-        setLoreFormNotes("")
+        setLoreFormSubtitle("")
         setLoreFormType("person")
         setLoreFormSessionId(undefined)
         setLoreDetailId(null)
@@ -112,7 +115,8 @@ export default function LoreTab({
             await loreHook.createLoreEntry({
                 type: loreFormType,
                 name: loreFormName.trim(),
-                notes: loreFormNotes.trim(),
+                subtitle: loreFormSubtitle.trim(),
+                created_at: "",
                 ...(loreFormSessionId ? { session_id: loreFormSessionId } : {})
             })
             resetLoreForm()
@@ -144,7 +148,7 @@ export default function LoreTab({
             await loreHook.updateLoreEntry(entry.id, {
                 type: loreFormType,
                 name: newName,
-                notes: loreFormNotes.trim(),
+                subtitle: loreFormSubtitle.trim(),
                 ...(loreFormSessionId ? { session_id: loreFormSessionId } : {})
             })
 
@@ -172,9 +176,15 @@ export default function LoreTab({
         return session ? session.session_number : Infinity
     }
 
-    const filteredLore = (loreFilter === null ? data.lore : data.lore.filter(entry => entry.type === loreFilter))
+    const typeFiltered = loreFilter === null ? data.lore : data.lore.filter(entry => entry.type === loreFilter)
+    const filteredLore = filterLoreBySearch(typeFiltered, loreSearchText)
         .slice()
-        .sort((a, b) => getSessionNumber(a.session_id) - getSessionNumber(b.session_id) || a.name.localeCompare(b.name))
+        .sort((a, b) => {
+            const sessionA = getSessionNumber(a.session_id)
+            const sessionB = getSessionNumber(b.session_id)
+            if (sessionA !== sessionB) return sessionB - sessionA
+            return b.created_at.localeCompare(a.created_at)
+        })
 
     // ==================== RENDER ====================
 
@@ -199,7 +209,7 @@ export default function LoreTab({
                     setLoreFormMode(e.id)
                     setLoreFormType(e.type)
                     setLoreFormName(e.name)
-                    setLoreFormNotes(e.notes || "")
+                    setLoreFormSubtitle(e.subtitle || "")
                     setLoreFormSessionId(e.session_id)
                 }}
             />
@@ -222,7 +232,7 @@ export default function LoreTab({
                                 onClick={() => {
                                     setLoreFormType(type)
                                     setLoreFormName("")
-                                    setLoreFormNotes("")
+                                    setLoreFormSubtitle("")
                                     setLoreFormSessionId(latestSession?.id)
                                     setLoreFormMode("add")
                                 }}
@@ -235,7 +245,7 @@ export default function LoreTab({
                                     cursor: "pointer"
                                 }}
                             >
-                                Add {LORE_LABELS[type]}
+                                + {LORE_LABELS[type]}
                             </button>
                         )
                     })}
@@ -259,30 +269,49 @@ export default function LoreTab({
                                     fontSize: "0.85rem"
                                 }}
                             >
-                                {LORE_LABELS[type]}
+                                {LORE_LABELS_PLURAL[type]}
                             </button>
                         )
                     })}
                 </div>
 
+                {/* Search box */}
+                <div style={{ position: "relative", marginBottom: "1rem" }}>
+                    <input
+                        type="text"
+                        value={loreSearchText}
+                        onChange={(e) => setLoreSearchText(e.target.value)}
+                        placeholder="Search lore by name or subtitle..."
+                        style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box", paddingRight: "2rem" }}
+                    />
+                    {loreSearchText && (
+                        <button
+                            onClick={() => setLoreSearchText("")}
+                            style={{ position: "absolute", right: "0.5rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#999" }}
+                        >
+                            ✕
+                        </button>
+                    )}
+                </div>
+
                 {filteredLore.length === 0 ? (
                     <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
-                        {data.lore.length === 0 ? "No lore entries yet." : "No entries match the current filter."}
+                        {data.lore.length === 0 ? "No lore entries yet." : loreSearchText ? "No entries match your search." : "No entries match the current filter."}
                     </div>
                 ) : (
                     filteredLore.map(entry => (
                         <div key={entry.id} style={{ ...cardStyle, backgroundColor: LORE_COLORS[entry.type], cursor: "pointer" }} onClick={() => setLoreDetailId(entry.id)}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: entry.notes ? "0.25rem" : 0 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: entry.subtitle ? "0.25rem" : 0 }}>
                                 <span style={{ flex: 1 }}>
                                     <strong>{entry.name}</strong>
                                     <span style={{ color: "#666", marginLeft: "0.5rem" }}>
                                         ({LORE_LABELS[entry.type]}{entry.session_id ? ` — ${getSessionLabel(entry.session_id)}` : ""})
                                     </span>
                                 </span>
-                                <button onClick={(e) => { e.stopPropagation(); setLoreFormMode(entry.id); setLoreFormType(entry.type); setLoreFormName(entry.name); setLoreFormNotes(entry.notes || ""); setLoreFormSessionId(entry.session_id) }}>Edit</button>
+                                <button onClick={(e) => { e.stopPropagation(); setLoreFormMode(entry.id); setLoreFormType(entry.type); setLoreFormName(entry.name); setLoreFormSubtitle(entry.subtitle || ""); setLoreFormSessionId(entry.session_id) }}>Edit</button>
                             </div>
-                            {entry.notes && (
-                                <div style={{ fontStyle: "italic", color: "#555", fontSize: "0.9rem" }}>{entry.notes}</div>
+                            {entry.subtitle && (
+                                <div style={{ fontStyle: "italic", color: "#555", fontSize: "0.9rem" }}>{entry.subtitle}</div>
                             )}
                         </div>
                     ))
@@ -313,12 +342,11 @@ export default function LoreTab({
                     }
                 }}
             />
-            <label style={{ display: "block", marginTop: "0.75rem", marginBottom: "0.25rem" }}>Notes</label>
-            <textarea
-                value={loreFormNotes}
-                onChange={(e) => setLoreFormNotes(e.target.value)}
-                placeholder="Notes..."
-                style={{ width: "100%", minHeight: "60px", padding: "0.5rem", boxSizing: "border-box" }}
+            <label style={{ display: "block", marginTop: "0.75rem", marginBottom: "0.25rem" }}>Subtitle</label>
+            <AutoResizeTextarea
+                value={loreFormSubtitle}
+                onChange={(e) => setLoreFormSubtitle(e.target.value)}
+                placeholder="e.g. Dwarven blacksmith of Ironhold"
             />
             <label style={{ display: "block", marginTop: "0.75rem", marginBottom: "0.25rem" }}>Type</label>
             <select

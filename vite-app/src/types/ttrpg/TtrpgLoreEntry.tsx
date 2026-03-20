@@ -5,6 +5,7 @@ export default interface TtrpgLoreEntry {
     campaign_id: string
     type: LoreEntryType
     name: string
-    notes: string
+    subtitle: string
+    created_at: string
     session_id?: string
 }

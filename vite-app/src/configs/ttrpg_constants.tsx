@@ -14,4 +14,11 @@ export const LORE_LABELS: Record<LoreEntryType, string> = {
     faction: "Faction"
 }
 
+export const LORE_LABELS_PLURAL: Record<LoreEntryType, string> = {
+    person: "People",
+    item: "Items",
+    place: "Places",
+    faction: "Factions"
+}
+
 export const ALL_LORE_TYPES: LoreEntryType[] = ["person", "item", "place", "faction"]

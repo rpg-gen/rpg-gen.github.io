@@ -19,7 +19,8 @@ export default function useFirebaseTtrpgLore() {
             campaign_id: campaignId,
             type: l.type,
             name: l.name,
-            notes: l.notes,
+            subtitle: l.notes,
+            created_at: l.created_at || "",
             ...(l.session_id ? { session_id: l.session_id } : {})
         }))
         return entries.reverse()
@@ -31,7 +32,8 @@ export default function useFirebaseTtrpgLore() {
         const loreData: TtrpgLoreData = {
             type: entry.type,
             name: entry.name,
-            notes: entry.notes,
+            notes: entry.subtitle,
+            created_at: new Date().toISOString(),
             ...(entry.session_id ? { session_id: entry.session_id } : {})
         }
         await setDoc(docRef, { lore: { [id]: loreData } }, { merge: true })
@@ -44,7 +46,7 @@ export default function useFirebaseTtrpgLore() {
         const updates: Record<string, any> = {}
         if (entry.type !== undefined) updates[`lore.${id}.type`] = entry.type
         if (entry.name !== undefined) updates[`lore.${id}.name`] = entry.name
-        if (entry.notes !== undefined) updates[`lore.${id}.notes`] = entry.notes
+        if (entry.subtitle !== undefined) updates[`lore.${id}.notes`] = entry.subtitle
         if (entry.session_id !== undefined) updates[`lore.${id}.session_id`] = entry.session_id
         if (Object.keys(updates).length > 0) {
             await updateDoc(docRef, updates)
