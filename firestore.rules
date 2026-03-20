@@ -1,0 +1,63 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'tarronlane@gmail.com';
+    }
+
+    function isTtrpgUser() {
+      return request.auth != null && request.auth.token.email == 'tarronlane2@gmail.com';
+    }
+
+    // TTRPG collections — both admin and TTRPG user
+    match /ttrpg_campaigns/{document=**} {
+      allow read, write: if isAdmin() || isTtrpgUser();
+    }
+    match /ttrpg_members/{document=**} {
+      allow read, write: if isAdmin() || isTtrpgUser();
+    }
+    match /ttrpg_sessions/{document=**} {
+      allow read, write: if isAdmin() || isTtrpgUser();
+    }
+    match /ttrpg_session_notes/{document=**} {
+      allow read, write: if isAdmin() || isTtrpgUser();
+    }
+    match /ttrpg_lore/{document=**} {
+      allow read, write: if isAdmin() || isTtrpgUser();
+    }
+
+    // Feedback — admin full access, TTRPG user can create only
+    match /feedback/{document=**} {
+      allow read, write: if isAdmin();
+      allow create: if isTtrpgUser();
+    }
+
+    // All other collections — admin only
+    match /delve_cards/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /delve_card_tags/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /delve_card_decks/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /maps/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /bookmarks/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /words/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /words_discarded/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /tracking/{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

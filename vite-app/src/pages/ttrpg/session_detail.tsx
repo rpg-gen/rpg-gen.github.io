@@ -49,7 +49,6 @@ export default function SessionDetail() {
             setActiveTab("sessions")
             window.history.replaceState({}, "")
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.state])
 
     async function loadCampaign() {

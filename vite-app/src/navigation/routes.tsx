@@ -33,7 +33,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/tagger",
-                element: <ProtectedRoute><Tagger /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><Tagger /></ProtectedRoute>
             },
             {
                 path: "/account",
@@ -53,15 +53,15 @@ const router = createBrowserRouter([
             },
             {
                 path: nav_paths.delve_card_edit + "/:cardId",
-                element: <ProtectedRoute><CardEdit /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><CardEdit /></ProtectedRoute>
             },
             {
                 path: nav_paths.delve_card_tags,
-                element: <ProtectedRoute><TagManagement /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><TagManagement /></ProtectedRoute>
             },
             {
                 path: nav_paths.delve_card_decks,
-                element: <ProtectedRoute><DeckManagement /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><DeckManagement /></ProtectedRoute>
             },
             {
                 path: nav_paths.delve_card_random,
@@ -69,35 +69,35 @@ const router = createBrowserRouter([
             },
             {
                 path: nav_paths.utilities_menu,
-                element: <ProtectedRoute><UtilitiesMenu /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><UtilitiesMenu /></ProtectedRoute>
             },
             {
                 path: nav_paths.utility_delve_card_migration,
-                element: <ProtectedRoute><MigrateToDecks /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><MigrateToDecks /></ProtectedRoute>
             },
             {
                 path: nav_paths.utility_delve_card_rarity_migration,
-                element: <ProtectedRoute><MigrateRarities /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><MigrateRarities /></ProtectedRoute>
             },
             {
                 path: nav_paths.utility_delve_card_rarity_flip,
-                element: <ProtectedRoute><MigrateFlipRarities /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><MigrateFlipRarities /></ProtectedRoute>
             },
             {
                 path: nav_paths.rpg_notes,
-                element: <ProtectedRoute><CampaignList /></ProtectedRoute>
+                element: <ProtectedRoute require="ttrpg"><CampaignList /></ProtectedRoute>
             },
             {
                 path: nav_paths.rpg_notes + "/:campaignId",
-                element: <ProtectedRoute><CampaignDetail /></ProtectedRoute>
+                element: <ProtectedRoute require="ttrpg"><CampaignDetail /></ProtectedRoute>
             },
             {
                 path: nav_paths.rpg_notes + "/:campaignId/session/:sessionId",
-                element: <ProtectedRoute><SessionDetail /></ProtectedRoute>
+                element: <ProtectedRoute require="ttrpg"><SessionDetail /></ProtectedRoute>
             },
             {
                 path: nav_paths.feedback_management,
-                element: <ProtectedRoute><FeedbackManagement /></ProtectedRoute>
+                element: <ProtectedRoute require="admin"><FeedbackManagement /></ProtectedRoute>
             }
         ]
     }
