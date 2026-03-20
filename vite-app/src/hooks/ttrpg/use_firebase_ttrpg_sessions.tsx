@@ -1,42 +1,58 @@
-import { getFirestore, collection, doc, getDocs, setDoc, deleteDoc, addDoc, query, where } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore"
 import useFirebaseProject from "../use_firebase_project"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
+import { TtrpgSessionData } from "../../types/ttrpg/TtrpgCampaign"
 
 export default function useFirebaseTtrpgSessions() {
     const FIRESTORE_DATABASE = getFirestore(useFirebaseProject())
-    const COLLECTION_NAME = "ttrpg_sessions"
+    const COLLECTION_NAME = "ttrpg_campaigns"
 
     async function getSessionsByCampaign(campaignId: string): Promise<TtrpgSession[]> {
-        const q = query(
-            collection(FIRESTORE_DATABASE, COLLECTION_NAME),
-            where("campaign_id", "==", campaignId)
-        )
-        const snapshot = await getDocs(q)
-        const sessions: TtrpgSession[] = []
-        snapshot.forEach((doc) => {
-            sessions.push({
-                id: doc.id,
-                ...doc.data()
-            } as TtrpgSession)
-        })
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        const docSnap = await getDoc(docRef)
+        if (!docSnap.exists()) return []
+
+        const data = docSnap.data()
+        const sessionsMap = (data.sessions || {}) as Record<string, TtrpgSessionData>
+        const sessions: TtrpgSession[] = Object.entries(sessionsMap).map(([id, s]) => ({
+            id,
+            campaign_id: campaignId,
+            session_number: s.session_number,
+            date: s.date,
+            title: s.title,
+            respite_count: s.respite_count
+        }))
         return sessions.sort((a, b) => a.session_number - b.session_number)
     }
 
     async function createSession(session: Omit<TtrpgSession, 'id'>): Promise<string> {
-        const docRef = await addDoc(collection(FIRESTORE_DATABASE, COLLECTION_NAME), session)
-        return docRef.id
+        const id = crypto.randomUUID()
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, session.campaign_id)
+        const sessionData: TtrpgSessionData = {
+            session_number: session.session_number,
+            date: session.date,
+            respite_count: session.respite_count,
+            ...(session.title ? { title: session.title } : {})
+        }
+        await setDoc(docRef, { sessions: { [id]: sessionData } }, { merge: true })
+        return id
     }
 
-    async function updateSession(id: string, session: Partial<TtrpgSession>): Promise<void> {
-        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id: _id, ...sessionData } = session as TtrpgSession
-        await setDoc(docRef, sessionData, { merge: true })
+    async function updateSession(campaignId: string, id: string, session: Partial<TtrpgSession>): Promise<void> {
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        const updates: Record<string, string | number> = {}
+        if (session.session_number !== undefined) updates[`sessions.${id}.session_number`] = session.session_number
+        if (session.date !== undefined) updates[`sessions.${id}.date`] = session.date
+        if (session.title !== undefined) updates[`sessions.${id}.title`] = session.title
+        if (session.respite_count !== undefined) updates[`sessions.${id}.respite_count`] = session.respite_count
+        if (Object.keys(updates).length > 0) {
+            await updateDoc(docRef, updates)
+        }
     }
 
-    async function deleteSession(id: string): Promise<void> {
-        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        await deleteDoc(docRef)
+    async function deleteSession(campaignId: string, id: string): Promise<void> {
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        await updateDoc(docRef, { [`sessions.${id}`]: deleteField() })
     }
 
     return {

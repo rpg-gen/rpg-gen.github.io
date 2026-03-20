@@ -22,7 +22,7 @@ export default function SessionDetail() {
     const location = useLocation()
     const user_context = useContext(UserContext)
     const campaignsHook = useFirebaseTtrpgCampaigns()
-    const { data, isLoading, loadAll, sessionsHook, membersHook, notesHook, loreHook, updateMembers } = useTtrpgCampaignData()
+    const { data, isLoading, subscribe, sessionsHook, membersHook, notesHook, loreHook, updateMembers } = useTtrpgCampaignData()
 
     const [campaign, setCampaign] = useState<TtrpgCampaign | null>(null)
     const [activeTab, setActiveTab] = useState<Tab>("sessions")
@@ -37,7 +37,8 @@ export default function SessionDetail() {
     useEffect(() => {
         if (campaignId) {
             loadCampaign()
-            loadAll(campaignId)
+            const unsub = subscribe(campaignId)
+            return unsub
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [campaignId])
@@ -60,20 +61,14 @@ export default function SessionDetail() {
         }
     }
 
-    async function reload() {
-        if (campaignId) await loadAll(campaignId)
-    }
-
     async function handleSlashCreateLore(name: string, type: LoreEntryType, sid?: string) {
         try {
             await loreHook.createLoreEntry({
-                campaign_id: campaignId!,
                 type,
                 name: name.trim(),
                 notes: "",
                 ...(sid ? { session_id: sid } : {})
             })
-            await reload()
         } catch (error) {
             console.error("Error creating lore entry:", error)
             alert("Error creating lore entry")
@@ -83,16 +78,7 @@ export default function SessionDetail() {
     async function handleDateChange(newDate: string) {
         if (!currentSession) return
         try {
-            await sessionsHook.updateSession(currentSession.id, {
-                campaign_id: currentSession.campaign_id,
-                session_number: currentSession.session_number,
-                date: newDate,
-                title: currentSession.title,
-                respite_count: currentSession.respite_count
-            })
-            const fresh = await sessionsHook.getSessionsByCampaign(campaignId!)
-            await renumberSessions(fresh)
-            await reload()
+            await sessionsHook.updateSession(currentSession.id, { date: newDate })
         } catch (error) {
             console.error("Error updating session date:", error)
             alert("Error updating session date")
@@ -102,14 +88,7 @@ export default function SessionDetail() {
     async function handleRespiteChange(newCount: number) {
         if (!currentSession) return
         try {
-            await sessionsHook.updateSession(currentSession.id, {
-                campaign_id: currentSession.campaign_id,
-                session_number: currentSession.session_number,
-                date: currentSession.date,
-                title: currentSession.title,
-                respite_count: newCount
-            })
-            await reload()
+            await sessionsHook.updateSession(currentSession.id, { respite_count: newCount })
         } catch (error) {
             console.error("Error updating respites:", error)
             alert("Error updating respites")
@@ -119,32 +98,11 @@ export default function SessionDetail() {
     async function handleTitleChange(newTitle: string) {
         if (!currentSession) return
         try {
-            await sessionsHook.updateSession(currentSession.id, {
-                campaign_id: currentSession.campaign_id,
-                session_number: currentSession.session_number,
-                date: currentSession.date,
-                title: newTitle || undefined,
-                respite_count: currentSession.respite_count
-            })
-            await reload()
+            const update: Partial<TtrpgSession> = newTitle ? { title: newTitle } : { title: "" }
+            await sessionsHook.updateSession(currentSession.id, update)
         } catch (error) {
             console.error("Error updating title:", error)
             alert("Error updating title")
-        }
-    }
-
-    async function renumberSessions(sessions: TtrpgSession[]) {
-        const sorted = [...sessions].sort((a, b) => a.date.localeCompare(b.date))
-        for (let i = 0; i < sorted.length; i++) {
-            if (sorted[i].session_number !== i + 1) {
-                await sessionsHook.updateSession(sorted[i].id, {
-                    campaign_id: sorted[i].campaign_id,
-                    session_number: i + 1,
-                    date: sorted[i].date,
-                    title: sorted[i].title,
-                    respite_count: sorted[i].respite_count
-                })
-            }
         }
     }
 
@@ -228,11 +186,9 @@ export default function SessionDetail() {
 
                         <SessionDetailContent
                             key={currentSession.id}
-                            campaignId={campaignId!}
                             sessionId={currentSession.id}
                             data={data}
                             notesHook={notesHook}
-                            reload={reload}
                             openLoreDetail={openLoreDetail}
                             openMemberDetail={openMemberDetail}
                             handleSlashCreateLore={handleSlashCreateLore}
@@ -249,7 +205,6 @@ export default function SessionDetail() {
                         membersHook={membersHook}
                         notesHook={notesHook}
                         updateMembers={updateMembers}
-                        reload={reload}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}
                         goToSession={goToSession}
@@ -264,11 +219,9 @@ export default function SessionDetail() {
 
                 {activeTab === "lore" && (
                     <LoreTab
-                        campaignId={campaignId!}
                         data={data}
                         loreHook={loreHook}
                         notesHook={notesHook}
-                        reload={reload}
                         goToSession={goToSession}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}

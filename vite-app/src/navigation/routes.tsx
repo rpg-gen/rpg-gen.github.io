@@ -12,9 +12,7 @@ import TagManagement from "../pages/delve_cards/tag_management"
 import DeckManagement from "../pages/delve_cards/deck_management"
 import RandomCard from "../pages/delve_cards/random_card"
 import UtilitiesMenu from "../pages/utilities/utilities_menu"
-import MigrateToDecks from "../pages/delve_cards/migrate_to_decks"
-import MigrateRarities from "../pages/delve_cards/migrate_rarities"
-import MigrateFlipRarities from "../pages/delve_cards/migrate_flip_rarities"
+import MigrateDataToCampaigns from "../pages/ttrpg/migrate_data_to_campaigns"
 import ProtectedRoute from "../components/protected_route"
 import CampaignList from "../pages/ttrpg/campaign_list"
 import CampaignDetail from "../pages/ttrpg/campaign_detail"
@@ -72,16 +70,8 @@ const router = createBrowserRouter([
                 element: <ProtectedRoute require="admin"><UtilitiesMenu /></ProtectedRoute>
             },
             {
-                path: nav_paths.utility_delve_card_migration,
-                element: <ProtectedRoute require="admin"><MigrateToDecks /></ProtectedRoute>
-            },
-            {
-                path: nav_paths.utility_delve_card_rarity_migration,
-                element: <ProtectedRoute require="admin"><MigrateRarities /></ProtectedRoute>
-            },
-            {
-                path: nav_paths.utility_delve_card_rarity_flip,
-                element: <ProtectedRoute require="admin"><MigrateFlipRarities /></ProtectedRoute>
+                path: nav_paths.utility_ttrpg_data_migration,
+                element: <ProtectedRoute require="admin"><MigrateDataToCampaigns /></ProtectedRoute>
             },
             {
                 path: nav_paths.rpg_notes,

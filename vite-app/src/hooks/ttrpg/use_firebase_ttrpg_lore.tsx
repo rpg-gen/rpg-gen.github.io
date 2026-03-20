@@ -1,42 +1,59 @@
-import { getFirestore, collection, doc, getDocs, setDoc, deleteDoc, addDoc, query, where } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore"
 import useFirebaseProject from "../use_firebase_project"
 import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
+import { TtrpgLoreData } from "../../types/ttrpg/TtrpgCampaign"
 
 export default function useFirebaseTtrpgLore() {
     const FIRESTORE_DATABASE = getFirestore(useFirebaseProject())
-    const COLLECTION_NAME = "ttrpg_lore"
+    const COLLECTION_NAME = "ttrpg_campaigns"
 
     async function getLoreByCampaign(campaignId: string): Promise<TtrpgLoreEntry[]> {
-        const q = query(
-            collection(FIRESTORE_DATABASE, COLLECTION_NAME),
-            where("campaign_id", "==", campaignId)
-        )
-        const snapshot = await getDocs(q)
-        const entries: TtrpgLoreEntry[] = []
-        snapshot.forEach((doc) => {
-            entries.push({
-                id: doc.id,
-                ...doc.data()
-            } as TtrpgLoreEntry)
-        })
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        const docSnap = await getDoc(docRef)
+        if (!docSnap.exists()) return []
+
+        const data = docSnap.data()
+        const loreMap = (data.lore || {}) as Record<string, TtrpgLoreData>
+        const entries: TtrpgLoreEntry[] = Object.entries(loreMap).map(([id, l]) => ({
+            id,
+            campaign_id: campaignId,
+            type: l.type,
+            name: l.name,
+            notes: l.notes,
+            ...(l.session_id ? { session_id: l.session_id } : {})
+        }))
         return entries.reverse()
     }
 
-    async function createLoreEntry(entry: Omit<TtrpgLoreEntry, 'id'>): Promise<string> {
-        const docRef = await addDoc(collection(FIRESTORE_DATABASE, COLLECTION_NAME), entry)
-        return docRef.id
+    async function createLoreEntry(campaignId: string, entry: Omit<TtrpgLoreEntry, 'id' | 'campaign_id'>): Promise<string> {
+        const id = crypto.randomUUID()
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        const loreData: TtrpgLoreData = {
+            type: entry.type,
+            name: entry.name,
+            notes: entry.notes,
+            ...(entry.session_id ? { session_id: entry.session_id } : {})
+        }
+        await setDoc(docRef, { lore: { [id]: loreData } }, { merge: true })
+        return id
     }
 
-    async function updateLoreEntry(id: string, entry: Partial<TtrpgLoreEntry>): Promise<void> {
-        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id: _id, ...entryData } = entry as TtrpgLoreEntry
-        await setDoc(docRef, entryData, { merge: true })
+    async function updateLoreEntry(campaignId: string, id: string, entry: Partial<TtrpgLoreEntry>): Promise<void> {
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const updates: Record<string, any> = {}
+        if (entry.type !== undefined) updates[`lore.${id}.type`] = entry.type
+        if (entry.name !== undefined) updates[`lore.${id}.name`] = entry.name
+        if (entry.notes !== undefined) updates[`lore.${id}.notes`] = entry.notes
+        if (entry.session_id !== undefined) updates[`lore.${id}.session_id`] = entry.session_id
+        if (Object.keys(updates).length > 0) {
+            await updateDoc(docRef, updates)
+        }
     }
 
-    async function deleteLoreEntry(id: string): Promise<void> {
-        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, id)
-        await deleteDoc(docRef)
+    async function deleteLoreEntry(campaignId: string, id: string): Promise<void> {
+        const docRef = doc(FIRESTORE_DATABASE, COLLECTION_NAME, campaignId)
+        await updateDoc(docRef, { [`lore.${id}`]: deleteField() })
     }
 
     return {

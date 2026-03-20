@@ -15,7 +15,11 @@ export default function useFirebaseTtrpgCampaigns() {
                 id: doc.id,
                 name: data.name,
                 created_at: data.created_at?.toDate?.().toISOString() || "",
-                created_by: data.created_by || ""
+                created_by: data.created_by || "",
+                sessions: data.sessions || {},
+                members: data.members || {},
+                lore: data.lore || {},
+                notes: data.notes || {}
             })
         })
         return campaigns.sort((a, b) => a.name.localeCompare(b.name))
@@ -30,7 +34,11 @@ export default function useFirebaseTtrpgCampaigns() {
                 id: docSnap.id,
                 name: data.name,
                 created_at: data.created_at?.toDate?.().toISOString() || "",
-                created_by: data.created_by || ""
+                created_by: data.created_by || "",
+                sessions: data.sessions || {},
+                members: data.members || {},
+                lore: data.lore || {},
+                notes: data.notes || {}
             }
         }
         return null

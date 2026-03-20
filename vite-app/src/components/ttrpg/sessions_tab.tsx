@@ -4,12 +4,11 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
 import { nav_paths } from "../../configs/constants"
+import { assignSessionNumbers } from "../../utility/ttrpg_session_helpers"
 
 interface SessionsHook {
     createSession: (session: Omit<TtrpgSession, "id">) => Promise<string>
-    updateSession: (id: string, session: Partial<TtrpgSession>) => Promise<void>
     deleteSession: (id: string) => Promise<void>
-    getSessionsByCampaign: (campaignId: string) => Promise<TtrpgSession[]>
 }
 
 interface NotesHook {
@@ -22,7 +21,6 @@ interface SessionsTabProps {
     notes: TtrpgSessionNote[]
     sessionsHook: SessionsHook
     notesHook: NotesHook
-    reload: () => Promise<void>
     updateSessions: (updater: (sessions: TtrpgSession[]) => TtrpgSession[]) => void
 }
 
@@ -51,7 +49,6 @@ export default function SessionsTab({
     notes,
     sessionsHook,
     notesHook,
-    reload,
     updateSessions
 }: SessionsTabProps) {
     const navigate = useNavigate()
@@ -63,21 +60,6 @@ export default function SessionsTab({
 
     const sortedSessions = [...sessions].sort((a, b) => a.date.localeCompare(b.date))
     const totalRespites = sessions.reduce((sum, s) => sum + s.respite_count, 0)
-
-    async function renumberSessions(fresh: TtrpgSession[]) {
-        const sorted = [...fresh].sort((a, b) => a.date.localeCompare(b.date))
-        for (let i = 0; i < sorted.length; i++) {
-            if (sorted[i].session_number !== i + 1) {
-                await sessionsHook.updateSession(sorted[i].id, {
-                    campaign_id: sorted[i].campaign_id,
-                    session_number: i + 1,
-                    date: sorted[i].date,
-                    title: sorted[i].title,
-                    respite_count: sorted[i].respite_count
-                })
-            }
-        }
-    }
 
     function handleCreateSession() {
         if (!sessionFormDate) {
@@ -96,11 +78,7 @@ export default function SessionsTab({
             date,
             respite_count: respites
         }
-        updateSessions(prev => {
-            const withNew = [...prev, optimisticSession]
-            const sorted = withNew.sort((a, b) => a.date.localeCompare(b.date))
-            return sorted.map((s, i) => ({ ...s, session_number: i + 1 }))
-        })
+        updateSessions(prev => assignSessionNumbers([...prev, optimisticSession]))
 
         setSessionFormMode(null)
         setSessionFormDate("")
@@ -115,9 +93,6 @@ export default function SessionsTab({
                     date,
                     respite_count: respites
                 })
-                const fresh = await sessionsHook.getSessionsByCampaign(campaignId)
-                await renumberSessions(fresh)
-                await reload()
             } catch (error) {
                 console.error("Error creating session:", error)
                 setErrorMessage("Failed to save session — please try again")
@@ -135,9 +110,6 @@ export default function SessionsTab({
                     await notesHook.deleteNote(note.id)
                 }
                 await sessionsHook.deleteSession(session.id)
-                const fresh = await sessionsHook.getSessionsByCampaign(campaignId)
-                await renumberSessions(fresh)
-                await reload()
             } catch (error) {
                 console.error("Error deleting session:", error)
                 alert("Error deleting session")

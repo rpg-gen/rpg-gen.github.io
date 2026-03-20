@@ -11,21 +11,9 @@ interface UtilityItem {
 
 const utilities: UtilityItem[] = [
     {
-        title: "Delve Card Deck Migration",
-        description: "Migrate existing delve cards to the deck system. Adds all cards without deck assignments to the 'encounters' deck.",
-        path: nav_paths.utility_delve_card_migration,
-        category: "migration"
-    },
-    {
-        title: "Delve Card Rarity Migration",
-        description: "Update card rarity system to the new format. Changes rarity 1 and 2 cards to rarity 3 (Normal), making 3 the new default.",
-        path: nav_paths.utility_delve_card_rarity_migration,
-        category: "migration"
-    },
-    {
-        title: "Delve Card Rarity Flip Migration",
-        description: "Flip the rarity numbering system so 5 is most frequent and 1 is most rare. Converts: 1↔5, 2↔4, 3 stays 3.",
-        path: nav_paths.utility_delve_card_rarity_flip,
+        title: "TTRPG Data Migration",
+        description: "Migrate members, notes, and lore from separate Firestore collections into campaign document maps. Requires a backup download first.",
+        path: nav_paths.utility_ttrpg_data_migration,
         category: "migration"
     }
 ]
@@ -62,19 +50,20 @@ export default function UtilitiesMenu() {
                 <div style={{
                     marginBottom: "1.5rem",
                     padding: "1rem",
-                    backgroundColor: "#fff3cd",
-                    border: "1px solid #ffc107",
-                    borderRadius: "4px"
+                    border: "1px solid rgba(255, 193, 7, 0.5)",
+                    borderRadius: "4px",
+                    backgroundColor: "rgba(255, 193, 7, 0.1)"
                 }}>
-                    <strong>⚠️ Warning:</strong> These utilities perform data operations. Make sure you understand what each utility does before running it.
+                    <strong>Warning:</strong> These utilities perform data operations. Make sure you understand what each utility does before running it.
                 </div>
 
                 {Object.entries(categorizedUtilities).map(([category, items]) => (
                     <div key={category} style={{ marginBottom: "2rem" }}>
                         <h2 style={{
-                            borderBottom: "2px solid #333",
+                            borderBottom: "2px solid currentColor",
                             paddingBottom: "0.5rem",
-                            marginBottom: "1rem"
+                            marginBottom: "1rem",
+                            opacity: 0.8
                         }}>
                             {categoryNames[category] || category}
                         </h2>
@@ -84,25 +73,25 @@ export default function UtilitiesMenu() {
                                 <div
                                     key={utility.path}
                                     style={{
-                                        border: "1px solid #ccc",
+                                        border: "1px solid rgba(128, 128, 128, 0.4)",
                                         padding: "1.5rem",
                                         borderRadius: "4px",
-                                        backgroundColor: "#f9f9f9",
+                                        backgroundColor: "rgba(128, 128, 128, 0.1)",
                                         cursor: "pointer",
                                         transition: "all 0.2s"
                                     }}
                                     onClick={() => navigate(utility.path)}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.backgroundColor = "#e8e8e8"
-                                        e.currentTarget.style.borderColor = "#999"
+                                        e.currentTarget.style.backgroundColor = "rgba(128, 128, 128, 0.2)"
+                                        e.currentTarget.style.borderColor = "rgba(128, 128, 128, 0.6)"
                                     }}
                                     onMouseLeave={(e) => {
-                                        e.currentTarget.style.backgroundColor = "#f9f9f9"
-                                        e.currentTarget.style.borderColor = "#ccc"
+                                        e.currentTarget.style.backgroundColor = "rgba(128, 128, 128, 0.1)"
+                                        e.currentTarget.style.borderColor = "rgba(128, 128, 128, 0.4)"
                                     }}
                                 >
                                     <h3 style={{ margin: "0 0 0.5rem 0" }}>{utility.title}</h3>
-                                    <p style={{ margin: 0, color: "#666" }}>{utility.description}</p>
+                                    <p style={{ margin: 0, opacity: 0.7 }}>{utility.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -113,7 +102,7 @@ export default function UtilitiesMenu() {
                     <div style={{
                         textAlign: "center",
                         padding: "3rem",
-                        color: "#666",
+                        opacity: 0.6,
                         fontSize: "1.1rem"
                     }}>
                         No utilities available at this time.
@@ -123,4 +112,3 @@ export default function UtilitiesMenu() {
         </FullPageOverlay>
     )
 }
-

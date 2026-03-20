@@ -15,17 +15,15 @@ interface CampaignData {
 }
 
 interface NotesHook {
-    createNote: (note: { campaign_id: string; session_id: string; text: string; author: string }) => Promise<string>
+    createNote: (note: { session_id: string; text: string; author: string }) => Promise<string>
     updateNote: (id: string, note: Partial<TtrpgSessionNote>) => Promise<void>
     deleteNote: (id: string) => Promise<void>
 }
 
 interface SessionDetailContentProps {
-    campaignId: string
     sessionId: string
     data: CampaignData
     notesHook: NotesHook
-    reload: () => Promise<void>
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
     handleSlashCreateLore: (name: string, type: LoreEntryType, sessionId?: string) => Promise<void>
@@ -34,11 +32,9 @@ interface SessionDetailContentProps {
 }
 
 export default function SessionDetailContent({
-    campaignId,
     sessionId,
     data,
     notesHook,
-    reload,
     openLoreDetail,
     openMemberDetail,
     handleSlashCreateLore,
@@ -75,13 +71,11 @@ export default function SessionDetailContent({
         }
         try {
             await notesHook.createNote({
-                campaign_id: campaignId,
                 session_id: sessionId,
                 text: newNoteText.trim(),
                 author: username
             })
             setNewNoteText("")
-            await reload()
         } catch (error) {
             console.error("Error creating note:", error)
             alert("Error creating note")
@@ -97,7 +91,6 @@ export default function SessionDetailContent({
             await notesHook.updateNote(noteId, { text: editingNoteText.trim() })
             setEditingNoteId(null)
             setEditingNoteText("")
-            await reload()
         } catch (error) {
             console.error("Error updating note:", error)
             alert("Error updating note")
@@ -108,7 +101,6 @@ export default function SessionDetailContent({
         if (confirm("Delete this note?")) {
             try {
                 await notesHook.deleteNote(noteId)
-                await reload()
             } catch (error) {
                 console.error("Error deleting note:", error)
                 alert("Error deleting note")
@@ -122,7 +114,6 @@ export default function SessionDetailContent({
             setEditingNoteId(null)
             setEditingNoteText("")
             setMovingNoteId(null)
-            await reload()
         } catch (error) {
             console.error("Error moving note:", error)
             alert("Error moving note")
@@ -170,6 +161,9 @@ export default function SessionDetailContent({
                                 <button onClick={() => { setEditingNoteId(null); setEditingNoteText(""); setMovingNoteId(null) }}>Cancel</button>
                                 {movingNoteId === note.id ? (
                                     <select
+                                        ref={(el) => {
+                                            if (el) { try { (el as any).showPicker() } catch { /* unsupported */ } }
+                                        }}
                                         autoFocus
                                         defaultValue=""
                                         onChange={(e) => { if (e.target.value) handleMoveNote(note.id, e.target.value) }}
@@ -179,7 +173,7 @@ export default function SessionDetailContent({
                                         <option value="" disabled>Select session...</option>
                                         {otherSessions.map(s => (
                                             <option key={s.id} value={s.id}>
-                                                Session {s.session_number} — {s.date}
+                                                {s.title || `Session ${s.session_number}`} — {s.date}
                                             </option>
                                         ))}
                                     </select>
@@ -199,9 +193,6 @@ export default function SessionDetailContent({
                             <div style={{ whiteSpace: "pre-wrap" }}>
                                 <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
                             </div>
-                            {note.updated_at && note.updated_at !== note.created_at && (
-                                <div style={{ fontSize: "0.8rem", color: "#888", marginTop: "0.25rem" }}>(edited)</div>
-                            )}
                         </div>
                     )}
                 </div>

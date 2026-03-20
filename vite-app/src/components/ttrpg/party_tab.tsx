@@ -30,7 +30,6 @@ interface PartyTabProps {
     membersHook: MembersHook
     notesHook: NotesHook
     updateMembers: (updater: (members: TtrpgMember[]) => TtrpgMember[]) => void
-    reload: () => Promise<void>
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
     goToSession: (sessionId: string, noteId?: string) => void
@@ -48,7 +47,6 @@ export default function PartyTab({
     membersHook,
     notesHook,
     updateMembers,
-    reload,
     openLoreDetail,
     openMemberDetail,
     goToSession,
@@ -103,7 +101,6 @@ export default function PartyTab({
             setMemberFormPlayedBy("")
             setMemberFormNotes("")
             setMemberFormMode(null)
-            await reload()
         } catch (error) {
             console.error("Error creating member:", error)
             alert("Error creating member")
@@ -118,7 +115,6 @@ export default function PartyTab({
                 setMemberFormName("")
                 setMemberFormPlayedBy("")
                 setMemberFormNotes("")
-                await reload()
             } catch (error) {
                 console.error("Error deleting member:", error)
                 alert("Error deleting member")
@@ -156,7 +152,6 @@ export default function PartyTab({
             setMemberFormName("")
             setMemberFormPlayedBy("")
             setMemberFormNotes("")
-            await reload()
         } catch (error) {
             console.error("Error updating member:", error)
             alert("Error updating member")

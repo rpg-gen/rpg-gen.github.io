@@ -23,7 +23,7 @@ export default function CampaignDetail() {
     const navigate = useNavigate()
     const location = useLocation()
     const campaignsHook = useFirebaseTtrpgCampaigns()
-    const { data, isLoading, loadAll, updateMembers, updateSessions, sessionsHook, membersHook, notesHook, loreHook } = useTtrpgCampaignData()
+    const { data, isLoading, subscribe, updateMembers, updateSessions, sessionsHook, membersHook, notesHook, loreHook } = useTtrpgCampaignData()
 
     const [campaign, setCampaign] = useState<TtrpgCampaign | null>(null)
     const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -45,7 +45,8 @@ export default function CampaignDetail() {
     useEffect(() => {
         if (campaignId) {
             loadCampaign()
-            loadAll(campaignId)
+            const unsub = subscribe(campaignId)
+            return unsub
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [campaignId])
@@ -75,10 +76,6 @@ export default function CampaignDetail() {
         } catch (error) {
             console.error("Error loading campaign:", error)
         }
-    }
-
-    async function reload() {
-        if (campaignId) await loadAll(campaignId)
     }
 
     // ==================== CROSS-TAB NAVIGATION ====================
@@ -151,7 +148,6 @@ export default function CampaignDetail() {
                         notes={data.notes}
                         sessionsHook={sessionsHook}
                         notesHook={notesHook}
-                        reload={reload}
                         updateSessions={updateSessions}
                     />
                 )}
@@ -163,7 +159,6 @@ export default function CampaignDetail() {
                         membersHook={membersHook}
                         notesHook={notesHook}
                         updateMembers={updateMembers}
-                        reload={reload}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}
                         goToSession={goToSession}
@@ -178,11 +173,9 @@ export default function CampaignDetail() {
 
                 {activeTab === "lore" && (
                     <LoreTab
-                        campaignId={campaignId!}
                         data={data}
                         loreHook={loreHook}
                         notesHook={notesHook}
-                        reload={reload}
                         goToSession={goToSession}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}

@@ -3,7 +3,7 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
-import LoreNoteText from "./lore_note_text"
+import LoreDetailView from "./lore_detail_view"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
 import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
 
@@ -15,7 +15,7 @@ interface CampaignData {
 }
 
 interface LoreHook {
-    createLoreEntry: (entry: Omit<TtrpgLoreEntry, "id">) => Promise<string>
+    createLoreEntry: (entry: Omit<TtrpgLoreEntry, "id" | "campaign_id">) => Promise<string>
     updateLoreEntry: (id: string, entry: Partial<TtrpgLoreEntry>) => Promise<void>
     deleteLoreEntry: (id: string) => Promise<void>
 }
@@ -25,11 +25,9 @@ interface NotesHook {
 }
 
 interface LoreTabProps {
-    campaignId: string
     data: CampaignData
     loreHook: LoreHook
     notesHook: NotesHook
-    reload: () => Promise<void>
     goToSession: (sessionId: string, noteId?: string) => void
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
@@ -42,11 +40,9 @@ interface LoreTabProps {
 }
 
 export default function LoreTab({
-    campaignId,
     data,
     loreHook,
     notesHook,
-    reload,
     goToSession,
     openLoreDetail,
     openMemberDetail,
@@ -114,14 +110,12 @@ export default function LoreTab({
         }
         try {
             await loreHook.createLoreEntry({
-                campaign_id: campaignId,
                 type: loreFormType,
                 name: loreFormName.trim(),
                 notes: loreFormNotes.trim(),
                 ...(loreFormSessionId ? { session_id: loreFormSessionId } : {})
             })
             resetLoreForm()
-            await reload()
         } catch (error) {
             console.error("Error creating lore entry:", error)
             alert("Error creating lore entry")
@@ -133,7 +127,6 @@ export default function LoreTab({
             try {
                 await loreHook.deleteLoreEntry(id)
                 resetLoreForm()
-                await reload()
             } catch (error) {
                 console.error("Error deleting lore entry:", error)
                 alert("Error deleting lore entry")
@@ -149,7 +142,6 @@ export default function LoreTab({
         try {
             const newName = loreFormName.trim()
             await loreHook.updateLoreEntry(entry.id, {
-                campaign_id: entry.campaign_id,
                 type: loreFormType,
                 name: newName,
                 notes: loreFormNotes.trim(),
@@ -168,7 +160,6 @@ export default function LoreTab({
             }
 
             resetLoreForm()
-            await reload()
         } catch (error) {
             console.error("Error updating lore entry:", error)
             alert("Error updating lore entry")
@@ -192,93 +183,26 @@ export default function LoreTab({
         const entry = data.lore.find(e => e.id === loreDetailId)
         if (!entry) return <div><button onClick={() => setLoreDetailId(null)}>Back</button><p>Entry not found.</p></div>
 
-        const entrySession = entry.session_id ? data.sessions.find(s => s.id === entry.session_id) : null
-
-        const mentions: { note: TtrpgSessionNote; session: TtrpgSession }[] = []
-        for (const note of data.notes) {
-            if (note.text.includes(`[[${entry.name}]]`)) {
-                const session = data.sessions.find(s => s.id === note.session_id)
-                if (session) mentions.push({ note, session })
-            }
-        }
-        mentions.sort((a, b) =>
-            a.session.session_number - b.session.session_number
-            || a.note.created_at.localeCompare(b.note.created_at)
-        )
-
         return (
-            <div>
-                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
-                    {cameFromSessionId && (
-                        <button onClick={backToOriginSession}>Back to session</button>
-                    )}
-                    <button onClick={() => { setLoreDetailId(null); clearCameFromSessionId() }}>Back to lore list</button>
-                </div>
-
-                <div style={{ ...cardStyle, backgroundColor: LORE_COLORS[entry.type] }}>
-                    <div style={{ marginBottom: "0.5rem" }}>
-                        <strong style={{ fontSize: "1.2rem" }}>{entry.name}</strong>
-                        <span style={{ color: "#666", marginLeft: "0.5rem" }}>({LORE_LABELS[entry.type]})</span>
-                    </div>
-                    {entry.notes && (
-                        <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{entry.notes}</div>
-                    )}
-
-                    {/* Session introduced */}
-                    {entrySession && (
-                        <div style={{ marginBottom: "0.75rem" }}>
-                            <strong>Introduced:</strong> Session {entrySession.session_number} — {entrySession.date}
-                            <button
-                                onClick={() => goToSession(entrySession.id)}
-                                style={{ marginLeft: "0.5rem", fontSize: "0.85rem" }}
-                            >
-                                Go to session notes
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Session mentions */}
-                    {mentions.length > 0 && (
-                        <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.5rem" }}>
-                            <strong>Session mentions ({mentions.length})</strong>
-                            {mentions.map(({ note, session }) => (
-                                <div
-                                    key={note.id}
-                                    style={{
-                                        border: "1px solid #ddd",
-                                        borderRadius: "4px",
-                                        padding: "0.5rem",
-                                        marginTop: "0.5rem",
-                                        backgroundColor: "#fff",
-                                        cursor: "pointer"
-                                    }}
-                                    onClick={() => goToSession(session.id, note.id)}
-                                >
-                                    <div style={{ fontSize: "0.8rem", color: "#666", marginBottom: "0.25rem" }}>
-                                        Session {session.session_number} — {session.date}
-                                    </div>
-                                    <div style={{ fontSize: "0.9rem", color: "#333" }}>
-                                        <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    <div style={{ marginTop: "1rem" }}>
-                        <button onClick={() => {
-                            setLoreDetailId(null)
-                            setLoreFormMode(entry.id)
-                            setLoreFormType(entry.type)
-                            setLoreFormName(entry.name)
-                            setLoreFormNotes(entry.notes || "")
-                            setLoreFormSessionId(entry.session_id)
-                        }}>
-                            Edit
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <LoreDetailView
+                entry={entry}
+                data={data}
+                goToSession={goToSession}
+                openLoreDetail={openLoreDetail}
+                openMemberDetail={openMemberDetail}
+                cameFromSessionId={cameFromSessionId}
+                backToOriginSession={backToOriginSession}
+                clearCameFromSessionId={clearCameFromSessionId}
+                onBack={() => setLoreDetailId(null)}
+                onEdit={(e) => {
+                    setLoreDetailId(null)
+                    setLoreFormMode(e.id)
+                    setLoreFormType(e.type)
+                    setLoreFormName(e.name)
+                    setLoreFormNotes(e.notes || "")
+                    setLoreFormSessionId(e.session_id)
+                }}
+            />
         )
     }
 
