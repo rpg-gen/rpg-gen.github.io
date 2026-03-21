@@ -23,7 +23,7 @@ export default function CampaignDetail() {
     const navigate = useNavigate()
     const location = useLocation()
     const campaignsHook = useFirebaseTtrpgCampaigns()
-    const { data, isLoading, subscribe, updateMembers, updateSessions, sessionsHook, membersHook, notesHook, loreHook } = useTtrpgCampaignData()
+    const { data, isLoading, subscribe, updateMembers, updateSessions, updatePartyResources, sessionsHook, membersHook, notesHook, loreHook, partyResourcesHook } = useTtrpgCampaignData()
 
     const [campaign, setCampaign] = useState<TtrpgCampaign | null>(null)
     const [activeTab, setActiveTab] = useState<Tab>(() => {
@@ -158,7 +158,9 @@ export default function CampaignDetail() {
                         data={data}
                         membersHook={membersHook}
                         notesHook={notesHook}
+                        partyResourcesHook={partyResourcesHook}
                         updateMembers={updateMembers}
+                        updatePartyResources={updatePartyResources}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}
                         goToSession={goToSession}

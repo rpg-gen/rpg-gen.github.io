@@ -22,7 +22,7 @@ export default function SessionDetail() {
     const location = useLocation()
     const user_context = useContext(UserContext)
     const campaignsHook = useFirebaseTtrpgCampaigns()
-    const { data, isLoading, subscribe, sessionsHook, membersHook, notesHook, loreHook, updateMembers } = useTtrpgCampaignData()
+    const { data, isLoading, subscribe, sessionsHook, membersHook, notesHook, loreHook, partyResourcesHook, updateMembers, updatePartyResources } = useTtrpgCampaignData()
 
     const [campaign, setCampaign] = useState<TtrpgCampaign | null>(null)
     const [activeTab, setActiveTab] = useState<Tab>("sessions")
@@ -205,7 +205,9 @@ export default function SessionDetail() {
                         data={data}
                         membersHook={membersHook}
                         notesHook={notesHook}
+                        partyResourcesHook={partyResourcesHook}
                         updateMembers={updateMembers}
+                        updatePartyResources={updatePartyResources}
                         openLoreDetail={openLoreDetail}
                         openMemberDetail={openMemberDetail}
                         goToSession={goToSession}

@@ -20,7 +20,11 @@ export default function useFirebaseTtrpgMembers() {
             name: m.name,
             played_by: m.played_by,
             notes: m.notes,
-            items: m.items || []
+            items: m.items || [],
+            wealth: m.wealth ?? 0,
+            renown: m.renown ?? 0,
+            followers: m.followers || [],
+            titles: m.titles || []
         }))
         return members.sort((a, b) => a.name.localeCompare(b.name))
     }
@@ -32,7 +36,11 @@ export default function useFirebaseTtrpgMembers() {
             name: member.name,
             played_by: member.played_by,
             notes: member.notes,
-            items: member.items || []
+            items: member.items || [],
+            wealth: member.wealth ?? 0,
+            renown: member.renown ?? 0,
+            followers: member.followers || [],
+            titles: member.titles || []
         }
         await setDoc(docRef, { members: { [id]: memberData } }, { merge: true })
         return id
@@ -48,6 +56,10 @@ export default function useFirebaseTtrpgMembers() {
         if (member.played_by !== undefined) updates[`members.${id}.played_by`] = member.played_by
         if (member.notes !== undefined) updates[`members.${id}.notes`] = member.notes
         if (member.items !== undefined) updates[`members.${id}.items`] = member.items
+        if (member.wealth !== undefined) updates[`members.${id}.wealth`] = member.wealth
+        if (member.renown !== undefined) updates[`members.${id}.renown`] = member.renown
+        if (member.followers !== undefined) updates[`members.${id}.followers`] = member.followers
+        if (member.titles !== undefined) updates[`members.${id}.titles`] = member.titles
         if (Object.keys(updates).length > 0) {
             await updateDoc(docRef, updates)
         }

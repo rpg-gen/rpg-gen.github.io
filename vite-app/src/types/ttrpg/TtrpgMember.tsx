@@ -3,6 +3,17 @@ export interface TtrpgMemberItem {
     quantity: number
 }
 
+export interface TtrpgMemberFollower {
+    name: string
+    roll_bonus: number
+    type: "sage" | "crafter"
+}
+
+export interface TtrpgMemberTitle {
+    name: string
+    description: string
+}
+
 export default interface TtrpgMember {
     id: string
     campaign_id: string
@@ -10,4 +21,8 @@ export default interface TtrpgMember {
     played_by: string
     notes: string
     items: TtrpgMemberItem[]
+    wealth: number
+    renown: number
+    followers: TtrpgMemberFollower[]
+    titles: TtrpgMemberTitle[]
 }

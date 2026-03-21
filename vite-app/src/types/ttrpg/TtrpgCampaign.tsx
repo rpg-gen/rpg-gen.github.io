@@ -1,4 +1,4 @@
-import { TtrpgMemberItem } from "./TtrpgMember"
+import { TtrpgMemberItem, TtrpgMemberFollower, TtrpgMemberTitle } from "./TtrpgMember"
 import { LoreEntryType } from "./TtrpgLoreEntry"
 
 export interface TtrpgSessionData {
@@ -13,6 +13,10 @@ export interface TtrpgMemberData {
     played_by: string
     notes: string
     items: TtrpgMemberItem[]
+    wealth?: number
+    renown?: number
+    followers?: TtrpgMemberFollower[]
+    titles?: TtrpgMemberTitle[]
 }
 
 export interface TtrpgLoreData {
@@ -31,6 +35,14 @@ export interface TtrpgNoteData {
     updated_at: string
 }
 
+export interface TtrpgPartyResourcesData {
+    hero_tokens?: number
+    victories?: number
+    exp?: number
+    unassigned_items?: TtrpgMemberItem[]
+    unassigned_followers?: TtrpgMemberFollower[]
+}
+
 export default interface TtrpgCampaign {
     id: string
     name: string
@@ -40,4 +52,5 @@ export default interface TtrpgCampaign {
     members?: Record<string, TtrpgMemberData>
     lore?: Record<string, TtrpgLoreData>
     notes?: Record<string, TtrpgNoteData>
+    party_resources?: TtrpgPartyResourcesData
 }

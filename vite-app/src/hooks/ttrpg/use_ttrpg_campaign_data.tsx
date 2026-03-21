@@ -5,18 +5,22 @@ import useFirebaseTtrpgSessions from "./use_firebase_ttrpg_sessions"
 import useFirebaseTtrpgMembers from "./use_firebase_ttrpg_members"
 import useFirebaseTtrpgSessionNotes from "./use_firebase_ttrpg_session_notes"
 import useFirebaseTtrpgLore from "./use_firebase_ttrpg_lore"
+import useFirebaseTtrpgPartyResources from "./use_firebase_ttrpg_party_resources"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
-import { TtrpgSessionData, TtrpgMemberData, TtrpgNoteData, TtrpgLoreData } from "../../types/ttrpg/TtrpgCampaign"
+import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
+import { TtrpgSessionData, TtrpgMemberData, TtrpgNoteData, TtrpgLoreData, TtrpgPartyResourcesData } from "../../types/ttrpg/TtrpgCampaign"
 import { assignSessionNumbers } from "../../utility/ttrpg_session_helpers"
+import { DEFAULT_PARTY_RESOURCES } from "../../configs/ttrpg_constants"
 
 interface TtrpgCampaignData {
     sessions: TtrpgSession[]
     members: TtrpgMember[]
     notes: TtrpgSessionNote[]
     lore: TtrpgLoreEntry[]
+    partyResources: TtrpgPartyResources
 }
 
 function parseSessionsMap(campaignId: string, map: Record<string, TtrpgSessionData>): TtrpgSession[] {
@@ -37,8 +41,22 @@ function parseMembersMap(campaignId: string, map: Record<string, TtrpgMemberData
         name: m.name,
         played_by: m.played_by,
         notes: m.notes,
-        items: m.items || []
+        items: m.items || [],
+        wealth: m.wealth ?? 0,
+        renown: m.renown ?? 0,
+        followers: m.followers || [],
+        titles: m.titles || []
     })).sort((a, b) => a.name.localeCompare(b.name))
+}
+
+function parsePartyResources(data: TtrpgPartyResourcesData | undefined): TtrpgPartyResources {
+    return {
+        hero_tokens: data?.hero_tokens ?? 0,
+        victories: data?.victories ?? 0,
+        exp: data?.exp ?? 0,
+        unassigned_items: data?.unassigned_items || [],
+        unassigned_followers: data?.unassigned_followers || []
+    }
 }
 
 function parseNotesMap(campaignId: string, map: Record<string, TtrpgNoteData>): TtrpgSessionNote[] {
@@ -71,6 +89,7 @@ export default function useTtrpgCampaignData() {
     const rawMembersHook = useFirebaseTtrpgMembers()
     const rawNotesHook = useFirebaseTtrpgSessionNotes()
     const rawLoreHook = useFirebaseTtrpgLore()
+    const rawPartyResourcesHook = useFirebaseTtrpgPartyResources()
 
     const campaignIdRef = useRef<string>("")
 
@@ -78,7 +97,8 @@ export default function useTtrpgCampaignData() {
         sessions: [],
         members: [],
         notes: [],
-        lore: []
+        lore: [],
+        partyResources: { ...DEFAULT_PARTY_RESOURCES }
     })
     const [isLoading, setIsLoading] = useState(false)
 
@@ -130,7 +150,7 @@ export default function useTtrpgCampaignData() {
         const docRef = doc(db, "ttrpg_campaigns", campaignId)
         const unsub = onSnapshot(docRef, (snapshot) => {
             if (!snapshot.exists()) {
-                setData({ sessions: [], members: [], notes: [], lore: [] })
+                setData({ sessions: [], members: [], notes: [], lore: [], partyResources: { ...DEFAULT_PARTY_RESOURCES } })
                 setIsLoading(false)
                 return
             }
@@ -141,8 +161,9 @@ export default function useTtrpgCampaignData() {
             const members = parseMembersMap(campaignId, docData.members || {})
             const notes = parseNotesMap(campaignId, docData.notes || {})
             const lore = parseLoreMap(campaignId, docData.lore || {})
+            const partyResources = parsePartyResources(docData.party_resources)
 
-            setData({ sessions, members, notes, lore })
+            setData({ sessions, members, notes, lore, partyResources })
             setIsLoading(false)
 
             // Session number healing (fire-and-forget)
@@ -158,6 +179,16 @@ export default function useTtrpgCampaignData() {
         return unsub
     }
 
+    // Adapter: wraps the party resources hook — injects campaignId
+    const partyResourcesHook = {
+        updatePartyResources: (updates: Partial<TtrpgPartyResources>) =>
+            rawPartyResourcesHook.updatePartyResources(campaignIdRef.current, updates),
+        assignItemToMember: rawPartyResourcesHook.assignItemToMember,
+        unassignItemFromMember: rawPartyResourcesHook.unassignItemFromMember,
+        assignFollowerToMember: rawPartyResourcesHook.assignFollowerToMember,
+        unassignFollowerFromMember: rawPartyResourcesHook.unassignFollowerFromMember,
+    }
+
     function updateMembers(updater: (members: TtrpgMember[]) => TtrpgMember[]) {
         setData(prev => ({ ...prev, members: updater(prev.members) }))
     }
@@ -166,15 +197,21 @@ export default function useTtrpgCampaignData() {
         setData(prev => ({ ...prev, sessions: updater(prev.sessions) }))
     }
 
+    function updatePartyResources(updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) {
+        setData(prev => ({ ...prev, partyResources: updater(prev.partyResources) }))
+    }
+
     return {
         data,
         isLoading,
         subscribe,
         updateMembers,
         updateSessions,
+        updatePartyResources,
         sessionsHook,
         membersHook,
         notesHook,
-        loreHook
+        loreHook,
+        partyResourcesHook
     }
 }
