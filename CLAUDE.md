@@ -53,3 +53,23 @@ Firebase email/password auth managed by `useFirebaseAuth` hook → `UserContext`
 - Card-related code is namespaced under `delve_cards/` subdirectories in pages and hooks
 - Colors and styling constants are centralized in `src/configs/` rather than inline
 - Mobile breakpoint: 500px (`mobile.break_point` in constants)
+
+### RPG Notes Click-to-Edit Pattern
+
+- `editingField` state + `editingFieldRef` (useRef) to guard useEffect syncs
+- Text fields: click to reveal input, save on blur/Enter
+- Textarea fields: click to reveal textarea, explicit "Save" button
+- Dropdowns: always visible, save on change
+- Name renames update `[[OldName]]` refs in session notes
+- Delete button at bottom of every detail view
+- Form components are add-only; all editing happens in detail views
+- Reference implementation: `quest_detail.tsx`
+
+### TTRPG Single-Document Firestore Storage
+
+- All campaign data in one doc: `ttrpg_campaigns/{campaignId}` with nested maps (sessions, members, notes, lore, quests, party_resources)
+- Real-time via `onSnapshot` in `use_ttrpg_campaign_data.tsx`
+- Writes use dot-notation paths: `"lore.{id}.name"` for field updates
+- Deletions use `deleteField()` for entities or optional fields
+- Creates use `setDoc` with `{ merge: true }`
+- Firebase hooks handle raw Firestore; `useTtrpgCampaignData` wraps with campaignId injection

@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef } from "react"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
-import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
+import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES, QUEST_COLOR, QUEST_LABEL, PROJECT_COLOR, PROJECT_LABEL } from "../../configs/ttrpg_constants"
 import { MEMBER_COLOR } from "./slash_command_types"
 import SlashCommandResultRow from "./slash_command_result_row"
 
 interface SlashCommandModalProps {
     loreEntries: TtrpgLoreEntry[]
     members: TtrpgMember[]
+    quests?: TtrpgQuest[]
+    projects?: TtrpgProject[]
     onSelect: (name: string) => void
     onCreateLore: (name: string, type: LoreEntryType) => void
     onDismiss: () => void
@@ -23,6 +27,8 @@ interface ResultItem {
 export default function SlashCommandModal({
     loreEntries,
     members,
+    quests,
+    projects,
     onSelect,
     onCreateLore,
     onDismiss
@@ -42,12 +48,22 @@ export default function SlashCommandModal({
         .slice(0, 4)
         .map(m => ({ key: "m-" + m.id, name: m.name, label: "Player", labelColor: MEMBER_COLOR }))
 
+    const questResults: ResultItem[] = (quests || [])
+        .filter(q => q.short_title.toLowerCase().includes(search))
+        .slice(0, 4)
+        .map(q => ({ key: "q-" + q.id, name: q.short_title, label: QUEST_LABEL, labelColor: QUEST_COLOR }))
+
+    const projectResults: ResultItem[] = (projects || [])
+        .filter(p => p.title.toLowerCase().includes(search))
+        .slice(0, 4)
+        .map(p => ({ key: "p-" + p.id, name: p.title, label: PROJECT_LABEL, labelColor: PROJECT_COLOR }))
+
     const loreResults: ResultItem[] = loreEntries
         .filter(e => e.name.toLowerCase().includes(search))
         .slice(0, 6)
         .map(e => ({ key: "l-" + e.id, name: e.name, label: LORE_LABELS[e.type], labelColor: LORE_COLORS[e.type] }))
 
-    const allResults = [...memberResults, ...loreResults]
+    const allResults = [...memberResults, ...questResults, ...projectResults, ...loreResults]
 
     useEffect(() => {
         setSelectedIndex(0)
@@ -110,7 +126,7 @@ export default function SlashCommandModal({
                         value={searchText}
                         onChange={e => setSearchText(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Search lore and players..."
+                        placeholder="Search quests, lore, and players..."
                         style={{
                             flex: 1,
                             padding: "0.5rem",

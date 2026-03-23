@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
@@ -8,6 +9,7 @@ import MemberInventory from "./member_inventory"
 import MemberFollowers from "./member_followers"
 import MemberTitles from "./member_titles"
 import LoreNoteText from "./lore_note_text"
+import AutoResizeTextarea from "./auto_resize_textarea"
 import { cardStyle } from "../../pages/ttrpg/campaign_detail_styles"
 
 interface CampaignData {
@@ -24,6 +26,10 @@ interface MemberDetailViewProps {
     data: CampaignData
     membersHook: {
         updateMember: (id: string, member: Partial<TtrpgMember>) => Promise<void>
+        deleteMember: (id: string) => Promise<void>
+    }
+    notesHook: {
+        updateNote: (id: string, note: Partial<TtrpgSessionNote>) => Promise<void>
     }
     partyResourcesHook: {
         unassignItemFromMember: (
@@ -47,17 +53,31 @@ interface MemberDetailViewProps {
     cameFromSessionId: string | null
     backToOriginSession: () => void
     clearCameFromSessionId: () => void
-    onEdit: () => void
     onBack: () => void
+    onDelete: () => void
 }
 
 export default function MemberDetailView({
-    member, campaignId, data, membersHook, partyResourcesHook,
+    member, campaignId, data, membersHook, notesHook, partyResourcesHook,
     updateMembers, updatePartyResources,
     openLoreDetail, openMemberDetail, goToSession,
     cameFromSessionId, backToOriginSession, clearCameFromSessionId,
-    onEdit, onBack
+    onBack, onDelete
 }: MemberDetailViewProps) {
+
+    const [editingField, setEditingField] = useState<"name" | "played_by" | "notes" | null>(null)
+    const editingFieldRef = useRef(editingField)
+    editingFieldRef.current = editingField
+
+    const [draftName, setDraftName] = useState(member.name)
+    const [draftPlayedBy, setDraftPlayedBy] = useState(member.played_by || "")
+    const [draftNotes, setDraftNotes] = useState(member.notes || "")
+
+    useEffect(() => {
+        if (editingFieldRef.current !== "name") setDraftName(member.name)
+        if (editingFieldRef.current !== "played_by") setDraftPlayedBy(member.played_by || "")
+        if (editingFieldRef.current !== "notes") setDraftNotes(member.notes || "")
+    }, [member])
 
     function handleWealthChange(newVal: number) {
         const prev = member.wealth
@@ -77,6 +97,54 @@ export default function MemberDetailView({
                 alert("Error saving renown — reverting")
                 updateMembers(ms => ms.map(m => m.id === member.id ? { ...m, renown: prev } : m))
             })
+    }
+
+    async function saveName() {
+        setEditingField(null)
+        const trimmed = draftName.trim()
+        if (!trimmed || trimmed === member.name) return
+        try {
+            await membersHook.updateMember(member.id, { name: trimmed })
+            const pattern = new RegExp(`\\[\\[${member.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]\\]`, "gi")
+            for (const note of data.notes) {
+                if (pattern.test(note.text)) {
+                    await notesHook.updateNote(note.id, { text: note.text.replace(pattern, `[[${trimmed}]]`) })
+                }
+            }
+        } catch (error) {
+            console.error("Error updating member name:", error)
+        }
+    }
+
+    async function savePlayedBy() {
+        setEditingField(null)
+        if (draftPlayedBy === (member.played_by || "")) return
+        try {
+            await membersHook.updateMember(member.id, { played_by: draftPlayedBy.trim() })
+        } catch (error) {
+            console.error("Error updating played_by:", error)
+        }
+    }
+
+    async function saveNotes() {
+        setEditingField(null)
+        if (draftNotes === (member.notes || "")) return
+        try {
+            await membersHook.updateMember(member.id, { notes: draftNotes })
+        } catch (error) {
+            console.error("Error updating member notes:", error)
+        }
+    }
+
+    async function handleDelete() {
+        if (!confirm("Are you sure you want to remove this party member?")) return
+        try {
+            await membersHook.deleteMember(member.id)
+            onDelete()
+        } catch (error) {
+            console.error("Error deleting member:", error)
+            alert("Error deleting member")
+        }
     }
 
     const mentions: { note: TtrpgSessionNote; session: TtrpgSession }[] = []
@@ -99,14 +167,83 @@ export default function MemberDetailView({
             </div>
 
             <div style={{ ...cardStyle, backgroundColor: "#f3e8ff" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                    <div>
-                        <strong style={{ fontSize: "1.2rem" }}>{member.name}</strong>
-                        {member.played_by && <span style={{ fontStyle: "italic", color: "#666", marginLeft: "0.5rem" }}>({member.played_by})</span>}
-                    </div>
-                    <button onClick={onEdit}>Edit</button>
+                {/* Name — click to edit */}
+                <div style={{ marginBottom: "0.5rem" }}>
+                    {editingField === "name" ? (
+                        <input
+                            type="text"
+                            value={draftName}
+                            onChange={e => setDraftName(e.target.value)}
+                            onBlur={saveName}
+                            onKeyDown={e => { if (e.key === "Enter") saveName() }}
+                            autoFocus
+                            style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box", fontSize: "1.2rem", fontWeight: "bold" }}
+                        />
+                    ) : (
+                        <strong
+                            style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                            onClick={() => { setDraftName(member.name); setEditingField("name") }}
+                            title="Click to edit"
+                        >
+                            {member.name}
+                        </strong>
+                    )}
                 </div>
-                {member.notes && <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{member.notes}</div>}
+
+                {/* Played By — click to edit */}
+                {editingField === "played_by" ? (
+                    <div style={{ marginBottom: "0.75rem" }}>
+                        <input
+                            type="text"
+                            value={draftPlayedBy}
+                            onChange={e => setDraftPlayedBy(e.target.value)}
+                            onBlur={savePlayedBy}
+                            onKeyDown={e => { if (e.key === "Enter") savePlayedBy() }}
+                            autoFocus
+                            placeholder="Player name"
+                            style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box" }}
+                        />
+                    </div>
+                ) : (
+                    <div
+                        onClick={() => { setDraftPlayedBy(member.played_by || ""); setEditingField("played_by") }}
+                        style={{
+                            fontStyle: "italic",
+                            color: member.played_by ? "#666" : "#999",
+                            marginBottom: "0.75rem",
+                            cursor: "pointer"
+                        }}
+                        title="Click to edit"
+                    >
+                        {member.played_by ? `(${member.played_by})` : "Click to add player..."}
+                    </div>
+                )}
+
+                {/* Notes — click to edit */}
+                {editingField === "notes" ? (
+                    <div style={{ marginBottom: "0.75rem" }}>
+                        <AutoResizeTextarea
+                            value={draftNotes}
+                            onChange={e => setDraftNotes(e.target.value)}
+                            placeholder="Notes about this member..."
+                        />
+                        <button onClick={saveNotes} style={{ marginTop: "0.25rem" }}>Save</button>
+                    </div>
+                ) : (
+                    <div
+                        onClick={() => { setDraftNotes(member.notes || ""); setEditingField("notes") }}
+                        style={{
+                            fontStyle: member.notes ? "italic" : "normal",
+                            color: member.notes ? "#555" : "#999",
+                            marginBottom: "0.75rem",
+                            cursor: "pointer",
+                            minHeight: "1.2em"
+                        }}
+                        title="Click to edit"
+                    >
+                        {member.notes || "Click to add notes..."}
+                    </div>
+                )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
                     <StatCounter label="Wealth" value={member.wealth} min={0} max={5} onChange={handleWealthChange} />
@@ -154,6 +291,16 @@ export default function MemberDetailView({
                         <div style={{ color: "#666", fontSize: "0.9rem" }}>No session mentions yet.</div>
                     </>
                 )}
+
+                {/* Delete button */}
+                <div style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
+                    <button
+                        onClick={handleDelete}
+                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                    >
+                        Remove Member
+                    </button>
+                </div>
             </div>
         </div>
     )

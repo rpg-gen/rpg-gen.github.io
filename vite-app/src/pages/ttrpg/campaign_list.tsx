@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import useFirebaseTtrpgCampaigns from "../../hooks/ttrpg/use_firebase_ttrpg_campaigns"
+import { readDemoCampaign } from "../../hooks/ttrpg/demo_storage"
+import { DEMO_CAMPAIGN_ID } from "../../data/demo_campaign"
 import TtrpgCampaign from "../../types/ttrpg/TtrpgCampaign"
 import FullPageOverlay from "../../components/full_page_overlay"
 import { nav_paths, page_layout } from "../../configs/constants"
@@ -11,6 +13,7 @@ export default function CampaignList() {
     const navigate = useNavigate()
     const campaignsHook = useFirebaseTtrpgCampaigns()
     const user_context = useContext(UserContext)
+    const isDemoMode = !user_context.is_logged_in
 
     const [campaigns, setCampaigns] = useState<TtrpgCampaign[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -19,15 +22,20 @@ export default function CampaignList() {
     useEffect(() => {
         loadCampaigns()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [isDemoMode])
 
     async function loadCampaigns() {
         setIsLoading(true)
-        try {
-            const loaded = await campaignsHook.getAllCampaigns()
-            setCampaigns(loaded)
-        } catch (error) {
-            console.error("Error loading campaigns:", error)
+        if (isDemoMode) {
+            const raw = readDemoCampaign()
+            setCampaigns([{ id: raw.id, name: raw.name, created_at: raw.created_at, created_by: raw.created_by }])
+        } else {
+            try {
+                const loaded = await campaignsHook.getAllCampaigns()
+                setCampaigns(loaded)
+            } catch (error) {
+                console.error("Error loading campaigns:", error)
+            }
         }
         setIsLoading(false)
     }
@@ -37,7 +45,6 @@ export default function CampaignList() {
             alert("Campaign name is required")
             return
         }
-
         try {
             await campaignsHook.createCampaign({
                 name: newCampaignName.trim(),
@@ -63,6 +70,10 @@ export default function CampaignList() {
         }
     }
 
+    function getCampaignPath(id: string) {
+        return nav_paths.rpg_notes + "/" + (isDemoMode ? DEMO_CAMPAIGN_ID : id)
+    }
+
     if (isLoading) {
         return <FullPageOverlay><div style={page_layout.container}>Loading campaigns...</div></FullPageOverlay>
     }
@@ -76,20 +87,22 @@ export default function CampaignList() {
                     <button onClick={() => navigate("/")}>Back to Menu</button>
                 </div>
 
-                <div style={{ marginBottom: "2rem", padding: "1rem", border: "1px solid #ccc", backgroundColor: "#fff", color: "#222", borderRadius: "4px" }}>
-                    <h3 style={{ marginTop: 0 }}>Create New Campaign</h3>
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <input
-                            type="text"
-                            value={newCampaignName}
-                            onChange={(e) => setNewCampaignName(e.target.value)}
-                            placeholder="Campaign name"
-                            style={{ flex: 1, padding: "0.5rem" }}
-                            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-                        />
-                        <button onClick={handleCreate} style={primaryButtonStyle}>Create</button>
+                {!isDemoMode && (
+                    <div style={{ marginBottom: "2rem", padding: "1rem", border: "1px solid #ccc", backgroundColor: "#fff", color: "#222", borderRadius: "4px" }}>
+                        <h3 style={{ marginTop: 0 }}>Create New Campaign</h3>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                            <input
+                                type="text"
+                                value={newCampaignName}
+                                onChange={(e) => setNewCampaignName(e.target.value)}
+                                placeholder="Campaign name"
+                                style={{ flex: 1, padding: "0.5rem" }}
+                                onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                            />
+                            <button onClick={handleCreate} style={primaryButtonStyle}>Create</button>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div>
                     <h3>Campaigns ({campaigns.length})</h3>
@@ -115,17 +128,19 @@ export default function CampaignList() {
                             >
                                 <div
                                     style={{ flex: 1, cursor: "pointer" }}
-                                    onClick={() => navigate(nav_paths.rpg_notes + "/" + campaign.id)}
+                                    onClick={() => navigate(getCampaignPath(campaign.id))}
                                 >
                                     {campaign.name}
                                 </div>
-                                <button onClick={() => navigate(nav_paths.rpg_notes + "/" + campaign.id)}>Open</button>
-                                <button
-                                    onClick={() => handleDelete(campaign.id)}
-                                    style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.25rem 0.5rem", cursor: "pointer" }}
-                                >
-                                    Delete
-                                </button>
+                                <button onClick={() => navigate(getCampaignPath(campaign.id))}>Open</button>
+                                {!isDemoMode && (
+                                    <button
+                                        onClick={() => handleDelete(campaign.id)}
+                                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.25rem 0.5rem", cursor: "pointer" }}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
                             </div>
                         ))
                     )}

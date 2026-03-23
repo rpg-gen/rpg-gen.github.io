@@ -5,83 +5,24 @@ import useFirebaseTtrpgSessions from "./use_firebase_ttrpg_sessions"
 import useFirebaseTtrpgMembers from "./use_firebase_ttrpg_members"
 import useFirebaseTtrpgSessionNotes from "./use_firebase_ttrpg_session_notes"
 import useFirebaseTtrpgLore from "./use_firebase_ttrpg_lore"
+import useFirebaseTtrpgQuests from "./use_firebase_ttrpg_quests"
+import useFirebaseTtrpgProjects from "./use_firebase_ttrpg_projects"
 import useFirebaseTtrpgPartyResources from "./use_firebase_ttrpg_party_resources"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
+import { TtrpgProjectContribution } from "../../types/ttrpg/TtrpgProject"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
-import { TtrpgSessionData, TtrpgMemberData, TtrpgNoteData, TtrpgLoreData, TtrpgPartyResourcesData } from "../../types/ttrpg/TtrpgCampaign"
 import { assignSessionNumbers } from "../../utility/ttrpg_session_helpers"
 import { DEFAULT_PARTY_RESOURCES } from "../../configs/ttrpg_constants"
-
-interface TtrpgCampaignData {
-    sessions: TtrpgSession[]
-    members: TtrpgMember[]
-    notes: TtrpgSessionNote[]
-    lore: TtrpgLoreEntry[]
-    partyResources: TtrpgPartyResources
-}
-
-function parseSessionsMap(campaignId: string, map: Record<string, TtrpgSessionData>): TtrpgSession[] {
-    return Object.entries(map).map(([id, s]) => ({
-        id,
-        campaign_id: campaignId,
-        session_number: s.session_number,
-        date: s.date,
-        title: s.title,
-        respite_count: s.respite_count
-    })).sort((a, b) => a.date.localeCompare(b.date))
-}
-
-function parseMembersMap(campaignId: string, map: Record<string, TtrpgMemberData>): TtrpgMember[] {
-    return Object.entries(map).map(([id, m]) => ({
-        id,
-        campaign_id: campaignId,
-        name: m.name,
-        played_by: m.played_by,
-        notes: m.notes,
-        items: m.items || [],
-        wealth: m.wealth ?? 0,
-        renown: m.renown ?? 0,
-        followers: m.followers || [],
-        titles: m.titles || []
-    })).sort((a, b) => a.name.localeCompare(b.name))
-}
-
-function parsePartyResources(data: TtrpgPartyResourcesData | undefined): TtrpgPartyResources {
-    return {
-        hero_tokens: data?.hero_tokens ?? 0,
-        victories: data?.victories ?? 0,
-        exp: data?.exp ?? 0,
-        unassigned_items: data?.unassigned_items || [],
-        unassigned_followers: data?.unassigned_followers || []
-    }
-}
-
-function parseNotesMap(campaignId: string, map: Record<string, TtrpgNoteData>): TtrpgSessionNote[] {
-    return Object.entries(map).map(([id, n]) => ({
-        id,
-        campaign_id: campaignId,
-        session_id: n.session_id,
-        text: n.text,
-        author: n.author,
-        created_at: n.created_at || "",
-        updated_at: n.updated_at || ""
-    })).sort((a, b) => a.created_at.localeCompare(b.created_at))
-}
-
-function parseLoreMap(campaignId: string, map: Record<string, TtrpgLoreData>): TtrpgLoreEntry[] {
-    return Object.entries(map).map(([id, l]) => ({
-        id,
-        campaign_id: campaignId,
-        type: l.type,
-        name: l.name,
-        subtitle: l.notes,
-        created_at: l.created_at || "",
-        ...(l.session_id ? { session_id: l.session_id } : {})
-    })).reverse()
-}
+import {
+    TtrpgCampaignData,
+    parseSessionsMap, parseMembersMap, parseNotesMap,
+    parseLoreMap, parseQuestsMap, parseProjectsMap, parsePartyResources
+} from "../../utility/ttrpg_campaign_parsers"
 
 export default function useTtrpgCampaignData() {
     const db = getFirestore(useFirebaseProject())
@@ -89,6 +30,8 @@ export default function useTtrpgCampaignData() {
     const rawMembersHook = useFirebaseTtrpgMembers()
     const rawNotesHook = useFirebaseTtrpgSessionNotes()
     const rawLoreHook = useFirebaseTtrpgLore()
+    const rawQuestsHook = useFirebaseTtrpgQuests()
+    const rawProjectsHook = useFirebaseTtrpgProjects()
     const rawPartyResourcesHook = useFirebaseTtrpgPartyResources()
 
     const campaignIdRef = useRef<string>("")
@@ -98,6 +41,8 @@ export default function useTtrpgCampaignData() {
         members: [],
         notes: [],
         lore: [],
+        quests: [],
+        projects: [],
         partyResources: { ...DEFAULT_PARTY_RESOURCES }
     })
     const [isLoading, setIsLoading] = useState(false)
@@ -143,6 +88,30 @@ export default function useTtrpgCampaignData() {
             rawLoreHook.deleteLoreEntry(campaignIdRef.current, id),
     }
 
+    // Adapter: wraps the quests hook — injects campaignId
+    const questsHook = {
+        createQuest: (quest: Omit<TtrpgQuest, 'id' | 'campaign_id'>) =>
+            rawQuestsHook.createQuest(campaignIdRef.current, quest),
+        updateQuest: (id: string, quest: Partial<Omit<TtrpgQuest, 'id' | 'campaign_id'>>) =>
+            rawQuestsHook.updateQuest(campaignIdRef.current, id, quest),
+        deleteQuest: (id: string) =>
+            rawQuestsHook.deleteQuest(campaignIdRef.current, id),
+    }
+
+    // Adapter: wraps the projects hook — injects campaignId
+    const projectsHook = {
+        createProject: (project: Pick<TtrpgProject, 'title' | 'description' | 'point_total'>) =>
+            rawProjectsHook.createProject(campaignIdRef.current, project),
+        updateProject: (id: string, updates: Partial<Omit<TtrpgProject, 'id' | 'campaign_id'>>) =>
+            rawProjectsHook.updateProject(campaignIdRef.current, id, updates),
+        addContribution: (...args: Parameters<typeof rawProjectsHook.addContribution> extends [string, ...infer R] ? R : never) =>
+            rawProjectsHook.addContribution(campaignIdRef.current, ...args),
+        updateContributions: (projectId: string, contributions: TtrpgProjectContribution[]) =>
+            rawProjectsHook.updateContributions(campaignIdRef.current, projectId, contributions),
+        deleteProject: (id: string) =>
+            rawProjectsHook.deleteProject(campaignIdRef.current, id),
+    }
+
     function subscribe(campaignId: string) {
         campaignIdRef.current = campaignId
         setIsLoading(true)
@@ -150,7 +119,7 @@ export default function useTtrpgCampaignData() {
         const docRef = doc(db, "ttrpg_campaigns", campaignId)
         const unsub = onSnapshot(docRef, (snapshot) => {
             if (!snapshot.exists()) {
-                setData({ sessions: [], members: [], notes: [], lore: [], partyResources: { ...DEFAULT_PARTY_RESOURCES } })
+                setData({ sessions: [], members: [], notes: [], lore: [], quests: [], projects: [], partyResources: { ...DEFAULT_PARTY_RESOURCES } })
                 setIsLoading(false)
                 return
             }
@@ -161,9 +130,11 @@ export default function useTtrpgCampaignData() {
             const members = parseMembersMap(campaignId, docData.members || {})
             const notes = parseNotesMap(campaignId, docData.notes || {})
             const lore = parseLoreMap(campaignId, docData.lore || {})
+            const quests = parseQuestsMap(campaignId, docData.quests || {})
+            const projects = parseProjectsMap(campaignId, docData.projects || {})
             const partyResources = parsePartyResources(docData.party_resources)
 
-            setData({ sessions, members, notes, lore, partyResources })
+            setData({ sessions, members, notes, lore, quests, projects, partyResources })
             setIsLoading(false)
 
             // Session number healing (fire-and-forget)
@@ -197,6 +168,14 @@ export default function useTtrpgCampaignData() {
         setData(prev => ({ ...prev, sessions: updater(prev.sessions) }))
     }
 
+    function updateQuests(updater: (quests: TtrpgQuest[]) => TtrpgQuest[]) {
+        setData(prev => ({ ...prev, quests: updater(prev.quests) }))
+    }
+
+    function updateProjects(updater: (projects: TtrpgProject[]) => TtrpgProject[]) {
+        setData(prev => ({ ...prev, projects: updater(prev.projects) }))
+    }
+
     function updatePartyResources(updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) {
         setData(prev => ({ ...prev, partyResources: updater(prev.partyResources) }))
     }
@@ -207,11 +186,15 @@ export default function useTtrpgCampaignData() {
         subscribe,
         updateMembers,
         updateSessions,
+        updateQuests,
+        updateProjects,
         updatePartyResources,
         sessionsHook,
         membersHook,
         notesHook,
         loreHook,
+        questsHook,
+        projectsHook,
         partyResourcesHook
     }
 }

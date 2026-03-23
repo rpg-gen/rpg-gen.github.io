@@ -32,6 +32,12 @@ export const DEFAULT_PARTY_RESOURCES: TtrpgPartyResources = {
     unassigned_followers: []
 }
 
+export const QUEST_COLOR = "#fff9c4"
+export const QUEST_LABEL = "Quest"
+
+export const PROJECT_COLOR = "#e6d7f7"
+export const PROJECT_LABEL = "Project"
+
 export const FOLLOWER_TYPES = ["sage", "crafter"] as const
 
 export const FOLLOWER_LABELS: Record<string, string> = {

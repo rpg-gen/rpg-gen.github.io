@@ -31,8 +31,19 @@ export default function PartyResourcesPanel({
     const [newFollowerName, setNewFollowerName] = useState("")
     const [newFollowerType, setNewFollowerType] = useState<"sage" | "crafter">("sage")
     const [newFollowerBonus, setNewFollowerBonus] = useState("0")
-    const [assigningItemIdx, setAssigningItemIdx] = useState<number | null>(null)
-    const [assigningFollowerIdx, setAssigningFollowerIdx] = useState<number | null>(null)
+
+    // Modal state for selected unassigned item
+    const [selectedItemIdx, setSelectedItemIdx] = useState<number | null>(null)
+    const [editItemName, setEditItemName] = useState("")
+    const [editItemQty, setEditItemQty] = useState("1")
+    const [showItemAssign, setShowItemAssign] = useState(false)
+
+    // Modal state for selected unassigned follower
+    const [selectedFollowerIdx, setSelectedFollowerIdx] = useState<number | null>(null)
+    const [editFollowerName, setEditFollowerName] = useState("")
+    const [editFollowerType, setEditFollowerType] = useState<"sage" | "crafter">("sage")
+    const [editFollowerBonus, setEditFollowerBonus] = useState("0")
+    const [showFollowerAssign, setShowFollowerAssign] = useState(false)
 
     function handleCounterChange(field: "hero_tokens" | "victories" | "exp", newVal: number) {
         const prev = partyResources[field]
@@ -64,13 +75,38 @@ export default function PartyResourcesPanel({
         catch { alert("Error adding follower — reverting"); updatePartyResources(pr => ({ ...pr, unassigned_followers: prev })) }
     }
 
+    async function handleEditItem(idx: number) {
+        if (!editItemName.trim()) { alert("Item name is required"); return }
+        const prev = partyResources.unassigned_items
+        const updated = prev.map((item, i) =>
+            i === idx ? { name: editItemName.trim(), quantity: parseInt(editItemQty) || 1 } : item
+        )
+        updatePartyResources(pr => ({ ...pr, unassigned_items: updated }))
+        setSelectedItemIdx(null)
+        try { await partyResourcesHook.updatePartyResources({ unassigned_items: updated }) }
+        catch { alert("Error saving item — reverting"); updatePartyResources(pr => ({ ...pr, unassigned_items: prev })) }
+    }
+
     async function handleRemoveItem(idx: number) {
         if (!confirm("Remove this item?")) return
         const prev = partyResources.unassigned_items
         const updated = prev.filter((_, i) => i !== idx)
         updatePartyResources(pr => ({ ...pr, unassigned_items: updated }))
+        setSelectedItemIdx(null)
         try { await partyResourcesHook.updatePartyResources({ unassigned_items: updated }) }
         catch { alert("Error removing item — reverting"); updatePartyResources(pr => ({ ...pr, unassigned_items: prev })) }
+    }
+
+    async function handleEditFollower(idx: number) {
+        if (!editFollowerName.trim()) { alert("Follower name is required"); return }
+        const prev = partyResources.unassigned_followers
+        const updated = prev.map((f, i) =>
+            i === idx ? { name: editFollowerName.trim(), type: editFollowerType, roll_bonus: parseInt(editFollowerBonus) || 0 } : f
+        )
+        updatePartyResources(pr => ({ ...pr, unassigned_followers: updated }))
+        setSelectedFollowerIdx(null)
+        try { await partyResourcesHook.updatePartyResources({ unassigned_followers: updated }) }
+        catch { alert("Error saving follower — reverting"); updatePartyResources(pr => ({ ...pr, unassigned_followers: prev })) }
     }
 
     async function handleRemoveFollower(idx: number) {
@@ -78,6 +114,7 @@ export default function PartyResourcesPanel({
         const prev = partyResources.unassigned_followers
         const updated = prev.filter((_, i) => i !== idx)
         updatePartyResources(pr => ({ ...pr, unassigned_followers: updated }))
+        setSelectedFollowerIdx(null)
         try { await partyResourcesHook.updatePartyResources({ unassigned_followers: updated }) }
         catch { alert("Error removing follower — reverting"); updatePartyResources(pr => ({ ...pr, unassigned_followers: prev })) }
     }
@@ -99,7 +136,7 @@ export default function PartyResourcesPanel({
             }
             return { ...m, items: [...m.items, item] }
         }))
-        setAssigningItemIdx(null)
+        setSelectedItemIdx(null); setShowItemAssign(false)
 
         try {
             await partyResourcesHook.assignItemToMember(campaignId, memberId, item, remaining, member.items)
@@ -120,7 +157,7 @@ export default function PartyResourcesPanel({
 
         updatePartyResources(pr => ({ ...pr, unassigned_followers: remaining }))
         updateMembers(ms => ms.map(m => m.id === memberId ? { ...m, followers: [...m.followers, follower] } : m))
-        setAssigningFollowerIdx(null)
+        setSelectedFollowerIdx(null); setShowFollowerAssign(false)
 
         try {
             await partyResourcesHook.assignFollowerToMember(campaignId, memberId, follower, remaining, member.followers)
@@ -130,6 +167,9 @@ export default function PartyResourcesPanel({
             updateMembers(ms => ms.map(m => m.id === memberId ? { ...m, followers: prevMemberFollowers } : m))
         }
     }
+
+    function closeItemModal() { setSelectedItemIdx(null); setShowItemAssign(false) }
+    function closeFollowerModal() { setSelectedFollowerIdx(null); setShowFollowerAssign(false) }
 
     return (
         <div style={{ ...cardStyle, backgroundColor: "#e8f4f8", marginBottom: "1rem" }}>
@@ -141,26 +181,50 @@ export default function PartyResourcesPanel({
                 <StatCounter label="EXP" value={partyResources.exp} min={0} onChange={(v) => handleCounterChange("exp", v)} />
             </div>
 
+            {/* Unassigned Items */}
             <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.5rem", marginBottom: "0.75rem" }}>
                 <strong style={{ fontSize: "0.9rem" }}>Unassigned Items</strong>
                 {partyResources.unassigned_items.map((item, idx) => (
-                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
-                        <span style={{ flex: 1 }}>{item.name} x{item.quantity}</span>
-                        {assigningItemIdx === idx ? (
-                            <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
-                                {members.map(m => (
-                                    <button key={m.id} onClick={() => handleAssignItem(idx, m.id)} style={{ fontSize: "0.75rem" }}>{m.name}</button>
-                                ))}
-                                <button onClick={() => setAssigningItemIdx(null)} style={{ fontSize: "0.75rem" }}>Cancel</button>
-                            </div>
-                        ) : (
-                            <>
-                                <button onClick={() => setAssigningItemIdx(idx)} style={{ fontSize: "0.8rem" }}>Assign</button>
-                                <button onClick={() => handleRemoveItem(idx)} style={{ fontSize: "0.8rem" }}>x</button>
-                            </>
-                        )}
+                    <div key={idx}
+                        onClick={() => { setSelectedItemIdx(idx); setEditItemName(item.name); setEditItemQty(String(item.quantity)); setShowItemAssign(false) }}
+                        style={{ padding: "0.25rem 0", cursor: "pointer", color: "#336", textDecoration: "underline", textDecorationColor: "#ccc" }}
+                    >
+                        {item.name} x{item.quantity}
                     </div>
                 ))}
+
+                {selectedItemIdx !== null && partyResources.unassigned_items[selectedItemIdx] && (
+                    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                        onClick={closeItemModal}>
+                        <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                            onClick={e => e.stopPropagation()}>
+                            <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Item</strong>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                            <input type="text" value={editItemName} onChange={e => setEditItemName(e.target.value)}
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
+                            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                                <button onClick={() => setEditItemQty(String(Math.max(1, (parseInt(editItemQty) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                                <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>{editItemQty}</span>
+                                <button onClick={() => setEditItemQty(String((parseInt(editItemQty) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                            </div>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                                <button onClick={() => handleEditItem(selectedItemIdx)} style={primaryButtonSmallStyle}>Save</button>
+                                <button onClick={() => setShowItemAssign(!showItemAssign)} style={{ fontSize: "0.8rem" }}>Assign</button>
+                                <button onClick={() => handleRemoveItem(selectedItemIdx)} style={{ fontSize: "0.8rem", color: "#c0392b" }}>Remove</button>
+                                <button onClick={closeItemModal} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                            </div>
+                            {showItemAssign && (
+                                <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
+                                    {members.map(m => (
+                                        <button key={m.id} onClick={() => handleAssignItem(selectedItemIdx, m.id)} style={{ fontSize: "0.75rem" }}>{m.name}</button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {addingItem ? (
                     <div style={{ marginTop: "0.5rem" }}>
                         <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="Item name"
@@ -178,26 +242,55 @@ export default function PartyResourcesPanel({
                 )}
             </div>
 
+            {/* Unassigned Followers */}
             <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.5rem" }}>
                 <strong style={{ fontSize: "0.9rem" }}>Unassigned Followers</strong>
                 {partyResources.unassigned_followers.map((f, idx) => (
-                    <div key={idx} style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
-                        <span style={{ flex: 1 }}>{f.name} ({FOLLOWER_LABELS[f.type]}, +{f.roll_bonus})</span>
-                        {assigningFollowerIdx === idx ? (
-                            <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
-                                {members.map(m => (
-                                    <button key={m.id} onClick={() => handleAssignFollower(idx, m.id)} style={{ fontSize: "0.75rem" }}>{m.name}</button>
-                                ))}
-                                <button onClick={() => setAssigningFollowerIdx(null)} style={{ fontSize: "0.75rem" }}>Cancel</button>
-                            </div>
-                        ) : (
-                            <>
-                                <button onClick={() => setAssigningFollowerIdx(idx)} style={{ fontSize: "0.8rem" }}>Assign</button>
-                                <button onClick={() => handleRemoveFollower(idx)} style={{ fontSize: "0.8rem" }}>x</button>
-                            </>
-                        )}
+                    <div key={idx}
+                        onClick={() => { setSelectedFollowerIdx(idx); setEditFollowerName(f.name); setEditFollowerType(f.type); setEditFollowerBonus(String(f.roll_bonus)); setShowFollowerAssign(false) }}
+                        style={{ padding: "0.25rem 0", cursor: "pointer", color: "#336", textDecoration: "underline", textDecorationColor: "#ccc" }}
+                    >
+                        {f.name} ({FOLLOWER_LABELS[f.type]}, +{f.roll_bonus})
                     </div>
                 ))}
+
+                {selectedFollowerIdx !== null && partyResources.unassigned_followers[selectedFollowerIdx] && (
+                    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                        onClick={closeFollowerModal}>
+                        <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                            onClick={e => e.stopPropagation()}>
+                            <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Follower</strong>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                            <input type="text" value={editFollowerName} onChange={e => setEditFollowerName(e.target.value)}
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Type</label>
+                            <select value={editFollowerType} onChange={e => setEditFollowerType(e.target.value as "sage" | "crafter")}
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }}>
+                                {FOLLOWER_TYPES.map(t => <option key={t} value={t}>{FOLLOWER_LABELS[t]}</option>)}
+                            </select>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Roll Bonus</label>
+                            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                                <button onClick={() => setEditFollowerBonus(String(Math.max(0, (parseInt(editFollowerBonus) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                                <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>+{editFollowerBonus}</span>
+                                <button onClick={() => setEditFollowerBonus(String((parseInt(editFollowerBonus) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                            </div>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                                <button onClick={() => handleEditFollower(selectedFollowerIdx)} style={primaryButtonSmallStyle}>Save</button>
+                                <button onClick={() => setShowFollowerAssign(!showFollowerAssign)} style={{ fontSize: "0.8rem" }}>Assign</button>
+                                <button onClick={() => handleRemoveFollower(selectedFollowerIdx)} style={{ fontSize: "0.8rem", color: "#c0392b" }}>Remove</button>
+                                <button onClick={closeFollowerModal} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                            </div>
+                            {showFollowerAssign && (
+                                <div style={{ marginTop: "0.5rem", display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
+                                    {members.map(m => (
+                                        <button key={m.id} onClick={() => handleAssignFollower(selectedFollowerIdx, m.id)} style={{ fontSize: "0.75rem" }}>{m.name}</button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {addingFollower ? (
                     <div style={{ marginTop: "0.5rem" }}>
                         <input type="text" value={newFollowerName} onChange={e => setNewFollowerName(e.target.value)} placeholder="Follower name"

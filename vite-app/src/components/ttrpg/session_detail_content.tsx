@@ -3,6 +3,8 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import LoreNoteText from "./lore_note_text"
 import NoteEditModal from "./note_edit_modal"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
@@ -12,6 +14,8 @@ interface CampaignData {
     members: TtrpgMember[]
     notes: TtrpgSessionNote[]
     lore: TtrpgLoreEntry[]
+    quests: TtrpgQuest[]
+    projects: TtrpgProject[]
 }
 
 interface NotesHook {
@@ -26,6 +30,8 @@ interface SessionDetailContentProps {
     notesHook: NotesHook
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
+    openQuestDetail?: (questId: string) => void
+    openProjectDetail?: (projectId: string) => void
     handleSlashCreateLore: (name: string, type: LoreEntryType, sessionId?: string) => Promise<void>
     username: string
     highlightNoteId?: string | null
@@ -37,6 +43,8 @@ export default function SessionDetailContent({
     notesHook,
     openLoreDetail,
     openMemberDetail,
+    openQuestDetail,
+    openProjectDetail,
     handleSlashCreateLore,
     username,
     highlightNoteId
@@ -135,7 +143,7 @@ export default function SessionDetailContent({
                     }}
                 >
                     <div style={{ whiteSpace: "pre-wrap" }}>
-                        <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
+                        <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} quests={data.quests} projects={data.projects} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} onQuestClick={openQuestDetail} onProjectClick={openProjectDetail} />
                     </div>
                 </div>
                 )
@@ -159,6 +167,8 @@ export default function SessionDetailContent({
                     otherSessions={otherSessions}
                     loreEntries={data.lore}
                     members={data.members}
+                    quests={data.quests}
+                    projects={data.projects}
                     onCreateLore={(name, type) => handleSlashCreateLore(name, type, sessionId)}
                 />
             )}

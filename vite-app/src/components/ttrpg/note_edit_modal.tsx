@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import SlashCommandTextarea from "./slash_command_textarea"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
 
@@ -15,12 +17,14 @@ interface NoteEditModalProps {
     otherSessions: TtrpgSession[]
     loreEntries: TtrpgLoreEntry[]
     members: TtrpgMember[]
+    quests?: TtrpgQuest[]
+    projects?: TtrpgProject[]
     onCreateLore: (name: string, type: LoreEntryType) => void
 }
 
 export default function NoteEditModal({
     noteText, onChangeText, onSave, onCancel, onDelete,
-    onMove, otherSessions, loreEntries, members, onCreateLore
+    onMove, otherSessions, loreEntries, members, quests, projects, onCreateLore
 }: NoteEditModalProps) {
     const [showMoveSelect, setShowMoveSelect] = useState(false)
 
@@ -74,6 +78,8 @@ export default function NoteEditModal({
                     onChange={onChangeText}
                     loreEntries={loreEntries}
                     members={members}
+                    quests={quests}
+                    projects={projects}
                     onCreateLore={onCreateLore}
                     style={{ minHeight: "120px" }}
                 />

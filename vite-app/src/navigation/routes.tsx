@@ -1,4 +1,5 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
+import { useContext, ReactNode } from "react"
 import App from "../App"
 import NavigationError from "../pages/navigation_error"
 import MainMenu from "../pages/main_menu"
@@ -15,9 +16,22 @@ import UtilitiesMenu from "../pages/utilities/utilities_menu"
 import MigrateDataToCampaigns from "../pages/ttrpg/migrate_data_to_campaigns"
 import ProtectedRoute from "../components/protected_route"
 import CampaignList from "../pages/ttrpg/campaign_list"
+import CampaignLayout from "../pages/ttrpg/campaign_layout"
 import CampaignDetail from "../pages/ttrpg/campaign_detail"
 import SessionDetail from "../pages/ttrpg/session_detail"
+import QuestDetail from "../pages/ttrpg/quest_detail"
+import ProjectDetail from "../pages/ttrpg/project_detail"
 import FeedbackManagement from "../pages/feedback_management"
+import UserContext from "../contexts/user_context"
+import { is_ttrpg_user } from "../configs/auth"
+
+function TtrpgRoute({ children }: { children: ReactNode }) {
+    const user = useContext(UserContext)
+    if (!user.is_auth_checked) return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", fontSize: "20px" }}>Loading...</div>
+    if (!user.is_logged_in) return <>{children}</>
+    if (!is_ttrpg_user(user.username)) return <Navigate to="/" replace />
+    return <>{children}</>
+}
 
 const router = createBrowserRouter([
     {
@@ -75,15 +89,17 @@ const router = createBrowserRouter([
             },
             {
                 path: nav_paths.rpg_notes,
-                element: <ProtectedRoute require="ttrpg"><CampaignList /></ProtectedRoute>
+                element: <TtrpgRoute><CampaignList /></TtrpgRoute>
             },
             {
                 path: nav_paths.rpg_notes + "/:campaignId",
-                element: <ProtectedRoute require="ttrpg"><CampaignDetail /></ProtectedRoute>
-            },
-            {
-                path: nav_paths.rpg_notes + "/:campaignId/session/:sessionId",
-                element: <ProtectedRoute require="ttrpg"><SessionDetail /></ProtectedRoute>
+                element: <TtrpgRoute><CampaignLayout /></TtrpgRoute>,
+                children: [
+                    { index: true, element: <CampaignDetail /> },
+                    { path: "session/:sessionId", element: <SessionDetail /> },
+                    { path: "quest/:questId", element: <QuestDetail /> },
+                    { path: "project/:projectId", element: <ProjectDetail /> },
+                ]
             },
             {
                 path: nav_paths.feedback_management,

@@ -21,7 +21,8 @@ export default function useFirebaseTtrpgLore() {
             name: l.name,
             subtitle: l.notes,
             created_at: l.created_at || "",
-            ...(l.session_id ? { session_id: l.session_id } : {})
+            ...(l.session_id ? { session_id: l.session_id } : {}),
+            ...(l.faction_id ? { faction_id: l.faction_id } : {})
         }))
         return entries.reverse()
     }
@@ -34,7 +35,8 @@ export default function useFirebaseTtrpgLore() {
             name: entry.name,
             notes: entry.subtitle,
             created_at: new Date().toISOString(),
-            ...(entry.session_id ? { session_id: entry.session_id } : {})
+            ...(entry.session_id ? { session_id: entry.session_id } : {}),
+            ...(entry.faction_id ? { faction_id: entry.faction_id } : {})
         }
         await setDoc(docRef, { lore: { [id]: loreData } }, { merge: true })
         return id
@@ -48,6 +50,9 @@ export default function useFirebaseTtrpgLore() {
         if (entry.name !== undefined) updates[`lore.${id}.name`] = entry.name
         if (entry.subtitle !== undefined) updates[`lore.${id}.notes`] = entry.subtitle
         if (entry.session_id !== undefined) updates[`lore.${id}.session_id`] = entry.session_id
+        if (entry.faction_id !== undefined) {
+            updates[`lore.${id}.faction_id`] = entry.faction_id === "" ? deleteField() : entry.faction_id
+        }
         if (Object.keys(updates).length > 0) {
             await updateDoc(docRef, updates)
         }

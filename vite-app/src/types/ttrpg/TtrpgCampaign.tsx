@@ -1,5 +1,6 @@
 import { TtrpgMemberItem, TtrpgMemberFollower, TtrpgMemberTitle } from "./TtrpgMember"
 import { LoreEntryType } from "./TtrpgLoreEntry"
+import { TtrpgProjectData } from "./TtrpgProject"
 
 export interface TtrpgSessionData {
     session_number: number
@@ -25,6 +26,7 @@ export interface TtrpgLoreData {
     notes: string
     created_at?: string
     session_id?: string
+    faction_id?: string
 }
 
 export interface TtrpgNoteData {
@@ -33,6 +35,14 @@ export interface TtrpgNoteData {
     author: string
     created_at: string
     updated_at: string
+}
+
+export interface TtrpgQuestData {
+    short_title: string
+    description: string
+    session_id?: string
+    completed?: boolean
+    created_at?: string
 }
 
 export interface TtrpgPartyResourcesData {
@@ -52,5 +62,7 @@ export default interface TtrpgCampaign {
     members?: Record<string, TtrpgMemberData>
     lore?: Record<string, TtrpgLoreData>
     notes?: Record<string, TtrpgNoteData>
+    quests?: Record<string, TtrpgQuestData>
+    projects?: Record<string, TtrpgProjectData>
     party_resources?: TtrpgPartyResourcesData
 }

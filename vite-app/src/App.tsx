@@ -1,24 +1,30 @@
 import './App.css'
-import { Outlet } from "react-router-dom"
-import { useContext, useState, useEffect } from "react"
+import { Outlet, useNavigate, useLocation } from "react-router-dom"
+import { useContext, useState, useEffect, useRef } from "react"
 
 import DataContext from "./contexts/DataContext"
 import UserContext from "./contexts/user_context"
 import scale_context from './contexts/scale_context'
 import { DelveCardFilterProvider } from './contexts/delve_card_filter_context'
+import { nav_paths } from './configs/constants'
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
 import FeedbackButton from "./components/feedback_button"
+import DemoBanner from "./components/demo_banner"
+import DemoResetButton from "./components/demo_reset_button"
+import LoadingModal from "./components/loading_modal"
 
 function App() {
 
     // State
     const [user_context, set_user_context] = useState(useContext(UserContext))
     const [app_scale_context, set_scale_context] = useState(useContext(scale_context))
+    const [showTransitionModal, setShowTransitionModal] = useState(false)
+    const [transitionComplete, setTransitionComplete] = useState(false)
+    const prevLoggedInRef = useRef(false)
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    // We have to load the firebase data here so it stays persistent even if other parts of the website need to reload
-    // same applies to the regular matrix even if we're not using firebase
-    // For example, zoom changes that reset the scale context would throw away the map data otherwise
     const data_context = useContext(DataContext)
 
     data_context.matrix.resize(
@@ -48,16 +54,24 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // firebase_auth_hook.login_firebase_user("tarronlane@gmail.com", "*****")
-    //     .then(function(payload: any) {})
-    //     .catch((payload: any) => {
-    //     })
+    // Detect login transition (demo -> logged in)
+    useEffect(() => {
+        if (user_context.is_auth_checked && user_context.is_logged_in && !prevLoggedInRef.current) {
+            setShowTransitionModal(true)
+            setTransitionComplete(false)
+            setTimeout(() => setTransitionComplete(true), 500)
+        }
+        if (user_context.is_auth_checked) {
+            prevLoggedInRef.current = user_context.is_logged_in
+        }
+    }, [user_context.is_auth_checked, user_context.is_logged_in])
 
-    // firebase_auth_hook.logout_firebase_user()
-
-    // const paint_context = usePaintTool()
-    // const map_context = useMapContext(20, 20)
-
+    function handleTransitionClose() {
+        setShowTransitionModal(false)
+        if (location.pathname.startsWith(nav_paths.rpg_notes)) {
+            navigate(nav_paths.rpg_notes)
+        }
+    }
 
     return (
         <>
@@ -69,6 +83,15 @@ function App() {
 
             { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
             <FeedbackButton />
+            <DemoBanner />
+            <DemoResetButton />
+            {showTransitionModal && (
+                <LoadingModal
+                    message="Switching to your data..."
+                    isComplete={transitionComplete}
+                    onClose={handleTransitionClose}
+                />
+            )}
 
         </DelveCardFilterProvider>
         </DataContext.Provider>

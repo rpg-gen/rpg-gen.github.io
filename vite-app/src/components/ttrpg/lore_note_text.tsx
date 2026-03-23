@@ -1,6 +1,8 @@
 import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
-import { LORE_COLORS } from "../../configs/ttrpg_constants"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
+import { LORE_COLORS, QUEST_COLOR, PROJECT_COLOR } from "../../configs/ttrpg_constants"
 
 const MEMBER_COLOR = "#f3e8ff"
 
@@ -8,11 +10,15 @@ interface LoreNoteTextProps {
     text: string
     loreEntries: TtrpgLoreEntry[]
     members: TtrpgMember[]
+    quests?: TtrpgQuest[]
+    projects?: TtrpgProject[]
     onLoreClick: (entryId: string) => void
     onMemberClick: (memberId: string) => void
+    onQuestClick?: (questId: string) => void
+    onProjectClick?: (projectId: string) => void
 }
 
-export default function LoreNoteText({ text, loreEntries, members, onLoreClick, onMemberClick }: LoreNoteTextProps) {
+export default function LoreNoteText({ text, loreEntries, members, quests, projects, onLoreClick, onMemberClick, onQuestClick, onProjectClick }: LoreNoteTextProps) {
     // Split on [[Name]] markers
     const parts = text.split(/(\[\[.+?\]\])/)
 
@@ -41,6 +47,48 @@ export default function LoreNoteText({ text, loreEntries, members, onLoreClick, 
                             }}
                         >
                             {member.name}
+                        </span>
+                    )
+                }
+
+                // Then check quests
+                const quest = quests?.find(q => q.short_title.toLowerCase() === name.toLowerCase())
+                if (quest) {
+                    return (
+                        <span
+                            key={i}
+                            onClick={(e) => { e.stopPropagation(); onQuestClick?.(quest.id) }}
+                            style={{
+                                backgroundColor: QUEST_COLOR,
+                                color: "#222",
+                                fontWeight: "bold",
+                                padding: "0.1rem 0.3rem",
+                                borderRadius: "3px",
+                                cursor: "pointer"
+                            }}
+                        >
+                            {quest.short_title}
+                        </span>
+                    )
+                }
+
+                // Then check projects
+                const project = projects?.find(p => p.title.toLowerCase() === name.toLowerCase())
+                if (project) {
+                    return (
+                        <span
+                            key={i}
+                            onClick={(e) => { e.stopPropagation(); onProjectClick?.(project.id) }}
+                            style={{
+                                backgroundColor: PROJECT_COLOR,
+                                color: "#222",
+                                fontWeight: "bold",
+                                padding: "0.1rem 0.3rem",
+                                borderRadius: "3px",
+                                cursor: "pointer"
+                            }}
+                        >
+                            {project.title}
                         </span>
                     )
                 }

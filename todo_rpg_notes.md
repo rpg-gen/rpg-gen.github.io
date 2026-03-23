@@ -1,0 +1,1 @@
+- Add status to party page, and show with a badge on the main page

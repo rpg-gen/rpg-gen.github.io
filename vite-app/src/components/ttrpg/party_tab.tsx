@@ -63,7 +63,7 @@ export default function PartyTab({
 }: PartyTabProps) {
 
     const [memberDetailId, setMemberDetailId] = useState<string | null>(pendingDetailId)
-    const [memberFormMode, setMemberFormMode] = useState<string | null>(null)
+    const [memberFormMode, setMemberFormMode] = useState<"add" | null>(null)
     const [formName, setFormName] = useState("")
     const [formPlayedBy, setFormPlayedBy] = useState("")
     const [formNotes, setFormNotes] = useState("")
@@ -96,13 +96,14 @@ export default function PartyTab({
         return (
             <MemberDetailView
                 member={member} campaignId={campaignId} data={data}
-                membersHook={membersHook} partyResourcesHook={partyResourcesHook}
+                membersHook={membersHook} notesHook={notesHook}
+                partyResourcesHook={partyResourcesHook}
                 updateMembers={updateMembers} updatePartyResources={updatePartyResources}
                 openLoreDetail={openLoreDetail} openMemberDetail={openMemberDetail} goToSession={goToSession}
                 cameFromSessionId={cameFromSessionId} backToOriginSession={backToOriginSession}
                 clearCameFromSessionId={clearCameFromSessionId}
-                onEdit={() => { setMemberDetailId(null); setMemberFormMode(member.id); setFormName(member.name); setFormPlayedBy(member.played_by || ""); setFormNotes(member.notes || "") }}
                 onBack={() => setMemberDetailId(null)}
+                onDelete={() => setMemberDetailId(null)}
             />
         )
     }
@@ -111,11 +112,10 @@ export default function PartyTab({
     if (memberFormMode !== null) {
         return (
             <MemberForm
-                campaignId={campaignId} formMode={memberFormMode}
+                campaignId={campaignId}
                 formName={formName} formPlayedBy={formPlayedBy} formNotes={formNotes}
                 setFormName={setFormName} setFormPlayedBy={setFormPlayedBy} setFormNotes={setFormNotes}
-                members={data.members} notes={data.notes}
-                membersHook={membersHook} notesHook={notesHook}
+                membersHook={membersHook}
                 onClose={clearForm}
             />
         )

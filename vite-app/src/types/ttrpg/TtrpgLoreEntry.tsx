@@ -8,4 +8,5 @@ export default interface TtrpgLoreEntry {
     subtitle: string
     created_at: string
     session_id?: string
+    faction_id?: string
 }

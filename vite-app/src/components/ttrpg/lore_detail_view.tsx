@@ -1,37 +1,75 @@
+import { useState, useEffect, useRef } from "react"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
-import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
+import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import LoreNoteText from "./lore_note_text"
+import AutoResizeTextarea from "./auto_resize_textarea"
 import { cardStyle } from "../../pages/ttrpg/campaign_detail_styles"
-import { LORE_COLORS, LORE_LABELS } from "../../configs/ttrpg_constants"
+import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
 
 interface CampaignData {
     sessions: TtrpgSession[]
     members: TtrpgMember[]
     notes: TtrpgSessionNote[]
     lore: TtrpgLoreEntry[]
+    quests: TtrpgQuest[]
+    projects: TtrpgProject[]
+}
+
+interface LoreHook {
+    updateLoreEntry: (id: string, entry: Partial<TtrpgLoreEntry>) => Promise<void>
+    deleteLoreEntry: (id: string) => Promise<void>
+}
+
+interface NotesHook {
+    updateNote: (id: string, note: Partial<TtrpgSessionNote>) => Promise<void>
 }
 
 interface LoreDetailViewProps {
     entry: TtrpgLoreEntry
     data: CampaignData
+    loreHook: LoreHook
+    notesHook: NotesHook
     goToSession: (sessionId: string, noteId?: string) => void
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
+    openQuestDetail?: (questId: string) => void
+    openProjectDetail?: (projectId: string) => void
     cameFromSessionId: string | null
     backToOriginSession: () => void
     clearCameFromSessionId: () => void
     onBack: () => void
-    onEdit: (entry: TtrpgLoreEntry) => void
+    onDelete: () => void
+    onAddPersonToFaction?: (factionId: string) => void
 }
 
 export default function LoreDetailView({
-    entry, data, goToSession, openLoreDetail, openMemberDetail,
+    entry, data, loreHook, notesHook, goToSession, openLoreDetail, openMemberDetail, openQuestDetail, openProjectDetail,
     cameFromSessionId, backToOriginSession, clearCameFromSessionId,
-    onBack, onEdit
+    onBack, onDelete, onAddPersonToFaction
 }: LoreDetailViewProps) {
+
+    const [editingField, setEditingField] = useState<"name" | "subtitle" | null>(null)
+    const editingFieldRef = useRef(editingField)
+    editingFieldRef.current = editingField
+
+    const [draftName, setDraftName] = useState(entry.name)
+    const [draftSubtitle, setDraftSubtitle] = useState(entry.subtitle || "")
+
+    useEffect(() => {
+        if (editingFieldRef.current !== "name") setDraftName(entry.name)
+        if (editingFieldRef.current !== "subtitle") setDraftSubtitle(entry.subtitle || "")
+    }, [entry])
+
     const entrySession = entry.session_id ? data.sessions.find(s => s.id === entry.session_id) : null
+    const faction = entry.faction_id ? data.lore.find(l => l.id === entry.faction_id) : null
+    const factionMembers = entry.type === "faction"
+        ? data.lore.filter(l => l.type === "person" && l.faction_id === entry.id)
+        : []
+    const factions = data.lore.filter(l => l.type === "faction" && l.id !== entry.id)
 
     const mentions: { note: TtrpgSessionNote; session: TtrpgSession }[] = []
     for (const note of data.notes) {
@@ -45,6 +83,70 @@ export default function LoreDetailView({
         || a.note.created_at.localeCompare(b.note.created_at)
     )
 
+    async function saveName() {
+        setEditingField(null)
+        const trimmed = draftName.trim()
+        if (!trimmed || trimmed === entry.name) return
+        try {
+            await loreHook.updateLoreEntry(entry.id, { name: trimmed })
+            const pattern = new RegExp(`\\[\\[${entry.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]\\]`, "gi")
+            for (const note of data.notes) {
+                if (pattern.test(note.text)) {
+                    await notesHook.updateNote(note.id, { text: note.text.replace(pattern, `[[${trimmed}]]`) })
+                }
+            }
+        } catch (error) {
+            console.error("Error updating lore name:", error)
+        }
+    }
+
+    async function saveSubtitle() {
+        setEditingField(null)
+        if (draftSubtitle === (entry.subtitle || "")) return
+        try {
+            await loreHook.updateLoreEntry(entry.id, { subtitle: draftSubtitle })
+        } catch (error) {
+            console.error("Error updating lore subtitle:", error)
+        }
+    }
+
+    async function handleTypeChange(type: LoreEntryType) {
+        try {
+            const updates: Partial<TtrpgLoreEntry> = { type }
+            if (type !== "person") updates.faction_id = ""
+            await loreHook.updateLoreEntry(entry.id, updates)
+        } catch (error) {
+            console.error("Error updating lore type:", error)
+        }
+    }
+
+    async function handleFactionChange(factionId: string) {
+        try {
+            await loreHook.updateLoreEntry(entry.id, { faction_id: factionId || "" })
+        } catch (error) {
+            console.error("Error updating faction:", error)
+        }
+    }
+
+    async function handleSessionChange(sessionId: string) {
+        try {
+            await loreHook.updateLoreEntry(entry.id, { session_id: sessionId || undefined })
+        } catch (error) {
+            console.error("Error updating session:", error)
+        }
+    }
+
+    async function handleDelete() {
+        if (!confirm("Are you sure you want to remove this entry?")) return
+        try {
+            await loreHook.deleteLoreEntry(entry.id)
+            onDelete()
+        } catch (error) {
+            console.error("Error deleting lore entry:", error)
+            alert("Error deleting lore entry")
+        }
+    }
+
     return (
         <div>
             <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
@@ -55,29 +157,171 @@ export default function LoreDetailView({
             </div>
 
             <div style={{ ...cardStyle, backgroundColor: LORE_COLORS[entry.type] }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                    <div>
-                        <strong style={{ fontSize: "1.2rem" }}>{entry.name}</strong>
-                        <span style={{ color: "#666", marginLeft: "0.5rem" }}>({LORE_LABELS[entry.type]})</span>
-                    </div>
-                    <button onClick={() => onEdit(entry)}>Edit</button>
+                {/* Name — click to edit */}
+                <div style={{ marginBottom: "0.5rem" }}>
+                    {editingField === "name" ? (
+                        <input
+                            type="text"
+                            value={draftName}
+                            onChange={e => setDraftName(e.target.value)}
+                            onBlur={saveName}
+                            onKeyDown={e => { if (e.key === "Enter") saveName() }}
+                            autoFocus
+                            style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box", fontSize: "1.2rem", fontWeight: "bold" }}
+                        />
+                    ) : (
+                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                            <strong
+                                style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                                onClick={() => { setDraftName(entry.name); setEditingField("name") }}
+                                title="Click to edit"
+                            >
+                                {entry.name}
+                            </strong>
+                            <span style={{ color: "#666", marginLeft: "0.5rem" }}>({LORE_LABELS[entry.type]})</span>
+                        </div>
+                    )}
                 </div>
-                {entry.subtitle && (
-                    <div style={{ fontStyle: "italic", color: "#555", marginBottom: "0.75rem" }}>{entry.subtitle}</div>
+
+                {/* Subtitle — click to edit */}
+                {editingField === "subtitle" ? (
+                    <div style={{ marginBottom: "0.75rem" }}>
+                        <AutoResizeTextarea
+                            value={draftSubtitle}
+                            onChange={e => setDraftSubtitle(e.target.value)}
+                            placeholder="e.g. Dwarven blacksmith of Ironhold"
+                        />
+                        <button onClick={saveSubtitle} style={{ marginTop: "0.25rem" }}>Save</button>
+                    </div>
+                ) : (
+                    <div
+                        onClick={() => { setDraftSubtitle(entry.subtitle || ""); setEditingField("subtitle") }}
+                        style={{
+                            fontStyle: "italic",
+                            color: entry.subtitle ? "#555" : "#999",
+                            marginBottom: "0.75rem",
+                            cursor: "pointer",
+                            minHeight: "1.2em"
+                        }}
+                        title="Click to edit"
+                    >
+                        {entry.subtitle || "Click to add subtitle..."}
+                    </div>
                 )}
 
-                {entrySession && (
-                    <div style={{ marginBottom: "0.75rem" }}>
-                        <strong>Introduced:</strong> Session {entrySession.session_number} — {entrySession.date}
+                {/* Type — always-visible select */}
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
+                    <strong>Type:</strong>
+                    <select
+                        value={entry.type}
+                        onChange={e => handleTypeChange(e.target.value as LoreEntryType)}
+                        style={{ padding: "0.3rem 0.5rem" }}
+                    >
+                        {ALL_LORE_TYPES.map(type => (
+                            <option key={type} value={type}>{LORE_LABELS[type]}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Faction — person only, always-visible select */}
+                {entry.type === "person" && (
+                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
+                        <strong>Faction:</strong>
+                        <select
+                            value={entry.faction_id || ""}
+                            onChange={e => handleFactionChange(e.target.value)}
+                            style={{ padding: "0.3rem 0.5rem" }}
+                        >
+                            <option value="">No Faction</option>
+                            {factions.map(f => (
+                                <option key={f.id} value={f.id}>{f.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
+                {/* Session — always-visible select */}
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
+                    <strong>Session:</strong>
+                    <select
+                        value={entry.session_id || ""}
+                        onChange={e => handleSessionChange(e.target.value)}
+                        style={{ padding: "0.3rem 0.5rem" }}
+                    >
+                        <option value="">No Session</option>
+                        {data.sessions.map(s => (
+                            <option key={s.id} value={s.id}>Session {s.session_number} — {s.date}</option>
+                        ))}
+                    </select>
+                    {entrySession && (
                         <button
                             onClick={() => goToSession(entrySession.id)}
-                            style={{ marginLeft: "0.5rem", fontSize: "0.85rem" }}
+                            style={{ fontSize: "0.85rem" }}
                         >
                             Go to session notes
                         </button>
+                    )}
+                </div>
+
+                {/* Faction pill for person (read-only navigation) */}
+                {entry.type === "person" && faction && (
+                    <div style={{ marginBottom: "0.75rem" }}>
+                        <span
+                            onClick={() => openLoreDetail(faction.id)}
+                            style={{
+                                backgroundColor: LORE_COLORS.faction,
+                                color: "#222",
+                                padding: "0.15rem 0.5rem",
+                                borderRadius: "12px",
+                                cursor: "pointer",
+                                fontSize: "0.9rem"
+                            }}
+                        >
+                            {faction.name}
+                        </span>
                     </div>
                 )}
 
+                {/* Faction members list */}
+                {entry.type === "faction" && (
+                    <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.5rem", marginBottom: "0.5rem" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <strong>Members{factionMembers.length > 0 ? ` (${factionMembers.length})` : ""}</strong>
+                            {onAddPersonToFaction && (
+                                <button
+                                    onClick={() => onAddPersonToFaction(entry.id)}
+                                    style={{ backgroundColor: LORE_COLORS.person, color: "#222", border: "1px solid #ccc", borderRadius: "4px", padding: "0.25rem 0.5rem", cursor: "pointer", fontSize: "0.85rem" }}
+                                >
+                                    + Person
+                                </button>
+                            )}
+                        </div>
+                        {factionMembers.map(member => (
+                            <div
+                                key={member.id}
+                                onClick={() => openLoreDetail(member.id)}
+                                style={{
+                                    border: "1px solid #ddd",
+                                    borderRadius: "4px",
+                                    padding: "0.5rem",
+                                    marginTop: "0.5rem",
+                                    backgroundColor: LORE_COLORS.person,
+                                    cursor: "pointer",
+                                    color: "#333"
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "baseline", overflow: "hidden" }}>
+                                    <strong style={{ flexShrink: 0 }}>{member.name}</strong>
+                                    {member.subtitle && (
+                                        <span style={{ color: "#666", marginLeft: "0.5rem", fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{member.subtitle}</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Session mentions */}
                 {mentions.length > 0 && (
                     <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.5rem" }}>
                         <strong>Session mentions ({mentions.length})</strong>
@@ -98,13 +342,22 @@ export default function LoreDetailView({
                                     Session {session.session_number} — {session.date}
                                 </div>
                                 <div style={{ fontSize: "0.9rem", color: "#333" }}>
-                                    <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
+                                    <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} quests={data.quests} projects={data.projects} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} onQuestClick={openQuestDetail} onProjectClick={openProjectDetail} />
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
 
+                {/* Delete button */}
+                <div style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
+                    <button
+                        onClick={handleDelete}
+                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                    >
+                        Remove Entry
+                    </button>
+                </div>
             </div>
         </div>
     )

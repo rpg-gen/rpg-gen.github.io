@@ -1,6 +1,8 @@
 import { useState, useRef } from "react"
 import TtrpgLoreEntry, { LoreEntryType } from "../../types/ttrpg/TtrpgLoreEntry"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
+import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
+import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import { ModalTriggerState, TriggerKind } from "./slash_command_types"
 import SlashCommandModal from "./slash_command_modal"
 import AutoResizeTextarea from "./auto_resize_textarea"
@@ -11,11 +13,13 @@ interface SlashCommandTextareaProps {
     placeholder?: string
     loreEntries: TtrpgLoreEntry[]
     members: TtrpgMember[]
+    quests?: TtrpgQuest[]
+    projects?: TtrpgProject[]
     onCreateLore: (name: string, type: LoreEntryType) => void
     style?: React.CSSProperties
 }
 
-export default function SlashCommandTextarea({ value, onChange, placeholder, loreEntries, members, onCreateLore, style }: SlashCommandTextareaProps) {
+export default function SlashCommandTextarea({ value, onChange, placeholder, loreEntries, members, quests, projects, onCreateLore, style }: SlashCommandTextareaProps) {
     const [trigger, setTrigger] = useState<ModalTriggerState | null>(null)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -101,6 +105,8 @@ export default function SlashCommandTextarea({ value, onChange, placeholder, lor
                 <SlashCommandModal
                     loreEntries={loreEntries}
                     members={members}
+                    quests={quests}
+                    projects={projects}
                     onSelect={handleSelect}
                     onCreateLore={handleCreateLore}
                     onDismiss={handleDismiss}
