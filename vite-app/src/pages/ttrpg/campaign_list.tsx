@@ -7,6 +7,7 @@ import TtrpgCampaign from "../../types/ttrpg/TtrpgCampaign"
 import FullPageOverlay from "../../components/full_page_overlay"
 import { nav_paths, page_layout } from "../../configs/constants"
 import { primaryButtonStyle } from "./campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import UserContext from "../../contexts/user_context"
 
 export default function CampaignList() {
@@ -81,15 +82,15 @@ export default function CampaignList() {
     return (
         <FullPageOverlay>
             <div style={page_layout.container}>
-                <h1>RPG Notes</h1>
+                <h1 style={{ fontFamily: ttrpg.fonts.heading, color: ttrpg.colors.gold }}>RPG Notes</h1>
 
                 <div style={{ marginBottom: "1rem" }}>
                     <button onClick={() => navigate("/")}>Back to Menu</button>
                 </div>
 
                 {!isDemoMode && (
-                    <div style={{ marginBottom: "2rem", padding: "1rem", border: "1px solid #ccc", backgroundColor: "#fff", color: "#222", borderRadius: "4px" }}>
-                        <h3 style={{ marginTop: 0 }}>Create New Campaign</h3>
+                    <div className="ttrpg-card" style={{ ...themeStyles.card, marginBottom: "2rem", padding: "1rem" }}>
+                        <h3 style={{ marginTop: 0, fontFamily: ttrpg.fonts.heading }}>Create New Campaign</h3>
                         <div style={{ display: "flex", gap: "0.5rem" }}>
                             <input
                                 type="text"
@@ -99,13 +100,13 @@ export default function CampaignList() {
                                 style={{ flex: 1, padding: "0.5rem" }}
                                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                             />
-                            <button onClick={handleCreate} style={primaryButtonStyle}>Create</button>
+                            <button onClick={handleCreate} className="ttrpg-btn-primary" style={primaryButtonStyle}>Create</button>
                         </div>
                     </div>
                 )}
 
                 <div>
-                    <h3>Campaigns ({campaigns.length})</h3>
+                    <h3 style={{ fontFamily: ttrpg.fonts.heading }}>Campaigns ({campaigns.length})</h3>
                     {campaigns.length === 0 ? (
                         <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
                             No campaigns yet. Create your first campaign above!
@@ -114,16 +115,12 @@ export default function CampaignList() {
                         campaigns.map(campaign => (
                             <div
                                 key={campaign.id}
+                                className="ttrpg-card"
                                 style={{
-                                    border: "1px solid #ccc",
-                                    padding: "0.75rem",
-                                    marginBottom: "0.5rem",
+                                    ...themeStyles.card,
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "0.5rem",
-                                    backgroundColor: "#fff",
-                                    color: "#222",
-                                    borderRadius: "4px"
                                 }}
                             >
                                 <div
@@ -136,7 +133,8 @@ export default function CampaignList() {
                                 {!isDemoMode && (
                                     <button
                                         onClick={() => handleDelete(campaign.id)}
-                                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.25rem 0.5rem", cursor: "pointer" }}
+                                        className="ttrpg-btn-danger"
+                                        style={{ ...themeStyles.dangerButton, padding: "0.25rem 0.5rem", fontSize: "0.85rem" }}
                                     >
                                         Delete
                                     </button>

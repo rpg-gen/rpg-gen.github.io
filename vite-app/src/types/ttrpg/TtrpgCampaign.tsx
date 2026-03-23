@@ -1,4 +1,4 @@
-import { TtrpgMemberItem, TtrpgMemberFollower, TtrpgMemberTitle } from "./TtrpgMember"
+import { TtrpgMemberItem, TtrpgMemberFollower, TtrpgMemberTitle, TtrpgMemberStatus } from "./TtrpgMember"
 import { LoreEntryType } from "./TtrpgLoreEntry"
 import { TtrpgProjectData } from "./TtrpgProject"
 
@@ -18,6 +18,7 @@ export interface TtrpgMemberData {
     renown?: number
     followers?: TtrpgMemberFollower[]
     titles?: TtrpgMemberTitle[]
+    statuses?: (string | TtrpgMemberStatus)[]
 }
 
 export interface TtrpgLoreData {

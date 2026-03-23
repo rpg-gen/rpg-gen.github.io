@@ -21,7 +21,7 @@ function App() {
     const [app_scale_context, set_scale_context] = useState(useContext(scale_context))
     const [showTransitionModal, setShowTransitionModal] = useState(false)
     const [transitionComplete, setTransitionComplete] = useState(false)
-    const prevLoggedInRef = useRef(false)
+    const prevLoggedInRef = useRef<boolean | null>(null)
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -54,16 +54,15 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // Detect login transition (demo -> logged in)
+    // Detect login transition (demo -> logged in), skip initial page load
     useEffect(() => {
-        if (user_context.is_auth_checked && user_context.is_logged_in && !prevLoggedInRef.current) {
+        if (!user_context.is_auth_checked) return
+        if (prevLoggedInRef.current !== null && user_context.is_logged_in && !prevLoggedInRef.current) {
             setShowTransitionModal(true)
             setTransitionComplete(false)
             setTimeout(() => setTransitionComplete(true), 500)
         }
-        if (user_context.is_auth_checked) {
-            prevLoggedInRef.current = user_context.is_logged_in
-        }
+        prevLoggedInRef.current = user_context.is_logged_in
     }, [user_context.is_auth_checked, user_context.is_logged_in])
 
     function handleTransitionClose() {

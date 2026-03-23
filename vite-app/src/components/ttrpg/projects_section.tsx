@@ -8,6 +8,7 @@ import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import ProjectProgressBar from "./project_progress_bar"
 import AddPointsModal from "./add_points_modal"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { nav_paths } from "../../configs/constants"
 
 interface ProjectsHook {
@@ -113,18 +114,14 @@ export default function ProjectsSection({
     return (
         <div>
             {errorBanner && (
-                <div style={{
-                    backgroundColor: "#fdecea", color: "#611a15", border: "1px solid #f5c6cb",
-                    borderRadius: "4px", padding: "0.5rem 0.75rem", marginBottom: "0.5rem",
-                    display: "flex", justifyContent: "space-between", alignItems: "center"
-                }}>
+                <div style={themeStyles.errorBanner}>
                     <span>{errorBanner}</span>
-                    <button onClick={() => setErrorBanner(null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#611a15" }}>✕</button>
+                    <button onClick={() => setErrorBanner(null)} className="ttrpg-btn-ghost" style={{ ...themeStyles.ghostButton, color: ttrpg.colors.brokenLinkText, fontWeight: "bold", fontSize: "1rem" }}>✕</button>
                 </div>
             )}
 
             {!isAdding ? (
-                <button onClick={() => setIsAdding(true)} style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>
+                <button onClick={() => setIsAdding(true)} className="ttrpg-btn-primary" style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>
                     + Add Project
                 </button>
             ) : (
@@ -149,7 +146,7 @@ export default function ProjectsSection({
                         style={{ width: "100%", padding: "0.5rem", boxSizing: "border-box", minHeight: "40px", marginBottom: "0.5rem", resize: "vertical" }}
                     />
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button onClick={handleCreate} style={primaryButtonStyle}>Add</button>
+                        <button onClick={handleCreate} className="ttrpg-btn-primary" style={primaryButtonStyle}>Add</button>
                         <button onClick={() => { setIsAdding(false); setNewTitle(""); setNewPointTotal("100"); setNewDescription("") }}>Cancel</button>
                     </div>
                 </div>
@@ -162,8 +159,9 @@ export default function ProjectsSection({
             {sorted.map(project => (
                 <div
                     key={project.id}
+                    className="ttrpg-card"
                     style={{
-                        ...cardStyle,
+                        ...themeStyles.entityCard(ttrpg.colors.project),
                         cursor: "pointer",
                         opacity: project.completed ? 0.5 : 1
                     }}
@@ -173,14 +171,8 @@ export default function ProjectsSection({
                         <button
                             onClick={(e) => handleToggleComplete(e, project)}
                             title={project.completed ? "Reopen" : "Mark complete"}
-                            style={{
-                                flexShrink: 0, width: "28px", height: "28px", borderRadius: "50%",
-                                border: project.completed ? "2px solid #27ae60" : "2px solid #ccc",
-                                backgroundColor: project.completed ? "#27ae60" : "transparent",
-                                color: project.completed ? "#fff" : "transparent",
-                                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                                fontSize: "0.85rem"
-                            }}
+                            className="ttrpg-toggle"
+                            style={themeStyles.toggleCircle(project.completed)}
                         >
                             ✓
                         </button>

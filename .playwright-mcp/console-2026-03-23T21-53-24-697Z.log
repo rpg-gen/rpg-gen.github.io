@@ -1,0 +1,2 @@
+[     141ms] [WARNING] No routes matched location "/rpg-notes/demo/invalid/sessions"  @ http://localhost:3005/node_modules/.vite/deps/react-router-dom.js?v=54b8199d:210
+[     142ms] [WARNING] No routes matched location "/rpg-notes/demo/invalid/sessions"  @ http://localhost:3005/node_modules/.vite/deps/react-router-dom.js?v=54b8199d:210

@@ -1,4 +1,4 @@
-import { tabStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 
 export type CampaignTab = "sessions" | "party" | "lore" | "quests"
 
@@ -16,11 +16,12 @@ const TABS: { key: CampaignTab; label: string }[] = [
 
 export default function CampaignTabBar({ activeTab, onTabClick }: CampaignTabBarProps) {
     return (
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="ttrpg-tab-bar" style={{ marginBottom: "1rem" }}>
             {TABS.map(tab => (
                 <button
                     key={tab.key}
-                    style={tabStyle(activeTab ?? "", tab.key)}
+                    className="ttrpg-tab"
+                    style={themeStyles.tabStyle(activeTab ?? "", tab.key)}
                     onClick={() => onTabClick(tab.key)}
                 >
                     {tab.label}

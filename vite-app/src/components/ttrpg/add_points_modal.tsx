@@ -4,6 +4,7 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import { TtrpgProjectContribution } from "../../types/ttrpg/TtrpgProject"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 
 interface ContributorOption {
     label: string
@@ -103,19 +104,12 @@ export default function AddPointsModal({ members, sessions, partyResources, onSu
     return (
         <div
             onClick={handleBackdropClick}
-            style={{
-                position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100,
-                display: "flex", alignItems: "center", justifyContent: "center"
-            }}
+            style={themeStyles.modalBackdrop}
         >
-            <div style={{
-                backgroundColor: "#fff", borderRadius: "8px", width: "400px", maxWidth: "90vw",
-                padding: "1rem", color: "#222", boxShadow: "0 4px 24px rgba(0,0,0,0.3)"
-            }}>
+            <div className="ttrpg-modal-content" style={{ ...themeStyles.smallModalContent, padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                     <strong>{allowNegative ? "Reduce Points" : "Add Points"}</strong>
-                    <button onClick={onDismiss} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", color: "#999" }}>✕</button>
+                    <button onClick={onDismiss} className="ttrpg-btn-ghost" style={{ ...themeStyles.ghostButton, fontSize: "1.2rem", color: "#999" }}>✕</button>
                 </div>
 
                 <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Contributor</label>
@@ -156,7 +150,7 @@ export default function AddPointsModal({ members, sessions, partyResources, onSu
                 </select>
 
                 <div style={{ display: "flex", gap: "0.5rem" }}>
-                    <button onClick={handleSubmit} style={primaryButtonStyle}>
+                    <button onClick={handleSubmit} className="ttrpg-btn-primary" style={primaryButtonStyle}>
                         {allowNegative ? "Subtract" : "Add"}
                     </button>
                     <button onClick={onDismiss}>Cancel</button>

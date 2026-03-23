@@ -2,6 +2,7 @@ import { useState } from "react"
 import { TtrpgProjectContribution } from "../../types/ttrpg/TtrpgProject"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 
 interface ContributionListProps {
     contributions: TtrpgProjectContribution[]
@@ -76,19 +77,12 @@ export default function ContributionList({ contributions, sessions, onUpdate }: 
             {editingIdx !== null && editingContribution && (
                 <div
                     onClick={(e) => { if (e.target === e.currentTarget) setEditingIdx(null) }}
-                    style={{
-                        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100,
-                        display: "flex", alignItems: "center", justifyContent: "center"
-                    }}
+                    style={themeStyles.modalBackdrop}
                 >
-                    <div style={{
-                        backgroundColor: "#fff", borderRadius: "8px", width: "350px", maxWidth: "90vw",
-                        padding: "1rem", color: "#222", boxShadow: "0 4px 24px rgba(0,0,0,0.3)"
-                    }}>
+                    <div className="ttrpg-modal-content" style={{ ...themeStyles.tinyModalContent, width: "350px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                             <strong>Edit Contribution</strong>
-                            <button onClick={() => setEditingIdx(null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", color: "#999" }}>✕</button>
+                            <button onClick={() => setEditingIdx(null)} className="ttrpg-btn-ghost" style={{ ...themeStyles.ghostButton, fontSize: "1.2rem", color: "#999" }}>✕</button>
                         </div>
 
                         <div style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
@@ -109,11 +103,12 @@ export default function ContributionList({ contributions, sessions, onUpdate }: 
                         />
 
                         <div style={{ display: "flex", gap: "0.5rem" }}>
-                            <button onClick={handleSave} style={primaryButtonStyle}>Save</button>
+                            <button onClick={handleSave} className="ttrpg-btn-primary" style={primaryButtonStyle}>Save</button>
                             <button onClick={() => setEditingIdx(null)}>Cancel</button>
                             <button
                                 onClick={handleDelete}
-                                style={{ marginLeft: "auto", backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.4rem 0.75rem", borderRadius: "3px", cursor: "pointer", fontSize: "0.85rem" }}
+                                className="ttrpg-btn-danger"
+                                style={{ ...themeStyles.dangerButton, marginLeft: "auto", padding: "0.4rem 0.75rem", fontSize: "0.85rem" }}
                             >
                                 Delete
                             </button>

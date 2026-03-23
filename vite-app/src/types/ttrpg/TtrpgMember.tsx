@@ -14,6 +14,11 @@ export interface TtrpgMemberTitle {
     description: string
 }
 
+export interface TtrpgMemberStatus {
+    name: string
+    color: string
+}
+
 export default interface TtrpgMember {
     id: string
     campaign_id: string
@@ -25,4 +30,5 @@ export default interface TtrpgMember {
     renown: number
     followers: TtrpgMemberFollower[]
     titles: TtrpgMemberTitle[]
+    statuses: TtrpgMemberStatus[]
 }

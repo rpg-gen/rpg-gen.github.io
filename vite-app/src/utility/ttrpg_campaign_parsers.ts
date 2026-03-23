@@ -1,5 +1,5 @@
 import TtrpgSession from "../types/ttrpg/TtrpgSession"
-import TtrpgMember from "../types/ttrpg/TtrpgMember"
+import TtrpgMember, { TtrpgMemberStatus } from "../types/ttrpg/TtrpgMember"
 import TtrpgSessionNote from "../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry from "../types/ttrpg/TtrpgLoreEntry"
 import TtrpgQuest from "../types/ttrpg/TtrpgQuest"
@@ -40,7 +40,8 @@ export function parseMembersMap(campaignId: string, map: Record<string, TtrpgMem
         wealth: m.wealth ?? 0,
         renown: m.renown ?? 0,
         followers: m.followers || [],
-        titles: m.titles || []
+        titles: m.titles || [],
+        statuses: (m.statuses || []).map((s: string | TtrpgMemberStatus) => typeof s === "string" ? { name: s, color: "#4a9e8e" } : s)
     })).sort((a, b) => a.name.localeCompare(b.name))
 }
 

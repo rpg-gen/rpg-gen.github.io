@@ -7,7 +7,7 @@ import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
 import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import LoreNoteText from "./lore_note_text"
 import AutoResizeTextarea from "./auto_resize_textarea"
-import { cardStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
 
 interface CampaignData {
@@ -156,7 +156,7 @@ export default function LoreDetailView({
                 <button onClick={() => { onBack(); clearCameFromSessionId() }}>Back to lore list</button>
             </div>
 
-            <div style={{ ...cardStyle, backgroundColor: LORE_COLORS[entry.type] }}>
+            <div className="ttrpg-card" style={{ ...themeStyles.entityCard(LORE_COLORS[entry.type]), backgroundColor: LORE_COLORS[entry.type] }}>
                 {/* Name — click to edit */}
                 <div style={{ marginBottom: "0.5rem" }}>
                     {editingField === "name" ? (
@@ -172,7 +172,8 @@ export default function LoreDetailView({
                     ) : (
                         <div style={{ display: "flex", alignItems: "baseline" }}>
                             <strong
-                                style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                                className="ttrpg-click-to-edit"
+                                style={{ ...themeStyles.clickToEdit, fontSize: "1.2rem" }}
                                 onClick={() => { setDraftName(entry.name); setEditingField("name") }}
                                 title="Click to edit"
                             >
@@ -195,12 +196,13 @@ export default function LoreDetailView({
                     </div>
                 ) : (
                     <div
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setDraftSubtitle(entry.subtitle || ""); setEditingField("subtitle") }}
                         style={{
+                            ...themeStyles.clickToEdit,
                             fontStyle: "italic",
-                            color: entry.subtitle ? "#555" : "#999",
+                            color: entry.subtitle ? ttrpg.colors.textMuted : "#999",
                             marginBottom: "0.75rem",
-                            cursor: "pointer",
                             minHeight: "1.2em"
                         }}
                         title="Click to edit"
@@ -284,7 +286,7 @@ export default function LoreDetailView({
 
                 {/* Faction members list */}
                 {entry.type === "faction" && (
-                    <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.5rem", marginBottom: "0.5rem" }}>
+                    <div style={{ ...themeStyles.sectionDivider, marginBottom: "0.5rem" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                             <strong>Members{factionMembers.length > 0 ? ` (${factionMembers.length})` : ""}</strong>
                             {onAddPersonToFaction && (
@@ -323,25 +325,19 @@ export default function LoreDetailView({
 
                 {/* Session mentions */}
                 {mentions.length > 0 && (
-                    <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.5rem" }}>
+                    <div style={themeStyles.sectionDivider}>
                         <strong>Session mentions ({mentions.length})</strong>
                         {mentions.map(({ note, session }) => (
                             <div
                                 key={note.id}
-                                style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "4px",
-                                    padding: "0.5rem",
-                                    marginTop: "0.5rem",
-                                    backgroundColor: "#fff",
-                                    cursor: "pointer"
-                                }}
+                                className="ttrpg-card"
+                                style={{ ...themeStyles.card, cursor: "pointer", marginTop: "0.5rem" }}
                                 onClick={() => goToSession(session.id, note.id)}
                             >
-                                <div style={{ fontSize: "0.8rem", color: "#666", marginBottom: "0.25rem" }}>
+                                <div style={{ fontSize: "0.8rem", color: ttrpg.colors.textMuted, marginBottom: "0.25rem" }}>
                                     Session {session.session_number} — {session.date}
                                 </div>
-                                <div style={{ fontSize: "0.9rem", color: "#333" }}>
+                                <div style={{ fontSize: "0.9rem", color: ttrpg.colors.textDark }}>
                                     <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} quests={data.quests} projects={data.projects} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} onQuestClick={openQuestDetail} onProjectClick={openProjectDetail} />
                                 </div>
                             </div>
@@ -350,10 +346,11 @@ export default function LoreDetailView({
                 )}
 
                 {/* Delete button */}
-                <div style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
+                <div style={{ ...themeStyles.sectionDivider, marginTop: "2rem" }}>
                     <button
                         onClick={handleDelete}
-                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                        className="ttrpg-btn-danger"
+                        style={themeStyles.dangerButton}
                     >
                         Remove Entry
                     </button>

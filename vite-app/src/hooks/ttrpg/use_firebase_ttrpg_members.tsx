@@ -1,6 +1,6 @@
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteField } from "firebase/firestore"
 import useFirebaseProject from "../use_firebase_project"
-import TtrpgMember from "../../types/ttrpg/TtrpgMember"
+import TtrpgMember, { TtrpgMemberStatus } from "../../types/ttrpg/TtrpgMember"
 import { TtrpgMemberData } from "../../types/ttrpg/TtrpgCampaign"
 
 export default function useFirebaseTtrpgMembers() {
@@ -24,7 +24,8 @@ export default function useFirebaseTtrpgMembers() {
             wealth: m.wealth ?? 0,
             renown: m.renown ?? 0,
             followers: m.followers || [],
-            titles: m.titles || []
+            titles: m.titles || [],
+            statuses: (m.statuses || []).map((s: string | TtrpgMemberStatus) => typeof s === "string" ? { name: s, color: "#4a9e8e" } : s)
         }))
         return members.sort((a, b) => a.name.localeCompare(b.name))
     }
@@ -40,7 +41,8 @@ export default function useFirebaseTtrpgMembers() {
             wealth: member.wealth ?? 0,
             renown: member.renown ?? 0,
             followers: member.followers || [],
-            titles: member.titles || []
+            titles: member.titles || [],
+            statuses: member.statuses || []
         }
         await setDoc(docRef, { members: { [id]: memberData } }, { merge: true })
         return id
@@ -60,6 +62,7 @@ export default function useFirebaseTtrpgMembers() {
         if (member.renown !== undefined) updates[`members.${id}.renown`] = member.renown
         if (member.followers !== undefined) updates[`members.${id}.followers`] = member.followers
         if (member.titles !== undefined) updates[`members.${id}.titles`] = member.titles
+        if (member.statuses !== undefined) updates[`members.${id}.statuses`] = member.statuses
         if (Object.keys(updates).length > 0) {
             await updateDoc(docRef, updates)
         }

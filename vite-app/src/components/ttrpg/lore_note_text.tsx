@@ -3,8 +3,9 @@ import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
 import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import { LORE_COLORS, QUEST_COLOR, PROJECT_COLOR } from "../../configs/ttrpg_constants"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 
-const MEMBER_COLOR = "#f3e8ff"
+const MEMBER_COLOR = ttrpg.colors.member
 
 interface LoreNoteTextProps {
     text: string
@@ -36,15 +37,9 @@ export default function LoreNoteText({ text, loreEntries, members, quests, proje
                     return (
                         <span
                             key={i}
+                            className="ttrpg-pill"
                             onClick={(e) => { e.stopPropagation(); onMemberClick(member.id) }}
-                            style={{
-                                backgroundColor: MEMBER_COLOR,
-                                color: "#222",
-                                fontWeight: "bold",
-                                padding: "0.1rem 0.3rem",
-                                borderRadius: "3px",
-                                cursor: "pointer"
-                            }}
+                            style={{ ...themeStyles.pill, backgroundColor: MEMBER_COLOR, color: ttrpg.colors.textDark }}
                         >
                             {member.name}
                         </span>
@@ -57,15 +52,9 @@ export default function LoreNoteText({ text, loreEntries, members, quests, proje
                     return (
                         <span
                             key={i}
+                            className="ttrpg-pill"
                             onClick={(e) => { e.stopPropagation(); onQuestClick?.(quest.id) }}
-                            style={{
-                                backgroundColor: QUEST_COLOR,
-                                color: "#222",
-                                fontWeight: "bold",
-                                padding: "0.1rem 0.3rem",
-                                borderRadius: "3px",
-                                cursor: "pointer"
-                            }}
+                            style={{ ...themeStyles.pill, backgroundColor: QUEST_COLOR, color: ttrpg.colors.textDark }}
                         >
                             {quest.short_title}
                         </span>
@@ -78,15 +67,9 @@ export default function LoreNoteText({ text, loreEntries, members, quests, proje
                     return (
                         <span
                             key={i}
+                            className="ttrpg-pill"
                             onClick={(e) => { e.stopPropagation(); onProjectClick?.(project.id) }}
-                            style={{
-                                backgroundColor: PROJECT_COLOR,
-                                color: "#222",
-                                fontWeight: "bold",
-                                padding: "0.1rem 0.3rem",
-                                borderRadius: "3px",
-                                cursor: "pointer"
-                            }}
+                            style={{ ...themeStyles.pill, backgroundColor: PROJECT_COLOR, color: ttrpg.colors.textDark }}
                         >
                             {project.title}
                         </span>
@@ -99,15 +82,9 @@ export default function LoreNoteText({ text, loreEntries, members, quests, proje
                     return (
                         <span
                             key={i}
+                            className="ttrpg-pill"
                             onClick={(e) => { e.stopPropagation(); onLoreClick(entry.id) }}
-                            style={{
-                                backgroundColor: LORE_COLORS[entry.type],
-                                color: "#222",
-                                fontWeight: "bold",
-                                padding: "0.1rem 0.3rem",
-                                borderRadius: "3px",
-                                cursor: "pointer"
-                            }}
+                            style={{ ...themeStyles.pill, backgroundColor: LORE_COLORS[entry.type], color: ttrpg.colors.textDark }}
                         >
                             {entry.name}
                         </span>
@@ -119,11 +96,10 @@ export default function LoreNoteText({ text, loreEntries, members, quests, proje
                     <span
                         key={i}
                         style={{
-                            backgroundColor: "#fde8e8",
-                            color: "#c0392b",
-                            fontWeight: "bold",
-                            padding: "0.1rem 0.3rem",
-                            borderRadius: "3px"
+                            ...themeStyles.pill,
+                            backgroundColor: ttrpg.colors.brokenLinkBg,
+                            color: ttrpg.colors.brokenLinkText,
+                            cursor: "default",
                         }}
                         title="No matching lore entry or player"
                     >

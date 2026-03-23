@@ -2,6 +2,7 @@ import { ReactNode, MouseEvent } from "react"
 
 import spacing from "../configs/spacing"
 import class_names from "../configs/class_names"
+import { ttrpg } from "../configs/ttrpg_theme"
 
 export default function FullPageOverlay(props: {
     children: ReactNode|ReactNode[]
@@ -22,7 +23,7 @@ export default function FullPageOverlay(props: {
                 minHeight: "100%",
                 left: 0,
                 right: 0,
-                backgroundColor: "rgba(0, 0, 0, .75)",
+                backgroundColor: ttrpg.colors.pageBg,
                 color: "#fff",
                 zIndex: 100,
                 display: "flex",

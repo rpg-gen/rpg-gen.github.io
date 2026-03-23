@@ -6,6 +6,7 @@ import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
 import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import SlashCommandTextarea from "./slash_command_textarea"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 
 interface NoteEditModalProps {
     noteText: string
@@ -43,35 +44,13 @@ export default function NoteEditModal({
     return (
         <div
             onClick={handleBackdropClick}
-            style={{
-                position: "fixed",
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                zIndex: 100,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-            }}
+            style={themeStyles.modalBackdrop}
         >
-            <div style={{
-                backgroundColor: "#fff",
-                borderRadius: "8px",
-                width: "600px",
-                maxWidth: "90vw",
-                maxHeight: "80vh",
-                padding: "1rem",
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
-                position: "relative"
-            }}>
+            <div className="ttrpg-modal-content" style={{ ...themeStyles.modalContent, padding: "1rem" }}>
                 <button
                     onClick={onCancel}
-                    style={{
-                        position: "absolute", top: "0.5rem", right: "0.5rem",
-                        background: "none", border: "none", cursor: "pointer",
-                        fontSize: "1.2rem", color: "#999", padding: "0.25rem"
-                    }}
+                    className="ttrpg-btn-ghost"
+                    style={{ ...themeStyles.ghostButton, position: "absolute", top: "0.5rem", right: "0.5rem", fontSize: "1.2rem", color: "#999" }}
                 >✕</button>
                 <SlashCommandTextarea
                     value={noteText}
@@ -84,7 +63,7 @@ export default function NoteEditModal({
                     style={{ minHeight: "120px" }}
                 />
                 <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
-                    <button onClick={onSave} style={primaryButtonStyle}>Save</button>
+                    <button onClick={onSave} className="ttrpg-btn-primary" style={primaryButtonStyle}>Save</button>
                     <button onClick={onCancel}>Cancel</button>
                     {onMove && (showMoveSelect ? (
                         <select
@@ -107,7 +86,8 @@ export default function NoteEditModal({
                     {onDelete && (
                         <button
                             onClick={onDelete}
-                            style={{ marginLeft: "auto", backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 0.75rem", borderRadius: "3px", cursor: "pointer" }}
+                            className="ttrpg-btn-danger"
+                            style={{ ...themeStyles.dangerButton, marginLeft: "auto", padding: "0.5rem 0.75rem" }}
                         >
                             Delete
                         </button>

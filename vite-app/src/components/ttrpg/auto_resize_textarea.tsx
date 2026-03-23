@@ -23,6 +23,7 @@ export default function AutoResizeTextarea({ value, onChange, placeholder, style
     return (
         <textarea
             ref={ref}
+            className="ttrpg-textarea"
             value={value}
             onChange={onChange}
             placeholder={placeholder}

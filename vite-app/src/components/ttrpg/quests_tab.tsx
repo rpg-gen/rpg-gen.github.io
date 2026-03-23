@@ -8,6 +8,7 @@ import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import ProjectsSection from "./projects_section"
 import { cardStyle, primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { nav_paths } from "../../configs/constants"
 import { QUEST_COLOR } from "../../configs/ttrpg_constants"
 
@@ -127,17 +128,14 @@ export default function QuestsTab({
 
     return (
         <div>
-            <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Quests</h3>
+            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontFamily: ttrpg.fonts.heading }}>Quests</h3>
             {errorBanner && (
-                <div style={{
-                    backgroundColor: "#fdecea", color: "#611a15", border: "1px solid #f5c6cb",
-                    borderRadius: "4px", padding: "0.5rem 0.75rem", marginBottom: "0.5rem",
-                    display: "flex", justifyContent: "space-between", alignItems: "center"
-                }}>
+                <div style={themeStyles.errorBanner}>
                     <span>{errorBanner}</span>
                     <button
                         onClick={() => setErrorBanner(null)}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#611a15" }}
+                        className="ttrpg-btn-ghost"
+                        style={{ ...themeStyles.ghostButton, color: ttrpg.colors.brokenLinkText, fontWeight: "bold", fontSize: "1rem" }}
                     >
                         ✕
                     </button>
@@ -145,7 +143,7 @@ export default function QuestsTab({
             )}
 
             {!isAdding ? (
-                <button onClick={() => setIsAdding(true)} style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>
+                <button onClick={() => setIsAdding(true)} className="ttrpg-btn-primary" style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>
                     + Add Quest
                 </button>
             ) : (
@@ -160,7 +158,7 @@ export default function QuestsTab({
                         onKeyDown={e => { if (e.key === "Enter") handleCreate() }}
                     />
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <button onClick={handleCreate} style={primaryButtonStyle}>Add</button>
+                        <button onClick={handleCreate} className="ttrpg-btn-primary" style={primaryButtonStyle}>Add</button>
                         <button onClick={() => { setIsAdding(false); setNewTitle("") }}>Cancel</button>
                     </div>
                 </div>
@@ -175,8 +173,9 @@ export default function QuestsTab({
                 return (
                     <div
                         key={quest.id}
+                        className="ttrpg-card"
                         style={{
-                            ...cardStyle,
+                            ...themeStyles.entityCard(QUEST_COLOR),
                             cursor: "pointer",
                             opacity: quest.completed ? 0.5 : 1,
                             display: "flex",
@@ -188,21 +187,8 @@ export default function QuestsTab({
                         <button
                             onClick={(e) => handleToggleComplete(e, quest)}
                             title={quest.completed ? "Mark active" : "Mark complete"}
-                            style={{
-                                flexShrink: 0,
-                                width: "28px",
-                                height: "28px",
-                                borderRadius: "50%",
-                                border: quest.completed ? "2px solid #27ae60" : "2px solid #ccc",
-                                backgroundColor: quest.completed ? "#27ae60" : "transparent",
-                                color: quest.completed ? "#fff" : "transparent",
-                                cursor: "pointer",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: "0.85rem",
-                                marginTop: "0.1rem"
-                            }}
+                            className="ttrpg-toggle"
+                            style={{ ...themeStyles.toggleCircle(quest.completed), marginTop: "0.1rem" }}
                         >
                             ✓
                         </button>
@@ -243,8 +229,8 @@ export default function QuestsTab({
                 )
             })}
 
-            <div style={{ borderTop: "1px solid #555", marginTop: "1.5rem", paddingTop: "1rem" }}>
-                <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Projects</h3>
+            <div style={{ ...themeStyles.sectionDividerOnDark, marginTop: "1.5rem" }}>
+                <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontFamily: ttrpg.fonts.heading }}>Projects</h3>
                 <ProjectsSection
                     campaignId={campaignId}
                     projects={projects}

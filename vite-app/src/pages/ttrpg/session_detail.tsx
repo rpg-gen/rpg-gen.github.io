@@ -71,15 +71,30 @@ export default function SessionDetail() {
         }
     }
 
+    async function handleDeleteSession() {
+        if (!currentSession || !confirm("Delete this session and all its notes?")) return
+        try {
+            const sessionNotes = data.notes.filter(n => n.session_id === currentSession.id)
+            for (const note of sessionNotes) {
+                await notesHook.deleteNote(note.id)
+            }
+            await sessionsHook.deleteSession(currentSession.id)
+            navigate(`${nav_paths.rpg_notes}/${campaignId}/sessions`)
+        } catch (error) {
+            console.error("Error deleting session:", error)
+            alert("Error deleting session")
+        }
+    }
+
     function openLoreDetail(entryId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, {
-            state: { tab: "lore", detailId: entryId, fromSessionId: sessionId }
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/lore/${entryId}`, {
+            state: { fromSessionId: sessionId }
         })
     }
 
     function openMemberDetail(memberId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, {
-            state: { tab: "party", detailId: memberId, fromSessionId: sessionId }
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/party/${memberId}`, {
+            state: { fromSessionId: sessionId }
         })
     }
 
@@ -103,7 +118,7 @@ export default function SessionDetail() {
         return (
             <div>
                 <p>Session not found.</p>
-                <button onClick={() => navigate(`${nav_paths.rpg_notes}/${campaignId}`)}>Back to Campaign</button>
+                <button onClick={() => navigate(`${nav_paths.rpg_notes}/${campaignId}/sessions`)}>Back to Campaign</button>
             </div>
         )
     }
@@ -121,10 +136,11 @@ export default function SessionDetail() {
                 hasNext={currentIndex < sortedSessions.length - 1}
                 onPrev={() => navigateToSession(sortedSessions[currentIndex - 1].id)}
                 onNext={() => navigateToSession(sortedSessions[currentIndex + 1].id)}
-                onBack={() => navigate(`${nav_paths.rpg_notes}/${campaignId}`)}
+                onBack={() => navigate(`${nav_paths.rpg_notes}/${campaignId}/sessions`)}
                 onDateChange={handleDateChange}
                 onRespiteChange={handleRespiteChange}
                 onTitleChange={handleTitleChange}
+                onDelete={handleDeleteSession}
             />
 
             <SessionDetailContent

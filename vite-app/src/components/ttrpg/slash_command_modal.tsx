@@ -4,6 +4,7 @@ import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
 import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES, QUEST_COLOR, QUEST_LABEL, PROJECT_COLOR, PROJECT_LABEL } from "../../configs/ttrpg_constants"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { MEMBER_COLOR } from "./slash_command_types"
 import SlashCommandResultRow from "./slash_command_result_row"
 
@@ -98,28 +99,15 @@ export default function SlashCommandModal({
     return (
         <div
             onClick={handleBackdropClick}
-            style={{
-                position: "fixed",
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: "rgba(0,0,0,0.75)",
-                zIndex: 100,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-            }}
+            style={themeStyles.modalBackdrop}
         >
-            <div style={{
-                backgroundColor: "#fff",
-                borderRadius: "8px",
+            <div className="ttrpg-modal-content" style={{
+                ...themeStyles.smallModalContent,
                 width: "450px",
-                maxWidth: "90vw",
-                maxHeight: "80vh",
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.3)"
+                padding: 0,
             }}>
                 {/* Search input */}
-                <div style={{ padding: "0.75rem", borderBottom: "1px solid #eee", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div style={{ padding: "0.75rem", borderBottom: `1px solid ${ttrpg.colors.divider}`, display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <input
                         ref={inputRef}
                         type="text"
@@ -127,23 +115,17 @@ export default function SlashCommandModal({
                         onChange={e => setSearchText(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Search quests, lore, and players..."
+                        className="ttrpg-input"
                         style={{
+                            ...themeStyles.input,
                             flex: 1,
-                            padding: "0.5rem",
                             fontSize: "1rem",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                            boxSizing: "border-box",
-                            color: "#222"
                         }}
                     />
                     <button
                         onClick={onDismiss}
-                        style={{
-                            background: "none", border: "none", cursor: "pointer",
-                            fontSize: "1.2rem", color: "#999", padding: "0.25rem",
-                            flexShrink: 0
-                        }}
+                        className="ttrpg-btn-ghost"
+                        style={{ ...themeStyles.ghostButton, fontSize: "1.2rem", color: ttrpg.colors.textMuted, flexShrink: 0 }}
                     >✕</button>
                 </div>
 
@@ -163,13 +145,13 @@ export default function SlashCommandModal({
                     ))}
 
                     {allResults.length === 0 && !trimmed && (
-                        <div style={{ padding: "0.75rem", color: "#888", fontSize: "0.85rem" }}>
+                        <div style={{ padding: "0.75rem", color: ttrpg.colors.textMuted, fontSize: "0.85rem" }}>
                             Type to search lore and players...
                         </div>
                     )}
 
                     {allResults.length === 0 && trimmed && (
-                        <div style={{ padding: "0.75rem", color: "#888", fontSize: "0.85rem" }}>
+                        <div style={{ padding: "0.75rem", color: ttrpg.colors.textMuted, fontSize: "0.85rem" }}>
                             No matches found
                         </div>
                     )}
@@ -177,26 +159,28 @@ export default function SlashCommandModal({
 
                 {/* Create new */}
                 {trimmed && (
-                    <div style={{ padding: "0.5rem 0.75rem", borderTop: "1px solid #eee" }}>
-                        <div style={{ fontSize: "0.8rem", color: "#666", marginBottom: "0.3rem" }}>
+                    <div style={{ padding: "0.5rem 0.75rem", borderTop: `1px solid ${ttrpg.colors.divider}` }}>
+                        <div style={{ fontSize: "0.8rem", color: ttrpg.colors.textMuted, marginBottom: "0.3rem" }}>
                             Create &ldquo;{trimmed}&rdquo; as:
                         </div>
                         <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
                             {ALL_LORE_TYPES.map(type => (
                                 <button
                                     key={type}
+                                    className="ttrpg-pill"
                                     onClick={() => {
                                         onSelect(trimmed)
                                         onCreateLore(trimmed, type)
                                     }}
                                     style={{
                                         backgroundColor: LORE_COLORS[type],
-                                        color: "#222",
-                                        border: "1px solid #ccc",
-                                        borderRadius: "3px",
+                                        color: ttrpg.colors.textDark,
+                                        border: `1px solid ${ttrpg.colors.cardBorder}`,
+                                        borderRadius: ttrpg.radius.sm,
                                         padding: "0.2rem 0.5rem",
                                         cursor: "pointer",
-                                        fontSize: "0.8rem"
+                                        fontSize: "0.8rem",
+                                        fontWeight: "bold",
                                     }}
                                 >
                                     + {LORE_LABELS[type]}

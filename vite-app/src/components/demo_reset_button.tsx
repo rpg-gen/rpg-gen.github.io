@@ -28,10 +28,11 @@ export default function DemoResetButton() {
         <>
             <button
                 onClick={handleClick}
+                className="ttrpg-floating-action"
                 style={{
                     position: "fixed",
                     bottom: 20,
-                    right: 84,
+                    right: 20,
                     zIndex: 1000,
                     width: 56,
                     height: 56,

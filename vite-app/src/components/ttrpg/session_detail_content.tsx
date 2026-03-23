@@ -8,6 +8,7 @@ import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import LoreNoteText from "./lore_note_text"
 import NoteEditModal from "./note_edit_modal"
 import { primaryButtonStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 
 interface CampaignData {
     sessions: TtrpgSession[]
@@ -104,33 +105,32 @@ export default function SessionDetailContent({
     }
 
     return (
-        <div style={{ backgroundColor: "#fff", color: "#222", border: "1px solid #ccc", borderRadius: "4px", padding: "0.75rem" }}>
-            <h4 style={{ marginTop: 0 }}>Notes ({sessionNotes.length})</h4>
+        <div className="ttrpg-card" style={{ ...themeStyles.card, padding: "0.75rem" }}>
+            <h4 style={{ marginTop: 0, color: ttrpg.colors.textDark }}>Notes ({sessionNotes.length})</h4>
             {errorBanner && (
-                <div style={{
-                    backgroundColor: "#fdecea", color: "#611a15", border: "1px solid #f5c6cb",
-                    borderRadius: "4px", padding: "0.5rem 0.75rem", marginBottom: "0.5rem",
-                    display: "flex", justifyContent: "space-between", alignItems: "center"
-                }}>
+                <div style={themeStyles.errorBanner}>
                     <span>{errorBanner}</span>
                     <button
                         onClick={() => setErrorBanner(null)}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#611a15" }}
+                        className="ttrpg-btn-ghost"
+                        style={{ ...themeStyles.ghostButton, color: ttrpg.colors.brokenLinkText, fontSize: "1rem" }}
                     >
                         ✕
                     </button>
                 </div>
             )}
+            <div className="ttrpg-timeline">
             {sessionNotes.map(note => {
                 const isHighlighted = flashNoteId === note.id
                 return (
                 <div
                     key={note.id}
                     ref={highlightNoteId === note.id ? highlightRef : undefined}
+                    className="ttrpg-timeline-item"
                     style={{
-                        border: isHighlighted ? "2px solid #f39c12" : "1px solid #ddd",
-                        backgroundColor: isHighlighted ? "#fef9e7" : "#f5f5f5",
-                        color: "#222",
+                        border: isHighlighted ? `2px solid ${ttrpg.colors.gold}` : `1px solid ${ttrpg.colors.cardBorder}`,
+                        backgroundColor: isHighlighted ? ttrpg.colors.quest : ttrpg.colors.cardBg,
+                        color: ttrpg.colors.textDark,
                         borderRadius: "4px",
                         padding: "0.5rem",
                         marginBottom: "0.5rem",
@@ -148,9 +148,11 @@ export default function SessionDetailContent({
                 </div>
                 )
             })}
+            </div>
 
             <button
                 onClick={() => { setEditingNoteId("new"); setEditingNoteText("") }}
+                className="ttrpg-btn-primary"
                 style={{ ...primaryButtonStyle, marginTop: "0.5rem" }}
             >
                 Add Note

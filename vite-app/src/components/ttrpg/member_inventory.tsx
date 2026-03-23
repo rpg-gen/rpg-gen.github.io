@@ -2,6 +2,7 @@ import { useState } from "react"
 import TtrpgMember, { TtrpgMemberItem } from "../../types/ttrpg/TtrpgMember"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import { primaryButtonSmallStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 
 interface MemberInventoryProps {
     member: TtrpgMember
@@ -18,16 +19,22 @@ interface MemberInventoryProps {
     }
     partyResources?: TtrpgPartyResources
     updatePartyResources?: (updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) => void
+    adding?: boolean
+    setAdding?: (v: boolean) => void
 }
 
 export default function MemberInventory({
     member, membersHook, updateMembers,
-    showUnassign, campaignId, partyResourcesHook, partyResources, updatePartyResources
+    showUnassign, campaignId, partyResourcesHook, partyResources, updatePartyResources,
+    adding: externalAdding, setAdding: externalSetAdding
 }: MemberInventoryProps) {
+
+    const [internalAdding, setInternalAdding] = useState(false)
+    const addingItem = externalAdding ?? internalAdding
+    const setAddingItem = externalSetAdding ?? setInternalAdding
 
     const [newItemName, setNewItemName] = useState("")
     const [newItemQuantity, setNewItemQuantity] = useState("1")
-    const [addingItem, setAddingItem] = useState(false)
     const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
     const [editingItemName, setEditingItemName] = useState("")
     const [editingItemQuantity, setEditingItemQuantity] = useState("1")
@@ -123,9 +130,9 @@ export default function MemberInventory({
             ))}
 
             {selectedIdx !== null && member.items[selectedIdx] && (
-                <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                <div style={themeStyles.modalBackdrop}
                     onClick={() => setSelectedIdx(null)}>
-                    <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                    <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
                         onClick={e => e.stopPropagation()}>
                         <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Item</strong>
                         <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
@@ -147,23 +154,28 @@ export default function MemberInventory({
                 </div>
             )}
 
-            {addingItem ? (
-                <div style={{ marginTop: "0.25rem", marginBottom: "0.5rem" }}>
-                    <input type="text" value={newItemName} onChange={(e) => setNewItemName(e.target.value)}
-                        placeholder="Item name" style={{ width: "100%", padding: "0.25rem", boxSizing: "border-box", marginBottom: "0.25rem" }} autoFocus />
-                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                        <span style={{ minWidth: "1.5rem", textAlign: "center", fontWeight: "bold" }}>{newItemQuantity}</span>
-                        <button onClick={() => setNewItemQuantity(String((parseInt(newItemQuantity) || 0) + 1))} style={{ fontSize: "0.8rem" }}>{"\u25B2"}</button>
-                        <button onClick={() => setNewItemQuantity(String(Math.max(1, (parseInt(newItemQuantity) || 0) - 1)))} style={{ fontSize: "0.8rem" }}>{"\u25BC"}</button>
-                        <button onClick={handleAddItem} style={primaryButtonSmallStyle}>Add</button>
-                        <button onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQuantity("1") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+            {addingItem && (
+                <div style={themeStyles.modalBackdrop}
+                    onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQuantity("1") }}>
+                    <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
+                        onClick={e => e.stopPropagation()}>
+                        <strong style={{ display: "block", marginBottom: "0.75rem" }}>Add Item</strong>
+                        <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                        <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)}
+                            placeholder="Item name"
+                            style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} autoFocus />
+                        <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
+                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                            <button onClick={() => setNewItemQuantity(String(Math.max(1, (parseInt(newItemQuantity) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                            <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>{newItemQuantity}</span>
+                            <button onClick={() => setNewItemQuantity(String((parseInt(newItemQuantity) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                            <button onClick={handleAddItem} style={primaryButtonSmallStyle}>Add</button>
+                            <button onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQuantity("1") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                        </div>
                     </div>
                 </div>
-            ) : (
-                <button onClick={() => { setAddingItem(true); setNewItemName(""); setNewItemQuantity("1") }}
-                    style={{ marginTop: "0.25rem", fontSize: "0.8rem" }}>
-                    + Add Item
-                </button>
             )}
         </div>
     )

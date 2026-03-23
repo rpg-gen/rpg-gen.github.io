@@ -39,6 +39,7 @@ export default function FeedbackButton() {
         <>
             <button
                 onClick={() => set_is_open(true)}
+                className="ttrpg-floating-action"
                 style={{
                     position: "fixed",
                     bottom: 20,

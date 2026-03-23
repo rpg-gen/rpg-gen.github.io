@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#1a1f2e"/>
+  <!-- Scroll/book body -->
+  <path d="M140 100 C120 100 108 115 108 135 L108 377 C108 397 120 412 140 412 L372 412 C392 412 404 397 404 377 L404 135 C404 115 392 100 372 100 Z" fill="none" stroke="#c9a84c" stroke-width="12" stroke-linejoin="round"/>
+  <!-- Scroll top curl -->
+  <path d="M108 135 C108 115 120 100 140 100 L140 130 C130 130 122 125 122 135 Z" fill="#c9a84c" opacity="0.6"/>
+  <!-- Scroll bottom curl -->
+  <path d="M108 377 C108 397 120 412 140 412 L140 382 C130 382 122 387 122 377 Z" fill="#c9a84c" opacity="0.6"/>
+  <!-- Text lines -->
+  <line x1="160" y1="170" x2="352" y2="170" stroke="#c9a84c" stroke-width="8" stroke-linecap="round"/>
+  <line x1="160" y1="210" x2="320" y2="210" stroke="#c9a84c" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+  <line x1="160" y1="250" x2="340" y2="250" stroke="#c9a84c" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+  <line x1="160" y1="290" x2="300" y2="290" stroke="#c9a84c" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="160" y1="330" x2="330" y2="330" stroke="#c9a84c" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <!-- Quill pen -->
+  <path d="M370 80 L390 60 C395 55 405 55 410 60 L412 62 C417 67 417 77 412 82 L392 102 Z" fill="#c9a84c"/>
+  <path d="M370 80 L350 130 L365 105 Z" fill="#c9a84c" opacity="0.8"/>
+</svg>

@@ -1,0 +1,234 @@
+/* ==================== FONTS ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==================== CARD HOVER ==================== */
+/* NOTE: Do NOT add `transform` here — it creates a stacking context that traps
+   position:fixed modals rendered inside ttrpg-card containers. Shadow-only hover
+   gives a clean lift effect without z-index issues. */
+.ttrpg-card {
+    transition: box-shadow 0.2s ease;
+}
+.ttrpg-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== BUTTON HOVER ==================== */
+.ttrpg-btn-primary {
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.ttrpg-btn-primary:hover {
+    background-color: #d4b85c;
+}
+.ttrpg-btn-primary:active {
+    transform: scale(0.97);
+}
+
+.ttrpg-btn-danger {
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.ttrpg-btn-danger:hover {
+    background-color: #c04838;
+}
+.ttrpg-btn-danger:active {
+    transform: scale(0.97);
+}
+
+.ttrpg-btn-ghost {
+    transition: color 0.15s ease;
+}
+.ttrpg-btn-ghost:hover {
+    color: #c9a84c;
+}
+
+.ttrpg-btn-secondary {
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.ttrpg-btn-secondary:hover {
+    background-color: rgba(201, 168, 76, 0.1);
+    border-color: #c9a84c;
+}
+
+/* ==================== TAB HOVER ==================== */
+.ttrpg-tab {
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.ttrpg-tab:hover {
+    color: #c9a84c;
+}
+
+/* ==================== PILL HOVER ==================== */
+.ttrpg-pill {
+    transition: filter 0.15s ease;
+}
+.ttrpg-pill:hover {
+    filter: brightness(0.92);
+}
+
+/* ==================== CLICK-TO-EDIT HOVER ==================== */
+.ttrpg-click-to-edit {
+    transition: border-color 0.15s ease;
+}
+.ttrpg-click-to-edit:hover {
+    border-color: #c9a84c;
+}
+
+/* ==================== PROGRESS BAR ==================== */
+.ttrpg-progress-fill {
+    background: linear-gradient(90deg, #c9a84c, #d4b85c);
+    transition: width 0.3s ease;
+}
+
+/* ==================== INPUT PLACEHOLDERS ==================== */
+.ttrpg-input::placeholder,
+.ttrpg-textarea::placeholder {
+    color: #a09080;
+}
+
+/* ==================== STICKY TAB BAR ==================== */
+.ttrpg-tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: rgba(26, 31, 46, 0.95);
+    backdrop-filter: blur(8px);
+    padding-bottom: 0.5rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+/* ==================== STICKY SESSION HEADER ==================== */
+.ttrpg-session-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: rgba(26, 31, 46, 0.95);
+    backdrop-filter: blur(8px);
+    padding-bottom: 0.75rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+}
+
+/* ==================== TIMELINE ==================== */
+.ttrpg-timeline {
+    position: relative;
+    padding-left: 1.5rem;
+}
+.ttrpg-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: rgba(201, 168, 76, 0.25);
+}
+.ttrpg-timeline-item {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+.ttrpg-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.25rem;
+    top: 0.75rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #c9a84c;
+    border: 2px solid #1a1f2e;
+}
+
+/* ==================== BOTTOM-SHEET MODALS (MOBILE) ==================== */
+@media (max-width: 500px) {
+    .ttrpg-modal-content {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        border-radius: 12px 12px 0 0 !important;
+        max-height: 80vh !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-y: auto !important;
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
+        box-sizing: border-box !important;
+        animation: ttrpg-slide-up 0.25s ease;
+    }
+
+    @keyframes ttrpg-slide-up {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+}
+
+/* ==================== FLOATING ACTION BUTTONS ==================== */
+/* Hide floating buttons (feedback, demo reset) when a modal is open */
+body:has(.ttrpg-modal-content) .ttrpg-floating-action {
+    display: none !important;
+}
+
+/* ==================== COLLAPSIBLE SECTIONS ==================== */
+.ttrpg-collapsible {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+.ttrpg-collapsible.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+}
+.ttrpg-collapsible.expanded {
+    opacity: 1;
+}
+
+.ttrpg-collapsible-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+}
+.ttrpg-collapsible-header .chevron {
+    transition: transform 0.2s ease;
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #c9a84c;
+}
+.ttrpg-collapsible-header .chevron.open {
+    transform: rotate(90deg);
+}
+
+/* ==================== INITIAL BADGE ==================== */
+.ttrpg-initial-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ==================== STAT GRID (PARTY RESOURCES) ==================== */
+@media (min-width: 501px) {
+    .ttrpg-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.5rem;
+    }
+}
+
+/* ==================== TOGGLE CIRCLE HOVER ==================== */
+.ttrpg-toggle:hover {
+    transform: scale(1.1);
+    transition: transform 0.15s ease;
+}

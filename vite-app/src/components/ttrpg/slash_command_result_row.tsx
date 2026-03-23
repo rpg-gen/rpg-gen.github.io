@@ -1,3 +1,5 @@
+import { ttrpg } from "../../configs/ttrpg_theme"
+
 interface SlashCommandResultRowProps {
     name: string
     label: string
@@ -27,23 +29,24 @@ export default function SlashCommandResultRow({
                 display: "flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                borderBottom: "1px solid #f0f0f0",
-                backgroundColor: isHighlighted ? "#e8f0fe" : "transparent",
-                borderLeft: isHighlighted ? "3px solid #4285f4" : "3px solid transparent"
+                borderBottom: `1px solid ${ttrpg.colors.divider}`,
+                backgroundColor: isHighlighted ? ttrpg.colors.goldMuted : "transparent",
+                borderLeft: isHighlighted ? `3px solid ${ttrpg.colors.gold}` : "3px solid transparent"
             }}
         >
-            <span style={{
+            <span className="ttrpg-pill" style={{
                 backgroundColor: labelColor,
-                color: "#222",
+                color: ttrpg.colors.textDark,
                 padding: "0.1rem 0.4rem",
-                borderRadius: "3px",
-                fontSize: "0.75rem"
+                borderRadius: ttrpg.radius.sm,
+                fontSize: "0.75rem",
+                fontWeight: "bold",
             }}>
                 {label}
             </span>
-            <span style={{ color: "#222" }}>{name}</span>
+            <span style={{ color: ttrpg.colors.textDark }}>{name}</span>
             {showEnterHint && (
-                <span style={{ marginLeft: "auto", fontSize: "0.7rem", color: "#888" }}>
+                <span style={{ marginLeft: "auto", fontSize: "0.7rem", color: ttrpg.colors.textMuted }}>
                     Enter
                 </span>
             )}

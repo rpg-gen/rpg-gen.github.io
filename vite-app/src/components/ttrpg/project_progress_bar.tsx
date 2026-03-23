@@ -1,4 +1,4 @@
-import { PROJECT_COLOR } from "../../configs/ttrpg_constants"
+import { ttrpg } from "../../configs/ttrpg_theme"
 
 interface ProjectProgressBarProps {
     current: number
@@ -13,17 +13,20 @@ export default function ProjectProgressBar({ current, total, completed }: Projec
         <div style={{
             position: "relative",
             height: "22px",
-            backgroundColor: "#eee",
-            borderRadius: "4px",
+            backgroundColor: "rgba(255,255,255,0.1)",
+            borderRadius: ttrpg.radius.sm,
             overflow: "hidden",
-            border: "1px solid #ccc"
+            border: `1px solid ${ttrpg.colors.dividerOnDark}`
         }}>
-            <div style={{
-                width: `${pct}%`,
-                height: "100%",
-                backgroundColor: completed ? "#27ae60" : PROJECT_COLOR,
-                transition: "width 0.3s ease"
-            }} />
+            <div
+                className="ttrpg-progress-fill"
+                style={{
+                    width: `${pct}%`,
+                    height: "100%",
+                    backgroundColor: completed ? ttrpg.colors.success : undefined,
+                    background: completed ? ttrpg.colors.success : undefined,
+                }}
+            />
             <span style={{
                 position: "absolute",
                 top: 0, left: 0, right: 0, bottom: 0,
@@ -32,7 +35,7 @@ export default function ProjectProgressBar({ current, total, completed }: Projec
                 justifyContent: "center",
                 fontSize: "0.75rem",
                 fontWeight: "bold",
-                color: "#333"
+                color: ttrpg.colors.textOnDark
             }}>
                 {current}/{total}
             </span>

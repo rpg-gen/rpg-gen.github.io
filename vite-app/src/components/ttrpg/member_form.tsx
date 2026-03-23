@@ -28,7 +28,7 @@ export default function MemberForm({
             await membersHook.createMember({
                 campaign_id: campaignId, name: formName.trim(),
                 played_by: formPlayedBy.trim(), notes: formNotes.trim(),
-                items: [], wealth: 0, renown: 0, followers: [], titles: []
+                items: [], wealth: 0, renown: 0, followers: [], titles: [], statuses: []
             })
             onClose()
         } catch (error) {

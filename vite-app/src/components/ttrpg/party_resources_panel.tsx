@@ -1,9 +1,10 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import { TtrpgMemberItem, TtrpgMemberFollower } from "../../types/ttrpg/TtrpgMember"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import StatCounter from "./stat_counter"
 import { cardStyle, primaryButtonSmallStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { FOLLOWER_TYPES, FOLLOWER_LABELS } from "../../configs/ttrpg_constants"
 
 interface PartyResourcesPanelProps {
@@ -17,6 +18,14 @@ interface PartyResourcesPanelProps {
     }
     updatePartyResources: (updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) => void
     updateMembers: (updater: (members: TtrpgMember[]) => TtrpgMember[]) => void
+}
+
+const addButtonStyle: React.CSSProperties = {
+    width: 28, height: 28, borderRadius: "50%", border: "none",
+    backgroundColor: ttrpg.colors.success, color: "#fff",
+    fontSize: "1.1rem", fontWeight: "bold", cursor: "pointer",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    flexShrink: 0, lineHeight: 1,
 }
 
 export default function PartyResourcesPanel({
@@ -172,18 +181,21 @@ export default function PartyResourcesPanel({
     function closeFollowerModal() { setSelectedFollowerIdx(null); setShowFollowerAssign(false) }
 
     return (
-        <div style={{ ...cardStyle, backgroundColor: "#e8f4f8", marginBottom: "1rem" }}>
+        <div className="ttrpg-card" style={{ ...cardStyle, backgroundColor: ttrpg.colors.cardBg, marginBottom: "1rem" }}>
             <strong style={{ fontSize: "1rem", display: "block", marginBottom: "0.75rem" }}>Party Resources</strong>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+            <div className="ttrpg-stat-grid" style={{ marginBottom: "1rem" }}>
                 <StatCounter label="Hero Tokens" value={partyResources.hero_tokens} min={0} onChange={(v) => handleCounterChange("hero_tokens", v)} />
                 <StatCounter label="Victories" value={partyResources.victories} min={0} onChange={(v) => handleCounterChange("victories", v)} />
                 <StatCounter label="EXP" value={partyResources.exp} min={0} onChange={(v) => handleCounterChange("exp", v)} />
             </div>
 
             {/* Unassigned Items */}
-            <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.5rem", marginBottom: "0.75rem" }}>
-                <strong style={{ fontSize: "0.9rem" }}>Unassigned Items</strong>
+            <div style={{ ...themeStyles.sectionDivider, marginBottom: "0.75rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+                    <strong style={{ fontSize: "0.9rem", flex: 1 }}>Unassigned Items</strong>
+                    <button onClick={() => setAddingItem(true)} title="Add item" style={addButtonStyle}>+</button>
+                </div>
                 {partyResources.unassigned_items.map((item, idx) => (
                     <div key={idx}
                         onClick={() => { setSelectedItemIdx(idx); setEditItemName(item.name); setEditItemQty(String(item.quantity)); setShowItemAssign(false) }}
@@ -194,9 +206,9 @@ export default function PartyResourcesPanel({
                 ))}
 
                 {selectedItemIdx !== null && partyResources.unassigned_items[selectedItemIdx] && (
-                    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                    <div style={themeStyles.modalBackdrop}
                         onClick={closeItemModal}>
-                        <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                        <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
                             onClick={e => e.stopPropagation()}>
                             <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Item</strong>
                             <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
@@ -225,26 +237,34 @@ export default function PartyResourcesPanel({
                     </div>
                 )}
 
-                {addingItem ? (
-                    <div style={{ marginTop: "0.5rem" }}>
-                        <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="Item name"
-                            style={{ width: "100%", padding: "0.25rem", boxSizing: "border-box", marginBottom: "0.25rem" }} autoFocus />
-                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                            <span style={{ minWidth: "1.5rem", textAlign: "center", fontWeight: "bold" }}>{newItemQty}</span>
-                            <button onClick={() => setNewItemQty(String((parseInt(newItemQty) || 0) + 1))} style={{ fontSize: "0.8rem" }}>{"\u25B2"}</button>
-                            <button onClick={() => setNewItemQty(String(Math.max(1, (parseInt(newItemQty) || 0) - 1)))} style={{ fontSize: "0.8rem" }}>{"\u25BC"}</button>
-                            <button onClick={handleAddItem} style={primaryButtonSmallStyle}>Add</button>
-                            <button onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQty("1") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                {addingItem && (
+                    <div style={themeStyles.modalBackdrop} onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQty("1") }}>
+                        <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent} onClick={e => e.stopPropagation()}>
+                            <strong style={{ display: "block", marginBottom: "0.75rem" }}>Add Item</strong>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                            <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)} placeholder="Item name"
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} autoFocus />
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
+                            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                                <button onClick={() => setNewItemQty(String(Math.max(1, (parseInt(newItemQty) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                                <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>{newItemQty}</span>
+                                <button onClick={() => setNewItemQty(String((parseInt(newItemQty) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                            </div>
+                            <div style={{ display: "flex", gap: "0.5rem" }}>
+                                <button onClick={handleAddItem} style={primaryButtonSmallStyle}>Add</button>
+                                <button onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQty("1") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                            </div>
                         </div>
                     </div>
-                ) : (
-                    <button onClick={() => setAddingItem(true)} style={{ marginTop: "0.25rem", fontSize: "0.8rem" }}>+ Add Item</button>
                 )}
             </div>
 
             {/* Unassigned Followers */}
-            <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.5rem" }}>
-                <strong style={{ fontSize: "0.9rem" }}>Unassigned Followers</strong>
+            <div style={themeStyles.sectionDivider}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+                    <strong style={{ fontSize: "0.9rem", flex: 1 }}>Unassigned Followers</strong>
+                    <button onClick={() => setAddingFollower(true)} title="Add follower" style={addButtonStyle}>+</button>
+                </div>
                 {partyResources.unassigned_followers.map((f, idx) => (
                     <div key={idx}
                         onClick={() => { setSelectedFollowerIdx(idx); setEditFollowerName(f.name); setEditFollowerType(f.type); setEditFollowerBonus(String(f.roll_bonus)); setShowFollowerAssign(false) }}
@@ -255,9 +275,9 @@ export default function PartyResourcesPanel({
                 ))}
 
                 {selectedFollowerIdx !== null && partyResources.unassigned_followers[selectedFollowerIdx] && (
-                    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                    <div style={themeStyles.modalBackdrop}
                         onClick={closeFollowerModal}>
-                        <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                        <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
                             onClick={e => e.stopPropagation()}>
                             <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Follower</strong>
                             <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
@@ -291,23 +311,30 @@ export default function PartyResourcesPanel({
                     </div>
                 )}
 
-                {addingFollower ? (
-                    <div style={{ marginTop: "0.5rem" }}>
-                        <input type="text" value={newFollowerName} onChange={e => setNewFollowerName(e.target.value)} placeholder="Follower name"
-                            style={{ width: "100%", padding: "0.25rem", boxSizing: "border-box", marginBottom: "0.25rem" }} autoFocus />
-                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                            <select value={newFollowerType} onChange={e => setNewFollowerType(e.target.value as "sage" | "crafter")}>
+                {addingFollower && (
+                    <div style={themeStyles.modalBackdrop} onClick={() => { setAddingFollower(false); setNewFollowerName(""); setNewFollowerBonus("0") }}>
+                        <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent} onClick={e => e.stopPropagation()}>
+                            <strong style={{ display: "block", marginBottom: "0.75rem" }}>Add Follower</strong>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                            <input type="text" value={newFollowerName} onChange={e => setNewFollowerName(e.target.value)} placeholder="Follower name"
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} autoFocus />
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Type</label>
+                            <select value={newFollowerType} onChange={e => setNewFollowerType(e.target.value as "sage" | "crafter")}
+                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }}>
                                 {FOLLOWER_TYPES.map(t => <option key={t} value={t}>{FOLLOWER_LABELS[t]}</option>)}
                             </select>
-                            <span>+</span>
-                            <input type="number" value={newFollowerBonus} onChange={e => setNewFollowerBonus(e.target.value)}
-                                style={{ width: "3rem", padding: "0.25rem" }} />
-                            <button onClick={handleAddFollower} style={primaryButtonSmallStyle}>Add</button>
-                            <button onClick={() => { setAddingFollower(false); setNewFollowerName(""); setNewFollowerBonus("0") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Roll Bonus</label>
+                            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                                <button onClick={() => setNewFollowerBonus(String(Math.max(0, (parseInt(newFollowerBonus) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                                <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>+{newFollowerBonus}</span>
+                                <button onClick={() => setNewFollowerBonus(String((parseInt(newFollowerBonus) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                            </div>
+                            <div style={{ display: "flex", gap: "0.5rem" }}>
+                                <button onClick={handleAddFollower} style={primaryButtonSmallStyle}>Add</button>
+                                <button onClick={() => { setAddingFollower(false); setNewFollowerName(""); setNewFollowerBonus("0") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                            </div>
                         </div>
                     </div>
-                ) : (
-                    <button onClick={() => setAddingFollower(true)} style={{ marginTop: "0.25rem", fontSize: "0.8rem" }}>+ Add Follower</button>
                 )}
             </div>
         </div>

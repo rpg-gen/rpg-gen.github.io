@@ -2,6 +2,7 @@ import { useState } from "react"
 import TtrpgMember, { TtrpgMemberFollower } from "../../types/ttrpg/TtrpgMember"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import { primaryButtonSmallStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { themeStyles } from "../../configs/ttrpg_theme"
 import { FOLLOWER_TYPES, FOLLOWER_LABELS } from "../../configs/ttrpg_constants"
 
 interface MemberFollowersProps {
@@ -19,14 +20,19 @@ interface MemberFollowersProps {
     }
     partyResources: TtrpgPartyResources
     updatePartyResources: (updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) => void
+    adding?: boolean
+    setAdding?: (v: boolean) => void
 }
 
 export default function MemberFollowers({
     member, membersHook, updateMembers, campaignId,
-    partyResourcesHook, partyResources, updatePartyResources
+    partyResourcesHook, partyResources, updatePartyResources,
+    adding: externalAdding, setAdding: externalSetAdding
 }: MemberFollowersProps) {
 
-    const [adding, setAdding] = useState(false)
+    const [internalAdding, setInternalAdding] = useState(false)
+    const adding = externalAdding ?? internalAdding
+    const setAdding = externalSetAdding ?? setInternalAdding
     const [newName, setNewName] = useState("")
     const [newType, setNewType] = useState<"sage" | "crafter">("sage")
     const [newBonus, setNewBonus] = useState("0")
@@ -105,9 +111,9 @@ export default function MemberFollowers({
             ))}
 
             {selectedIdx !== null && member.followers[selectedIdx] && (
-                <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+                <div style={themeStyles.modalBackdrop}
                     onClick={() => setSelectedIdx(null)}>
-                    <div style={{ backgroundColor: "#fff", borderRadius: "8px", padding: "1.25rem", width: "90%", maxWidth: "360px", color: "#222" }}
+                    <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
                         onClick={e => e.stopPropagation()}>
                         <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Follower</strong>
                         <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
@@ -134,25 +140,33 @@ export default function MemberFollowers({
                 </div>
             )}
 
-            {adding ? (
-                <div style={{ marginTop: "0.25rem", marginBottom: "0.5rem" }}>
-                    <input type="text" value={newName} onChange={e => setNewName(e.target.value)} placeholder="Follower name"
-                        style={{ width: "100%", padding: "0.25rem", boxSizing: "border-box", marginBottom: "0.25rem" }} autoFocus />
-                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                        <select value={newType} onChange={e => setNewType(e.target.value as "sage" | "crafter")}>
+            {adding && (
+                <div style={themeStyles.modalBackdrop}
+                    onClick={() => { setAdding(false); setNewName(""); setNewBonus("0") }}>
+                    <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
+                        onClick={e => e.stopPropagation()}>
+                        <strong style={{ display: "block", marginBottom: "0.75rem" }}>Add Follower</strong>
+                        <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
+                        <input type="text" value={newName} onChange={e => setNewName(e.target.value)}
+                            placeholder="Follower name"
+                            style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} autoFocus />
+                        <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Type</label>
+                        <select value={newType} onChange={e => setNewType(e.target.value as "sage" | "crafter")}
+                            style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }}>
                             {FOLLOWER_TYPES.map(t => <option key={t} value={t}>{FOLLOWER_LABELS[t]}</option>)}
                         </select>
-                        <span>+</span>
-                        <input type="number" value={newBonus} onChange={e => setNewBonus(e.target.value)}
-                            style={{ width: "3rem", padding: "0.25rem" }} />
-                        <button onClick={handleAdd} style={primaryButtonSmallStyle}>Add</button>
-                        <button onClick={() => { setAdding(false); setNewName(""); setNewBonus("0") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                        <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Roll Bonus</label>
+                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                            <button onClick={() => setNewBonus(String(Math.max(0, (parseInt(newBonus) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                            <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>+{newBonus}</span>
+                            <button onClick={() => setNewBonus(String((parseInt(newBonus) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                            <button onClick={handleAdd} style={primaryButtonSmallStyle}>Add</button>
+                            <button onClick={() => { setAdding(false); setNewName(""); setNewBonus("0") }} style={{ fontSize: "0.8rem" }}>Cancel</button>
+                        </div>
                     </div>
                 </div>
-            ) : (
-                <button onClick={() => { setAdding(true); setNewName(""); setNewBonus("0") }} style={{ marginTop: "0.25rem", fontSize: "0.8rem" }}>
-                    + Add Follower
-                </button>
             )}
         </div>
     )

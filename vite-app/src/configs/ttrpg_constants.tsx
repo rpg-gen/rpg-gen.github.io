@@ -1,11 +1,12 @@
 import { LoreEntryType } from "../types/ttrpg/TtrpgLoreEntry"
 import TtrpgPartyResources from "../types/ttrpg/TtrpgPartyResources"
+import { ttrpg } from "./ttrpg_theme"
 
 export const LORE_COLORS: Record<LoreEntryType, string> = {
-    person: "#e8f0fe",
-    item: "#fef7e0",
-    place: "#e6f4ea",
-    faction: "#fce4ec"
+    person: ttrpg.colors.person,
+    item: ttrpg.colors.item,
+    place: ttrpg.colors.place,
+    faction: ttrpg.colors.faction,
 }
 
 export const LORE_LABELS: Record<LoreEntryType, string> = {
@@ -32,10 +33,10 @@ export const DEFAULT_PARTY_RESOURCES: TtrpgPartyResources = {
     unassigned_followers: []
 }
 
-export const QUEST_COLOR = "#fff9c4"
+export const QUEST_COLOR = ttrpg.colors.quest
 export const QUEST_LABEL = "Quest"
 
-export const PROJECT_COLOR = "#e6d7f7"
+export const PROJECT_COLOR = ttrpg.colors.project
 export const PROJECT_LABEL = "Project"
 
 export const FOLLOWER_TYPES = ["sage", "crafter"] as const

@@ -6,6 +6,7 @@ import AutoResizeTextarea from "../../components/ttrpg/auto_resize_textarea"
 import LoreNoteText from "../../components/ttrpg/lore_note_text"
 import { nav_paths } from "../../configs/constants"
 import { primaryButtonStyle } from "./campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { QUEST_COLOR } from "../../configs/ttrpg_constants"
 import { CampaignLayoutContext } from "./campaign_layout"
 
@@ -30,7 +31,7 @@ export default function QuestDetail() {
     }, [quest])
 
     function goBack() {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "quests" } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/quests`)
     }
 
     function goToSession(sessionId: string, noteId?: string) {
@@ -40,11 +41,11 @@ export default function QuestDetail() {
     }
 
     function openLoreDetail(entryId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "lore", detailId: entryId } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/lore/${entryId}`)
     }
 
     function openMemberDetail(memberId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "party", detailId: memberId } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/party/${memberId}`)
     }
 
     function openQuestDetail(qId: string) {
@@ -159,10 +160,13 @@ export default function QuestDetail() {
             ) : (
                 <h2
                     onClick={() => { setDraftTitle(quest.short_title); setEditingField("title") }}
+                    className="ttrpg-click-to-edit"
                     style={{
                         cursor: "pointer",
                         marginBottom: "1rem",
-                        textDecoration: quest.completed ? "line-through" : "none"
+                        textDecoration: quest.completed ? "line-through" : "none",
+                        fontFamily: ttrpg.fonts.heading,
+                        color: ttrpg.colors.gold,
                     }}
                     title="Click to edit"
                 >
@@ -173,10 +177,11 @@ export default function QuestDetail() {
             <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1rem", flexWrap: "wrap", alignItems: "center" }}>
                 <button
                     onClick={handleToggleComplete}
+                    className={quest.completed ? "ttrpg-btn-primary" : "ttrpg-btn-secondary"}
                     style={{
-                        backgroundColor: quest.completed ? "#27ae60" : "transparent",
-                        color: quest.completed ? "#fff" : "#27ae60",
-                        border: "2px solid #27ae60",
+                        backgroundColor: quest.completed ? themeStyles.toggleCircle(true).backgroundColor : "transparent",
+                        color: quest.completed ? "#fff" : themeStyles.toggleCircle(true).backgroundColor as string,
+                        border: `2px solid ${themeStyles.toggleCircle(true).backgroundColor}`,
                         padding: "0.4rem 0.75rem",
                         borderRadius: "4px",
                         cursor: "pointer",
@@ -217,16 +222,17 @@ export default function QuestDetail() {
                 />
             ) : (
                 <div
+                    className="ttrpg-click-to-edit"
                     onClick={() => { setDraftDescription(quest.description); setEditingField("description") }}
                     style={{
+                        ...themeStyles.clickToEditOnDark,
                         whiteSpace: "pre-wrap",
                         padding: "0.5rem",
                         borderRadius: "4px",
-                        border: "1px solid #555",
+                        border: `1px solid ${ttrpg.colors.dividerOnDark}`,
                         minHeight: "60px",
-                        cursor: "pointer",
                         marginBottom: "1rem",
-                        color: quest.description ? "#fff" : "#666"
+                        color: quest.description ? ttrpg.colors.textOnDark : ttrpg.colors.textMuted
                     }}
                     title="Click to edit"
                 >
@@ -235,16 +241,11 @@ export default function QuestDetail() {
             )}
 
             {editingField === "description" && (
-                <button onClick={saveDescription} style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>Save Description</button>
+                <button onClick={saveDescription} className="ttrpg-btn-primary" style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>Save Description</button>
             )}
 
             {mentions.length > 0 && (
-                <div style={{
-                    borderTop: "1px solid #555",
-                    paddingTop: "0.75rem",
-                    marginTop: "0.5rem",
-                    marginBottom: "1rem"
-                }}>
+                <div style={{ ...themeStyles.sectionDividerOnDark, marginBottom: "1rem" }}>
                     <strong>Session mentions ({mentions.length})</strong>
                     {mentions.map(({ note, session }) => (
                         <div
@@ -281,10 +282,11 @@ export default function QuestDetail() {
                 </div>
             )}
 
-            <div style={{ marginTop: "2rem", borderTop: "1px solid #555", paddingTop: "1rem" }}>
+            <div style={{ ...themeStyles.sectionDividerOnDark, marginTop: "2rem" }}>
                 <button
                     onClick={handleDelete}
-                    style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                    className="ttrpg-btn-danger"
+                    style={themeStyles.dangerButton}
                 >
                     Delete Quest
                 </button>

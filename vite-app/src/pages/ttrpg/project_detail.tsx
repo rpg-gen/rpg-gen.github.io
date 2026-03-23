@@ -10,6 +10,7 @@ import AddPointsModal from "../../components/ttrpg/add_points_modal"
 import ContributionList from "../../components/ttrpg/contribution_list"
 import { nav_paths } from "../../configs/constants"
 import { primaryButtonStyle } from "./campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { PROJECT_COLOR } from "../../configs/ttrpg_constants"
 import { CampaignLayoutContext } from "./campaign_layout"
 
@@ -38,7 +39,7 @@ export default function ProjectDetail() {
     }, [project])
 
     function goBack() {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "quests" } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/quests`)
     }
 
     function goToSession(sessionId: string, noteId?: string) {
@@ -48,11 +49,11 @@ export default function ProjectDetail() {
     }
 
     function openLoreDetail(entryId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "lore", detailId: entryId } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/lore/${entryId}`)
     }
 
     function openMemberDetail(memberId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}`, { state: { tab: "party", detailId: memberId } })
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/party/${memberId}`)
     }
 
     function openQuestDetail(qId: string) {
@@ -183,7 +184,8 @@ export default function ProjectDetail() {
             ) : (
                 <h2
                     onClick={() => { setDraftTitle(project.title); setEditingField("title") }}
-                    style={{ cursor: "pointer", marginBottom: "1rem", textDecoration: project.completed ? "line-through" : "none" }}
+                    className="ttrpg-click-to-edit"
+                    style={{ cursor: "pointer", marginBottom: "1rem", textDecoration: project.completed ? "line-through" : "none", fontFamily: ttrpg.fonts.heading, color: ttrpg.colors.gold }}
                     title="Click to edit"
                 >
                     {project.title}
@@ -197,16 +199,18 @@ export default function ProjectDetail() {
             <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem", flexWrap: "wrap", alignItems: "center" }}>
                 <button
                     onClick={handleToggleComplete}
+                    className={project.completed ? "ttrpg-btn-primary" : "ttrpg-btn-secondary"}
                     style={{
-                        backgroundColor: project.completed ? "#27ae60" : "transparent",
-                        color: project.completed ? "#fff" : "#27ae60",
-                        border: "2px solid #27ae60", padding: "0.4rem 0.75rem",
+                        backgroundColor: project.completed ? themeStyles.toggleCircle(true).backgroundColor : "transparent",
+                        color: project.completed ? "#fff" : themeStyles.toggleCircle(true).backgroundColor as string,
+                        border: `2px solid ${themeStyles.toggleCircle(true).backgroundColor}`,
+                        padding: "0.4rem 0.75rem",
                         borderRadius: "4px", cursor: "pointer", fontWeight: "bold"
                     }}
                 >
                     {project.completed ? "✓ Completed" : "Mark Complete"}
                 </button>
-                <button onClick={() => setShowAddPoints(true)} style={primaryButtonStyle}>+ Add Points</button>
+                <button onClick={() => setShowAddPoints(true)} className="ttrpg-btn-primary" style={primaryButtonStyle}>+ Add Points</button>
                 <button onClick={() => setShowReducePoints(true)}>- Reduce Points</button>
             </div>
 
@@ -221,8 +225,9 @@ export default function ProjectDetail() {
                     />
                 ) : (
                     <span
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setDraftPointTotal(String(project.point_total)); setEditingField("point_total") }}
-                        style={{ cursor: "pointer", textDecoration: "underline", textDecorationColor: "#ccc" }}
+                        style={themeStyles.clickToEditOnDark}
                         title="Click to edit"
                     >
                         {project.point_total}
@@ -240,11 +245,13 @@ export default function ProjectDetail() {
                 />
             ) : (
                 <div
+                    className="ttrpg-click-to-edit"
                     onClick={() => { setDraftDescription(project.description); setEditingField("description") }}
                     style={{
+                        ...themeStyles.clickToEditOnDark,
                         whiteSpace: "pre-wrap", padding: "0.5rem", borderRadius: "4px",
-                        border: "1px solid #555", minHeight: "60px", cursor: "pointer",
-                        marginBottom: "1rem", color: project.description ? "#fff" : "#666"
+                        border: `1px solid ${ttrpg.colors.dividerOnDark}`, minHeight: "60px",
+                        marginBottom: "1rem", color: project.description ? ttrpg.colors.textOnDark : ttrpg.colors.textMuted
                     }}
                     title="Click to edit"
                 >
@@ -252,7 +259,7 @@ export default function ProjectDetail() {
                 </div>
             )}
             {editingField === "description" && (
-                <button onClick={saveDescription} style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>Save Description</button>
+                <button onClick={saveDescription} className="ttrpg-btn-primary" style={{ ...primaryButtonStyle, marginBottom: "1rem" }}>Save Description</button>
             )}
 
             <ContributionList
@@ -262,7 +269,7 @@ export default function ProjectDetail() {
             />
 
             {mentions.length > 0 && (
-                <div style={{ borderTop: "1px solid #555", paddingTop: "0.75rem", marginBottom: "1rem" }}>
+                <div style={{ ...themeStyles.sectionDividerOnDark, marginBottom: "1rem" }}>
                     <strong>Session mentions ({mentions.length})</strong>
                     {mentions.map(({ note, session }) => (
                         <div
@@ -294,10 +301,11 @@ export default function ProjectDetail() {
                 </div>
             )}
 
-            <div style={{ marginTop: "2rem", borderTop: "1px solid #555", paddingTop: "1rem" }}>
+            <div style={{ ...themeStyles.sectionDividerOnDark, marginTop: "2rem" }}>
                 <button
                     onClick={handleDelete}
-                    style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                    className="ttrpg-btn-danger"
+                    style={themeStyles.dangerButton}
                 >
                     Delete Project
                 </button>

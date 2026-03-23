@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import TtrpgSessionNote from "../../types/ttrpg/TtrpgSessionNote"
 import TtrpgLoreEntry from "../../types/ttrpg/TtrpgLoreEntry"
@@ -6,8 +7,8 @@ import TtrpgMember from "../../types/ttrpg/TtrpgMember"
 import TtrpgPartyResources from "../../types/ttrpg/TtrpgPartyResources"
 import PartyResourcesPanel from "./party_resources_panel"
 import MemberList from "./member_list"
-import MemberDetailView from "./member_detail_view"
 import MemberForm from "./member_form"
+import { nav_paths } from "../../configs/constants"
 
 interface CampaignData {
     sessions: TtrpgSession[]
@@ -23,10 +24,6 @@ interface MembersHook {
     deleteMember: (id: string) => Promise<void>
 }
 
-interface NotesHook {
-    updateNote: (id: string, note: Partial<TtrpgSessionNote>) => Promise<void>
-}
-
 interface PartyResourcesHookType {
     updatePartyResources: (updates: Partial<TtrpgPartyResources>) => Promise<void>
     assignItemToMember: (campaignId: string, memberId: string, item: { name: string; quantity: number }, remaining: { name: string; quantity: number }[], memberItems: { name: string; quantity: number }[]) => Promise<void>
@@ -39,47 +36,21 @@ interface PartyTabProps {
     campaignId: string
     data: CampaignData
     membersHook: MembersHook
-    notesHook: NotesHook
     partyResourcesHook: PartyResourcesHookType
     updateMembers: (updater: (members: TtrpgMember[]) => TtrpgMember[]) => void
     updatePartyResources: (updater: (pr: TtrpgPartyResources) => TtrpgPartyResources) => void
-    openLoreDetail: (entryId: string) => void
-    openMemberDetail: (memberId: string) => void
-    goToSession: (sessionId: string, noteId?: string) => void
-    cameFromSessionId: string | null
-    backToOriginSession: () => void
-    pendingDetailId: string | null
-    clearPendingDetailId: () => void
-    resetSignal: number
-    clearCameFromSessionId: () => void
 }
 
 export default function PartyTab({
-    campaignId, data, membersHook, notesHook, partyResourcesHook,
+    campaignId, data, membersHook, partyResourcesHook,
     updateMembers, updatePartyResources,
-    openLoreDetail, openMemberDetail, goToSession,
-    cameFromSessionId, backToOriginSession,
-    pendingDetailId, clearPendingDetailId, resetSignal, clearCameFromSessionId
 }: PartyTabProps) {
+    const navigate = useNavigate()
 
-    const [memberDetailId, setMemberDetailId] = useState<string | null>(pendingDetailId)
     const [memberFormMode, setMemberFormMode] = useState<"add" | null>(null)
     const [formName, setFormName] = useState("")
     const [formPlayedBy, setFormPlayedBy] = useState("")
     const [formNotes, setFormNotes] = useState("")
-
-    useEffect(() => {
-        if (pendingDetailId) {
-            setMemberDetailId(pendingDetailId)
-            setMemberFormMode(null)
-            clearPendingDetailId()
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pendingDetailId])
-
-    useEffect(() => {
-        if (resetSignal > 0 && !pendingDetailId) setMemberDetailId(null)
-    }, [resetSignal, pendingDetailId])
 
     function clearForm() {
         setMemberFormMode(null)
@@ -88,27 +59,6 @@ export default function PartyTab({
         setFormNotes("")
     }
 
-    // Detail view
-    if (memberFormMode === null && memberDetailId !== null) {
-        const member = data.members.find(m => m.id === memberDetailId)
-        if (!member) return <div><button onClick={() => setMemberDetailId(null)}>Back</button><p>Member not found.</p></div>
-
-        return (
-            <MemberDetailView
-                member={member} campaignId={campaignId} data={data}
-                membersHook={membersHook} notesHook={notesHook}
-                partyResourcesHook={partyResourcesHook}
-                updateMembers={updateMembers} updatePartyResources={updatePartyResources}
-                openLoreDetail={openLoreDetail} openMemberDetail={openMemberDetail} goToSession={goToSession}
-                cameFromSessionId={cameFromSessionId} backToOriginSession={backToOriginSession}
-                clearCameFromSessionId={clearCameFromSessionId}
-                onBack={() => setMemberDetailId(null)}
-                onDelete={() => setMemberDetailId(null)}
-            />
-        )
-    }
-
-    // Form view
     if (memberFormMode !== null) {
         return (
             <MemberForm
@@ -121,7 +71,6 @@ export default function PartyTab({
         )
     }
 
-    // List view
     return (
         <div>
             <PartyResourcesPanel
@@ -131,9 +80,8 @@ export default function PartyTab({
             />
             <MemberList
                 members={data.members}
-                onSelect={(id) => setMemberDetailId(id)}
+                onSelect={(id) => navigate(`${nav_paths.rpg_notes}/${campaignId}/party/${id}`)}
                 onAdd={() => { clearForm(); setMemberFormMode("add") }}
-                clearCameFromSessionId={clearCameFromSessionId}
             />
         </div>
     )

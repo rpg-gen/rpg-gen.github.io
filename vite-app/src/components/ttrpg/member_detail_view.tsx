@@ -8,9 +8,11 @@ import StatCounter from "./stat_counter"
 import MemberInventory from "./member_inventory"
 import MemberFollowers from "./member_followers"
 import MemberTitles from "./member_titles"
+import MemberStatuses from "./member_statuses"
+import CollapsibleSection from "./collapsible_section"
 import LoreNoteText from "./lore_note_text"
 import AutoResizeTextarea from "./auto_resize_textarea"
-import { cardStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 
 interface CampaignData {
     sessions: TtrpgSession[]
@@ -72,6 +74,11 @@ export default function MemberDetailView({
     const [draftName, setDraftName] = useState(member.name)
     const [draftPlayedBy, setDraftPlayedBy] = useState(member.played_by || "")
     const [draftNotes, setDraftNotes] = useState(member.notes || "")
+
+    const [addingItem, setAddingItem] = useState(false)
+    const [addingFollower, setAddingFollower] = useState(false)
+    const [addingTitle, setAddingTitle] = useState(false)
+    const [addingStatus, setAddingStatus] = useState(false)
 
     useEffect(() => {
         if (editingFieldRef.current !== "name") setDraftName(member.name)
@@ -166,7 +173,7 @@ export default function MemberDetailView({
                 <button onClick={() => { onBack(); clearCameFromSessionId() }}>Back to party list</button>
             </div>
 
-            <div style={{ ...cardStyle, backgroundColor: "#f3e8ff" }}>
+            <div className="ttrpg-card" style={{ ...themeStyles.entityCard(ttrpg.colors.member), backgroundColor: ttrpg.colors.member }}>
                 {/* Name — click to edit */}
                 <div style={{ marginBottom: "0.5rem" }}>
                     {editingField === "name" ? (
@@ -181,7 +188,8 @@ export default function MemberDetailView({
                         />
                     ) : (
                         <strong
-                            style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                            className="ttrpg-click-to-edit"
+                            style={{ ...themeStyles.clickToEdit, fontSize: "1.2rem" }}
                             onClick={() => { setDraftName(member.name); setEditingField("name") }}
                             title="Click to edit"
                         >
@@ -206,12 +214,13 @@ export default function MemberDetailView({
                     </div>
                 ) : (
                     <div
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setDraftPlayedBy(member.played_by || ""); setEditingField("played_by") }}
                         style={{
+                            ...themeStyles.clickToEdit,
                             fontStyle: "italic",
-                            color: member.played_by ? "#666" : "#999",
+                            color: member.played_by ? ttrpg.colors.textMuted : "#999",
                             marginBottom: "0.75rem",
-                            cursor: "pointer"
                         }}
                         title="Click to edit"
                     >
@@ -231,12 +240,13 @@ export default function MemberDetailView({
                     </div>
                 ) : (
                     <div
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setDraftNotes(member.notes || ""); setEditingField("notes") }}
                         style={{
+                            ...themeStyles.clickToEdit,
                             fontStyle: member.notes ? "italic" : "normal",
-                            color: member.notes ? "#555" : "#999",
+                            color: member.notes ? ttrpg.colors.textMuted : "#999",
                             marginBottom: "0.75rem",
-                            cursor: "pointer",
                             minHeight: "1.2em"
                         }}
                         title="Click to edit"
@@ -245,58 +255,67 @@ export default function MemberDetailView({
                     </div>
                 )}
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+                <CollapsibleSection title="Statuses" count={member.statuses.length} onAdd={() => setAddingStatus(true)}>
+                    <MemberStatuses member={member} membersHook={membersHook} updateMembers={updateMembers}
+                        adding={addingStatus} setAdding={setAddingStatus} />
+                </CollapsibleSection>
+
+                <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
                     <StatCounter label="Wealth" value={member.wealth} min={0} max={5} onChange={handleWealthChange} />
                     <StatCounter label="Renown" value={member.renown} min={0} max={5} onChange={handleRenownChange} />
                 </div>
 
-                <SectionDivider title="Inventory" />
-                <MemberInventory
-                    member={member} membersHook={membersHook} updateMembers={updateMembers}
-                    showUnassign campaignId={campaignId}
-                    partyResourcesHook={partyResourcesHook}
-                    partyResources={data.partyResources}
-                    updatePartyResources={updatePartyResources}
-                />
+                <CollapsibleSection title="Inventory" count={member.items.reduce((sum, i) => sum + i.quantity, 0)} onAdd={() => setAddingItem(true)}>
+                    <MemberInventory
+                        member={member} membersHook={membersHook} updateMembers={updateMembers}
+                        showUnassign campaignId={campaignId}
+                        partyResourcesHook={partyResourcesHook}
+                        partyResources={data.partyResources}
+                        updatePartyResources={updatePartyResources}
+                        adding={addingItem} setAdding={setAddingItem}
+                    />
+                </CollapsibleSection>
 
-                <SectionDivider title="Followers" />
-                <MemberFollowers
-                    member={member} membersHook={membersHook} updateMembers={updateMembers}
-                    campaignId={campaignId} partyResourcesHook={partyResourcesHook}
-                    partyResources={data.partyResources} updatePartyResources={updatePartyResources}
-                />
+                <CollapsibleSection title="Followers" count={member.followers.length} onAdd={() => setAddingFollower(true)}>
+                    <MemberFollowers
+                        member={member} membersHook={membersHook} updateMembers={updateMembers}
+                        campaignId={campaignId} partyResourcesHook={partyResourcesHook}
+                        partyResources={data.partyResources} updatePartyResources={updatePartyResources}
+                        adding={addingFollower} setAdding={setAddingFollower}
+                    />
+                </CollapsibleSection>
 
-                <SectionDivider title="Titles" />
-                <MemberTitles member={member} membersHook={membersHook} updateMembers={updateMembers} />
+                <CollapsibleSection title="Titles" count={member.titles.length} onAdd={() => setAddingTitle(true)}>
+                    <MemberTitles member={member} membersHook={membersHook} updateMembers={updateMembers}
+                        adding={addingTitle} setAdding={setAddingTitle} />
+                </CollapsibleSection>
 
-                {mentions.length > 0 ? (
-                    <>
-                        <SectionDivider title={`Session Mentions (${mentions.length})`} />
-                        {mentions.map(({ note, session }) => (
+                <CollapsibleSection title="Session Mentions" count={mentions.length}>
+                    {mentions.length > 0 ? (
+                        mentions.map(({ note, session }) => (
                             <div key={note.id}
-                                style={{ border: "1px solid #ddd", borderRadius: "4px", padding: "0.5rem", marginTop: "0.5rem", backgroundColor: "#fff", cursor: "pointer" }}
+                                className="ttrpg-card"
+                                style={{ ...themeStyles.card, cursor: "pointer", marginTop: "0.5rem" }}
                                 onClick={() => goToSession(session.id, note.id)}>
-                                <div style={{ fontSize: "0.8rem", color: "#666", marginBottom: "0.25rem" }}>
+                                <div style={{ fontSize: "0.8rem", color: ttrpg.colors.textMuted, marginBottom: "0.25rem" }}>
                                     Session {session.session_number} — {session.date}
                                 </div>
-                                <div style={{ fontSize: "0.9rem", color: "#333" }}>
+                                <div style={{ fontSize: "0.9rem", color: ttrpg.colors.textDark }}>
                                     <LoreNoteText text={note.text} loreEntries={data.lore} members={data.members} onLoreClick={openLoreDetail} onMemberClick={openMemberDetail} />
                                 </div>
                             </div>
-                        ))}
-                    </>
-                ) : (
-                    <>
-                        <SectionDivider title="Session Mentions" />
-                        <div style={{ color: "#666", fontSize: "0.9rem" }}>No session mentions yet.</div>
-                    </>
-                )}
+                        ))
+                    ) : (
+                        <div style={{ color: ttrpg.colors.textMuted, fontSize: "0.9rem" }}>No session mentions yet.</div>
+                    )}
+                </CollapsibleSection>
 
                 {/* Delete button */}
-                <div style={{ marginTop: "2rem", borderTop: "1px solid #ccc", paddingTop: "1rem" }}>
+                <div style={{ ...themeStyles.sectionDivider, marginTop: "2rem" }}>
                     <button
                         onClick={handleDelete}
-                        style={{ backgroundColor: "#c0392b", color: "#fff", border: "none", padding: "0.5rem 1rem", cursor: "pointer", borderRadius: "4px" }}
+                        className="ttrpg-btn-danger"
+                        style={themeStyles.dangerButton}
                     >
                         Remove Member
                     </button>
@@ -306,10 +325,3 @@ export default function MemberDetailView({
     )
 }
 
-function SectionDivider({ title }: { title: string }) {
-    return (
-        <div style={{ borderTop: "1px solid #ccc", paddingTop: "0.75rem", marginTop: "0.75rem", marginBottom: "0.5rem" }}>
-            <strong>{title}</strong>
-        </div>
-    )
-}

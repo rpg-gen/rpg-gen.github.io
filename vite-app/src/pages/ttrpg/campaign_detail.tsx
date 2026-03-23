@@ -1,96 +1,55 @@
-import { useNavigate, useOutletContext } from "react-router-dom"
+import { useParams, useOutletContext, Navigate } from "react-router-dom"
 import SessionsTab from "../../components/ttrpg/sessions_tab"
 import PartyTab from "../../components/ttrpg/party_tab"
 import LoreTab from "../../components/ttrpg/lore_tab"
 import QuestsTab from "../../components/ttrpg/quests_tab"
-import { nav_paths } from "../../configs/constants"
 import { CampaignLayoutContext } from "./campaign_layout"
+import { CampaignTab } from "../../components/ttrpg/campaign_tab_bar"
 
 export default function CampaignDetail() {
     const ctx = useOutletContext<CampaignLayoutContext>()
-    const navigate = useNavigate()
+    const { tab } = useParams<{ tab: string }>()
     const {
-        campaignId, data, activeTab, switchToTab,
-        sessionsHook, membersHook, notesHook, loreHook, questsHook, projectsHook, partyResourcesHook,
-        updateMembers, updateSessions, updateQuests, updateProjects, updatePartyResources,
-        pendingMemberDetailId, setPendingMemberDetailId,
-        pendingLoreDetailId, setPendingLoreDetailId,
-        cameFromSessionId, setCameFromSessionId,
-        partyResetSignal, loreResetSignal
+        campaignId, data,
+        sessionsHook, membersHook, partyResourcesHook,
+        updateMembers, updateSessions, updateProjects, updatePartyResources,
+        questsHook, projectsHook, loreHook,
     } = ctx
 
-    function openLoreDetail(entryId: string) {
-        setPendingLoreDetailId(entryId)
-        switchToTab("lore")
-    }
-
-    function openMemberDetail(memberId: string) {
-        setPendingMemberDetailId(memberId)
-        switchToTab("party")
-    }
-
-    function openQuestDetail(questId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}/quest/${questId}`)
-    }
-
-    function openProjectDetail(projectId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}/project/${projectId}`)
-    }
-
-    function backToOriginSession() {
-        if (cameFromSessionId) {
-            navigate(`${nav_paths.rpg_notes}/${campaignId}/session/${cameFromSessionId}`)
-            setCameFromSessionId(null)
-        }
-    }
-
-    function goToSession(sessionId: string, noteId?: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}/session/${sessionId}`, {
-            ...(noteId ? { state: { highlightNoteId: noteId } } : {})
-        })
+    const validTabs: CampaignTab[] = ["sessions", "party", "lore", "quests"]
+    if (!tab || !validTabs.includes(tab as CampaignTab)) {
+        return <Navigate to="../sessions" replace />
     }
 
     return (
         <>
-            {activeTab === "sessions" && (
+            {tab === "sessions" && (
                 <SessionsTab
                     campaignId={campaignId}
                     sessions={data.sessions}
-                    notes={data.notes}
                     sessionsHook={sessionsHook}
-                    notesHook={notesHook}
                     updateSessions={updateSessions}
                 />
             )}
 
-            {activeTab === "party" && (
+            {tab === "party" && (
                 <PartyTab
                     campaignId={campaignId}
                     data={data}
                     membersHook={membersHook}
-                    notesHook={notesHook}
                     partyResourcesHook={partyResourcesHook}
                     updateMembers={updateMembers}
                     updatePartyResources={updatePartyResources}
-                    openLoreDetail={openLoreDetail}
-                    openMemberDetail={openMemberDetail}
-                    goToSession={goToSession}
-                    cameFromSessionId={cameFromSessionId}
-                    backToOriginSession={backToOriginSession}
-                    pendingDetailId={pendingMemberDetailId}
-                    clearPendingDetailId={() => setPendingMemberDetailId(null)}
-                    resetSignal={partyResetSignal}
-                    clearCameFromSessionId={() => setCameFromSessionId(null)}
                 />
             )}
 
-            {activeTab === "quests" && (
+            {tab === "quests" && (
                 <QuestsTab
                     campaignId={campaignId}
                     quests={data.quests}
                     sessions={data.sessions}
                     questsHook={questsHook}
-                    updateQuests={updateQuests}
+                    updateQuests={ctx.updateQuests}
                     projects={data.projects}
                     members={data.members}
                     partyResources={data.partyResources}
@@ -99,21 +58,11 @@ export default function CampaignDetail() {
                 />
             )}
 
-            {activeTab === "lore" && (
+            {tab === "lore" && (
                 <LoreTab
+                    campaignId={campaignId}
                     data={data}
                     loreHook={loreHook}
-                    notesHook={notesHook}
-                    goToSession={goToSession}
-                    openMemberDetail={openMemberDetail}
-                    openQuestDetail={openQuestDetail}
-                    openProjectDetail={openProjectDetail}
-                    cameFromSessionId={cameFromSessionId}
-                    backToOriginSession={backToOriginSession}
-                    pendingDetailId={pendingLoreDetailId}
-                    clearPendingDetailId={() => setPendingLoreDetailId(null)}
-                    resetSignal={loreResetSignal}
-                    clearCameFromSessionId={() => setCameFromSessionId(null)}
                 />
             )}
         </>

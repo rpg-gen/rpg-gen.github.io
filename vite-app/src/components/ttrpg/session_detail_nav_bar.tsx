@@ -1,6 +1,7 @@
 import { useState } from "react"
 import TtrpgSession from "../../types/ttrpg/TtrpgSession"
 import { primaryButtonSmallStyle } from "../../pages/ttrpg/campaign_detail_styles"
+import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 
 interface SessionDetailNavBarProps {
     session: TtrpgSession
@@ -13,6 +14,7 @@ interface SessionDetailNavBarProps {
     onDateChange: (newDate: string) => Promise<void>
     onRespiteChange: (newCount: number) => Promise<void>
     onTitleChange: (newTitle: string) => Promise<void>
+    onDelete?: () => void
 }
 
 export default function SessionDetailNavBar({
@@ -25,7 +27,8 @@ export default function SessionDetailNavBar({
     onBack,
     onDateChange,
     onRespiteChange,
-    onTitleChange
+    onTitleChange,
+    onDelete
 }: SessionDetailNavBarProps) {
     const [editing, setEditing] = useState(false)
     const [dateValue, setDateValue] = useState(session.date)
@@ -57,7 +60,7 @@ export default function SessionDetailNavBar({
     }
 
     return (
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="ttrpg-session-header" style={{ marginBottom: "1rem" }}>
             <div style={{
                 display: "flex",
                 alignItems: "center",
@@ -65,6 +68,15 @@ export default function SessionDetailNavBar({
                 marginBottom: "0.5rem"
             }}>
                 <button onClick={onBack} style={{ marginRight: "auto" }}>Back to Sessions</button>
+                {onDelete && (
+                    <button
+                        onClick={onDelete}
+                        className="ttrpg-btn-danger"
+                        style={{ ...themeStyles.dangerButton, padding: "0.25rem 0.5rem", fontSize: "0.8rem" }}
+                    >
+                        Delete
+                    </button>
+                )}
                 <button onClick={onPrev} disabled={!hasPrev}>&lt;</button>
                 <span style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.6)" }}>
                     {session.session_number} / {totalSessions}
@@ -73,7 +85,7 @@ export default function SessionDetailNavBar({
             </div>
 
             <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", flexWrap: "wrap" }}>
-                <h2 style={{ margin: 0 }}>Session {session.session_number}</h2>
+                <h2 style={{ margin: 0, fontFamily: ttrpg.fonts.heading, color: ttrpg.colors.gold }}>Session {session.session_number}</h2>
                 {editing ? (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
                         <input
@@ -87,8 +99,9 @@ export default function SessionDetailNavBar({
                     </span>
                 ) : (
                     <span
+                        className="ttrpg-click-to-edit"
                         onClick={() => setEditing(true)}
-                        style={{ cursor: "pointer", borderBottom: "1px dashed rgba(255,255,255,0.4)" }}
+                        style={themeStyles.clickToEditOnDark}
                         title="Click to edit date"
                     >
                         {session.date}
@@ -108,8 +121,9 @@ export default function SessionDetailNavBar({
                     </span>
                 ) : (
                     <span
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setRespiteValue(session.respite_count); setEditingRespites(true) }}
-                        style={{ cursor: "pointer", borderBottom: "1px dashed rgba(255,255,255,0.4)" }}
+                        style={themeStyles.clickToEditOnDark}
                         title="Click to edit respites"
                     >
                         {session.respite_count} respite{session.respite_count !== 1 ? "s" : ""}
@@ -135,10 +149,10 @@ export default function SessionDetailNavBar({
                     </div>
                 ) : (
                     <span
+                        className="ttrpg-click-to-edit"
                         onClick={() => { setTitleValue(session.title || ""); setEditingTitle(true) }}
                         style={{
-                            cursor: "pointer",
-                            borderBottom: "1px dashed rgba(255,255,255,0.4)",
+                            ...themeStyles.clickToEditOnDark,
                             fontStyle: session.title ? "normal" : "italic",
                             color: session.title ? "inherit" : "rgba(255,255,255,0.4)"
                         }}

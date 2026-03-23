@@ -21,6 +21,8 @@ import CampaignDetail from "../pages/ttrpg/campaign_detail"
 import SessionDetail from "../pages/ttrpg/session_detail"
 import QuestDetail from "../pages/ttrpg/quest_detail"
 import ProjectDetail from "../pages/ttrpg/project_detail"
+import MemberDetail from "../pages/ttrpg/member_detail"
+import LoreDetail from "../pages/ttrpg/lore_detail"
 import FeedbackManagement from "../pages/feedback_management"
 import UserContext from "../contexts/user_context"
 import { is_ttrpg_user } from "../configs/auth"
@@ -95,8 +97,11 @@ const router = createBrowserRouter([
                 path: nav_paths.rpg_notes + "/:campaignId",
                 element: <TtrpgRoute><CampaignLayout /></TtrpgRoute>,
                 children: [
-                    { index: true, element: <CampaignDetail /> },
+                    { index: true, element: <Navigate to="sessions" replace /> },
+                    { path: ":tab", element: <CampaignDetail /> },
                     { path: "session/:sessionId", element: <SessionDetail /> },
+                    { path: "party/:memberId", element: <MemberDetail /> },
+                    { path: "lore/:loreId", element: <LoreDetail /> },
                     { path: "quest/:questId", element: <QuestDetail /> },
                     { path: "project/:projectId", element: <ProjectDetail /> },
                 ]
