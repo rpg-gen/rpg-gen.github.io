@@ -5,6 +5,9 @@ import useTtrpgCampaignData from "../../hooks/ttrpg/use_ttrpg_campaign_data"
 import useDemoCampaignData from "../../hooks/ttrpg/use_demo_campaign_data"
 import { readDemoCampaign } from "../../hooks/ttrpg/demo_storage"
 import TtrpgCampaign from "../../types/ttrpg/TtrpgCampaign"
+
+// Module-level cache so campaign metadata survives unmount/remount (e.g. rules detour)
+const campaign_cache: Record<string, TtrpgCampaign> = {}
 import FullPageOverlay from "../../components/full_page_overlay"
 import CampaignTabBar, { CampaignTab } from "../../components/ttrpg/campaign_tab_bar"
 import { nav_paths, page_layout } from "../../configs/constants"
@@ -45,16 +48,20 @@ export default function CampaignLayout() {
 
     const active = isDemoMode ? demoCampaignData : firebaseCampaignData
 
-    const [campaign, setCampaign] = useState<TtrpgCampaign | null>(null)
+    const [campaign, setCampaign] = useState<TtrpgCampaign | null>(
+        campaignId ? campaign_cache[campaignId] ?? null : null
+    )
 
     useEffect(() => {
         if (!campaignId) return
         if (isDemoMode) {
             const raw = readDemoCampaign()
-            setCampaign({ id: raw.id, name: raw.name, created_at: raw.created_at, created_by: raw.created_by })
+            const c = { id: raw.id, name: raw.name, created_at: raw.created_at, created_by: raw.created_by }
+            campaign_cache[campaignId] = c
+            setCampaign(c)
             demoCampaignData.subscribe(campaignId)
         } else {
-            loadFirebaseCampaign()
+            if (!campaign_cache[campaignId]) loadFirebaseCampaign()
             const unsub = firebaseCampaignData.subscribe(campaignId)
             return unsub
         }
@@ -64,6 +71,7 @@ export default function CampaignLayout() {
     async function loadFirebaseCampaign() {
         try {
             const loaded = await firebaseCampaignsHook.getCampaign(campaignId!)
+            if (loaded) campaign_cache[campaignId!] = loaded
             setCampaign(loaded)
         } catch (error) {
             console.error("Error loading campaign:", error)

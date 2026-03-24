@@ -10,6 +10,7 @@ import { nav_paths } from './configs/constants'
 
 import useFirebaseAuth from "./hooks/use_firebase_auth"
 import FeedbackButton from "./components/feedback_button"
+import RulesBookButton from "./components/rules_book_button"
 import DemoBanner from "./components/demo_banner"
 import DemoResetButton from "./components/demo_reset_button"
 import LoadingModal from "./components/loading_modal"
@@ -82,6 +83,7 @@ function App() {
 
             { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
             <FeedbackButton />
+            <RulesBookButton />
             <DemoBanner />
             <DemoResetButton />
             {showTransitionModal && (

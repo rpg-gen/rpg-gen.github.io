@@ -1,0 +1,2 @@
+[  178355ms] [ERROR] SyntaxError: The requested module '/src/configs/draw_steel_config.ts?t=1774379875474' does not provide an export named 'PAGE_SECTIONS' @ http://localhost:3000/@vite/client:295
+[  178356ms] [ERROR] [hmr] Failed to reload /src/pages/rules/rules_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3000/@vite/client:297

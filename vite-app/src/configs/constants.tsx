@@ -8,7 +8,8 @@ const nav_paths = {
   utilities_menu: "/utilities",
   rpg_notes: "/rpg-notes",
   feedback_management: "/feedback",
-  utility_ttrpg_data_migration: "/utilities/ttrpg-data-migration"
+  utility_ttrpg_data_migration: "/utilities/ttrpg-data-migration",
+    rules: "/rules",
 }
 
 const mobile = {

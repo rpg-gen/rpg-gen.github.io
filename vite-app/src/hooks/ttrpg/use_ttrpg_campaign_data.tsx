@@ -24,6 +24,9 @@ import {
     parseLoreMap, parseQuestsMap, parseProjectsMap, parsePartyResources
 } from "../../utility/ttrpg_campaign_parsers"
 
+// Module-level cache so campaign data survives unmount/remount (e.g. rules detour)
+const data_cache: Record<string, TtrpgCampaignData> = {}
+
 export default function useTtrpgCampaignData() {
     const db = getFirestore(useFirebaseProject())
     const rawSessionsHook = useFirebaseTtrpgSessions()
@@ -114,7 +117,14 @@ export default function useTtrpgCampaignData() {
 
     function subscribe(campaignId: string) {
         campaignIdRef.current = campaignId
-        setIsLoading(true)
+
+        const cached = data_cache[campaignId]
+        if (cached) {
+            setData(cached)
+            setIsLoading(false)
+        } else {
+            setIsLoading(true)
+        }
 
         const docRef = doc(db, "ttrpg_campaigns", campaignId)
         const unsub = onSnapshot(docRef, (snapshot) => {
@@ -134,7 +144,9 @@ export default function useTtrpgCampaignData() {
             const projects = parseProjectsMap(campaignId, docData.projects || {})
             const partyResources = parsePartyResources(docData.party_resources)
 
-            setData({ sessions, members, notes, lore, quests, projects, partyResources })
+            const newData = { sessions, members, notes, lore, quests, projects, partyResources }
+            data_cache[campaignId] = newData
+            setData(newData)
             setIsLoading(false)
 
             // Session number healing (fire-and-forget)

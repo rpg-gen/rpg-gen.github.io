@@ -1,0 +1,303 @@
+[  543547ms] [ERROR] Warning: React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://reactjs.org/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+%s RulesLayout 1. useContext                 useContext
+2. useContext                 useContext
+3. useContext                 useContext
+4. useRef                     useRef
+5. useContext                 useContext
+6. useLayoutEffect            useLayoutEffect
+7. useCallback                useCallback
+8. useState                   useState
+9. useState                   useState
+10. useState                  useState
+11. useEffect                 useEffect
+12. useCallback               useCallback
+13. useCallback               useCallback
+14. useState                  useCallback
+ 
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:29:20)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3001/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3001/src/App.tsx:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:520
+[  543548ms] Error: Rendered more hooks than during the previous render.
+    at updateWorkInProgressHook (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12301:21)
+    at updateCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12800:22)
+    at Object.useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:13316:22)
+    at useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-QV6VW2LK.js?v=dbc409e8:1090:29)
+    at useDrawSteelRules (http://localhost:3001/src/hooks/use_draw_steel_rules.tsx?t=1774383399587:128:18)
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:30:57)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+[  543548ms] Error: Rendered more hooks than during the previous render.
+    at updateWorkInProgressHook (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12301:21)
+    at updateCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12800:22)
+    at Object.useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:13316:22)
+    at useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-QV6VW2LK.js?v=dbc409e8:1090:29)
+    at useDrawSteelRules (http://localhost:3001/src/hooks/use_draw_steel_rules.tsx?t=1774383399587:128:18)
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:30:57)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+[  543549ms] [ERROR] The above error occurred in the <RulesLayout> component:
+
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:29:20)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3001/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3001/src/App.tsx:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[  543549ms] [ERROR] React Router caught the following error during render Error: Rendered more hooks than during the previous render.
+    at updateWorkInProgressHook (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12301:21)
+    at updateCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12800:22)
+    at Object.useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:13316:22)
+    at useCallback (http://localhost:3001/node_modules/.vite/deps/chunk-QV6VW2LK.js?v=dbc409e8:1090:29)
+    at useDrawSteelRules (http://localhost:3001/src/hooks/use_draw_steel_rules.tsx?t=1774383399587:128:18)
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:30:57)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22) {componentStack: 
+    at RulesLayout (http://localhost:3001/src/pag…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
+[  603004ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  603004ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  603004ms] [ERROR] The above error occurred in the <RulesPage> component:
+
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:25:49)
+    at div
+    at div
+    at div
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:29:20)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3001/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3001/src/App.tsx:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[  603004ms] [ERROR] React Router caught the following error during render TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+    at renderRootSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19112:15)
+    at recoverFromConcurrentError (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18732:28)
+    at performConcurrentWorkOnRoot (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18680:30) {componentStack: 
+    at RulesPage (http://localhost:3001/src/pages…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
+[  608462ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  608462ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  608462ms] [ERROR] The above error occurred in the <RulesPage> component:
+
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:25:49)
+    at div
+    at div
+    at div
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383399587:29:20)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3001/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3001/src/App.tsx:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[  608463ms] [ERROR] React Router caught the following error during render TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+    at renderRootSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19112:15)
+    at recoverFromConcurrentError (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18732:28)
+    at performConcurrentWorkOnRoot (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18680:30) {componentStack: 
+    at RulesPage (http://localhost:3001/src/pages…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
+[  614979ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  614979ms] TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[  614979ms] [ERROR] The above error occurred in the <RulesPage> component:
+
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:25:49)
+    at div
+    at div
+    at div
+    at RulesLayout (http://localhost:3001/src/pages/rules/rules_layout.tsx?t=1774383471030:29:20)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3001/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3001/src/App.tsx:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[  614979ms] [ERROR] React Router caught the following error during render TypeError: has_sub_pages is not a function
+    at RulesPage (http://localhost:3001/src/pages/rules/rules_page.tsx?t=1774383459046:83:7)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at mountIndeterminateComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14921:21)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15902:22)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+    at renderRootSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19112:15)
+    at recoverFromConcurrentError (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18732:28)
+    at performConcurrentWorkOnRoot (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18680:30) {componentStack: 
+    at RulesPage (http://localhost:3001/src/pages…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
+[ 1889534ms] ReferenceError: SkillsBookButton is not defined
+    at App (http://localhost:3001/src/App.tsx?t=1774384745584:91:28)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[ 1889534ms] ReferenceError: SkillsBookButton is not defined
+    at App (http://localhost:3001/src/App.tsx?t=1774384745584:91:28)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[ 1889534ms] [ERROR] The above error occurred in the <App> component:
+
+    at App (http://localhost:3001/src/App.tsx?t=1774384745584:34:53)
+    at RenderedRoute (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[ 1889534ms] [ERROR] React Router caught the following error during render ReferenceError: SkillsBookButton is not defined
+    at App (http://localhost:3001/src/App.tsx?t=1774384745584:91:28)
+    at renderWithHooks (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at beginWork$1 (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22)
+    at performUnitOfWork (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+    at renderRootSync (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19112:15)
+    at recoverFromConcurrentError (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18732:28)
+    at performSyncWorkOnRoot (http://localhost:3001/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18875:28) {componentStack: 
+    at App (http://localhost:3001/src/App.tsx?t=1…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3001/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
+[ 1900048ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/src/components/skills_book_button.tsx?t=1774384756124:0
+[ 1900049ms] [ERROR] [hmr] Failed to reload /src/components/skills_book_button.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2023145ms] [ERROR] SyntaxError: The requested module '/src/configs/draw_steel_config.ts?t=1774384879198' does not provide an export named 'RULES_MD_URL' @ http://localhost:3001/@vite/client:295
+[ 2023145ms] [ERROR] [hmr] Failed to reload /src/pages/rules/rules_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2043856ms] [ERROR] SyntaxError: The requested module '/src/configs/draw_steel_config.ts?t=1774384879198' does not provide an export named 'PAGE_ORDER' @ http://localhost:3001/@vite/client:295
+[ 2043856ms] [ERROR] [hmr] Failed to reload /src/pages/rules/rules_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2107977ms] [ERROR] ReferenceError: SkillsLayout is not defined
+    at http://localhost:3001/src/navigation/routes.tsx?t=1774384964042:291:43 @ http://localhost:3001/@vite/client:295
+[ 2107977ms] [ERROR] [hmr] Failed to reload /src/navigation/routes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2132839ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/src/pages/skills/skills_layout.tsx?t=1774384988915:0
+[ 2132839ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/src/pages/skills/skills_layout.tsx?t=1774384988914:0
+[ 2132839ms] [ERROR] [hmr] Failed to reload /src/pages/skills/skills_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2132839ms] [ERROR] [hmr] Failed to reload /src/pages/skills/skills_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297
+[ 2132839ms] [ERROR] [hmr] Failed to reload /src/pages/skills/skills_layout.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3001/@vite/client:297

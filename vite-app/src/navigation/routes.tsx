@@ -24,6 +24,7 @@ import ProjectDetail from "../pages/ttrpg/project_detail"
 import MemberDetail from "../pages/ttrpg/member_detail"
 import LoreDetail from "../pages/ttrpg/lore_detail"
 import FeedbackManagement from "../pages/feedback_management"
+import RulesLayout from "../pages/rules/rules_layout"
 import UserContext from "../contexts/user_context"
 import { is_ttrpg_user } from "../configs/auth"
 
@@ -104,6 +105,15 @@ const router = createBrowserRouter([
                     { path: "lore/:loreId", element: <LoreDetail /> },
                     { path: "quest/:questId", element: <QuestDetail /> },
                     { path: "project/:projectId", element: <ProjectDetail /> },
+                ]
+            },
+            {
+                path: nav_paths.rules,
+                element: <RulesLayout />,
+                children: [
+                    { index: true, element: null },
+                    { path: ":page_key", element: null },
+                    { path: ":page_key/:project_id", element: null },
                 ]
             },
             {
