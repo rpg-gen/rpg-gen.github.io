@@ -3,7 +3,7 @@ import remarkGfm from "remark-gfm"
 import { ttrpg } from "../../configs/ttrpg_theme"
 
 const markdown_css = `
-.rules-md h2, .rules-md h3, .rules-md h4 {
+.rules-md h2, .rules-md h3, .rules-md h4, .rules-md h5, .rules-md h6 {
     font-family: ${ttrpg.fonts.heading};
     color: ${ttrpg.colors.gold};
     margin-top: 1.5rem;
@@ -12,6 +12,8 @@ const markdown_css = `
 .rules-md h2 { font-size: 1.4rem; }
 .rules-md h3 { font-size: 1.15rem; }
 .rules-md h4 { font-size: 1rem; }
+.rules-md h5 { font-size: 0.95rem; }
+.rules-md h6 { font-size: 0.9rem; }
 .rules-md p, .rules-md li {
     font-family: ${ttrpg.fonts.body};
     color: #f0ebe3;
@@ -76,12 +78,13 @@ interface Props {
 }
 
 export default function RulesMarkdown({ content }: Props) {
+    const cleaned = content.replace(/<!--[\s\S]*?-->/g, "")
     return (
         <>
             <style>{markdown_css}</style>
             <div className="rules-md">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {content}
+                    {cleaned}
                 </ReactMarkdown>
             </div>
         </>

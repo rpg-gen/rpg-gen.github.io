@@ -81,10 +81,10 @@ function App() {
         <DataContext.Provider value={data_context}>
         <DelveCardFilterProvider>
 
+            <DemoBanner />
             { user_context.is_auth_checked ? <Outlet /> : "Loading auth"}
             <FeedbackButton />
             <RulesBookButton />
-            <DemoBanner />
             <DemoResetButton />
             {showTransitionModal && (
                 <LoadingModal

@@ -5,6 +5,7 @@ import { PageGroup } from "../../configs/draw_steel_config"
 import RulesSectionList from "./rules_section_list"
 import RulesProjectIndex from "./rules_project_index"
 import RulesProjectDetail from "./rules_project_detail"
+import RulesGroupNav from "../../components/rules/rules_group_nav"
 
 interface Props {
     base_path: string
@@ -51,27 +52,60 @@ export default function RulesPage(props: Props) {
         )
     }
 
-    // Landing page — no page selected
+    // Landing page — no page selected, show one card per group
     if (!page_key) {
         return (
             <div style={content_style}>
-                {page_groups.map(group => (
-                    <div key={group.label} style={{ marginBottom: "1.5rem" }}>
-                        <div style={group_header_style}>{group.label}</div>
-                        <div style={links_grid_style}>
-                            {group.keys.map(key => (
-                                <Link key={key} to={`${base_path}/${key}`} style={link_card_style}>
-                                    {page_labels[key] ?? key}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                <div style={links_grid_style}>
+                    {page_groups.map(group => (
+                        <Link
+                            key={group.label}
+                            to={`${base_path}/${group.slug ?? group.keys[0]}`}
+                            style={link_card_style}
+                        >
+                            <div style={group_card_label}>{group.label}</div>
+                            {group.description && (
+                                <div style={group_card_desc}>{group.description}</div>
+                            )}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    // Group index page — show all pages in this group as cards
+    const matched_group = page_groups.find(g => g.slug === page_key)
+    if (matched_group) {
+        return (
+            <div style={content_style}>
+                <Link to={base_path} style={back_style}>&larr; Rules</Link>
+                <h2 style={group_index_heading}>{matched_group.label}</h2>
+                {matched_group.description && (
+                    <p style={group_index_desc}>{matched_group.description}</p>
+                )}
+                <div style={links_grid_style}>
+                    {matched_group.keys.map(key => (
+                        <Link key={key} to={`${base_path}/${key}`} style={link_card_style}>
+                            {page_labels[key] ?? key}
+                        </Link>
+                    ))}
+                </div>
             </div>
         )
     }
 
     const active_page = page_key
+    const make_group_nav = (is_detail = false) => (
+        <RulesGroupNav
+            base_path={base_path}
+            active_page={active_page}
+            page_labels={page_labels}
+            page_groups={page_groups}
+            page_children={page_children}
+            is_project_detail={is_detail}
+        />
+    )
     const all_sections = sections_for_page(active_page)
     if (all_sections.length === 0) {
         return (
@@ -86,26 +120,32 @@ export default function RulesPage(props: Props) {
     // Project detail view
     if (project_id && has_sub_pages(active_page)) {
         return (
-            <RulesProjectDetail
-                base_path={base_path}
-                page_key={active_page}
-                page_label={page_labels[active_page] ?? active_page}
-                sections={props.sections_for_project(active_page, project_id)}
-                loading={loading}
-            />
+            <div style={content_style}>
+                {make_group_nav(true)}
+                <RulesProjectDetail
+                    base_path={base_path}
+                    page_key={active_page}
+                    page_label={page_labels[active_page] ?? active_page}
+                    sections={props.sections_for_project(active_page, project_id)}
+                    loading={loading}
+                />
+            </div>
         )
     }
 
     // Project index view
     if (has_sub_pages(active_page)) {
         return (
-            <RulesProjectIndex
-                base_path={base_path}
-                page_key={active_page}
-                intro={props.intro_for_page(active_page)}
-                projects={props.projects_for_page(active_page)}
-                loading={loading}
-            />
+            <div style={content_style}>
+                {make_group_nav()}
+                <RulesProjectIndex
+                    base_path={base_path}
+                    page_key={active_page}
+                    intro={props.intro_for_page(active_page)}
+                    projects={props.projects_for_page(active_page)}
+                    loading={loading}
+                />
+            </div>
         )
     }
 
@@ -114,9 +154,7 @@ export default function RulesPage(props: Props) {
     if (parent_key) {
         return (
             <div style={content_style}>
-                <Link to={`${base_path}/${parent_key}`} style={back_style}>
-                    &larr; Back to {page_labels[parent_key] ?? parent_key}
-                </Link>
+                {make_group_nav()}
                 <RulesSectionList sections={all_sections} loading={loading} />
             </div>
         )
@@ -126,6 +164,7 @@ export default function RulesPage(props: Props) {
     const children = page_children[active_page]
     return (
         <div style={content_style}>
+            {make_group_nav()}
             <RulesSectionList sections={all_sections} loading={loading} />
             {children && children.length > 0 && (
                 <div style={links_grid_style}>
@@ -157,20 +196,23 @@ const content_style: React.CSSProperties = {
     maxWidth: "800px",
 }
 
-const group_header_style: React.CSSProperties = {
-    fontSize: "0.75rem",
-    fontFamily: ttrpg.fonts.body,
-    color: ttrpg.colors.textMuted,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-    marginBottom: "0.5rem",
-}
-
 const links_grid_style: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",
-    marginTop: "1.5rem",
+}
+
+const group_card_label: React.CSSProperties = {
+    fontFamily: ttrpg.fonts.heading,
+    fontSize: "1.1rem",
+    color: ttrpg.colors.gold,
+}
+
+const group_card_desc: React.CSSProperties = {
+    fontFamily: ttrpg.fonts.body,
+    fontSize: "0.85rem",
+    color: ttrpg.colors.textMuted,
+    marginTop: "0.25rem",
 }
 
 const link_card_style: React.CSSProperties = {
@@ -184,6 +226,20 @@ const link_card_style: React.CSSProperties = {
     fontSize: "1.05rem",
     textDecoration: "none",
     transition: `background-color ${ttrpg.transitions.fast}`,
+}
+
+const group_index_heading: React.CSSProperties = {
+    fontFamily: ttrpg.fonts.heading,
+    fontSize: "1.5rem",
+    color: ttrpg.colors.gold,
+    margin: "1rem 0 0.25rem",
+}
+
+const group_index_desc: React.CSSProperties = {
+    fontFamily: ttrpg.fonts.body,
+    fontSize: "0.9rem",
+    color: ttrpg.colors.textMuted,
+    margin: "0 0 1rem",
 }
 
 const back_style: React.CSSProperties = {

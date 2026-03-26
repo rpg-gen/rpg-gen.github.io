@@ -44,6 +44,14 @@ const base_heading: React.CSSProperties = {
 }
 
 const heading_styles: Record<number, React.CSSProperties> = {
+    2: {
+        ...base_heading,
+        fontSize: "1.7rem",
+        marginTop: "2.5rem",
+        marginBottom: "0.6rem",
+        borderBottom: `1px solid ${ttrpg.colors.dividerOnDark}`,
+        paddingBottom: "0.4rem",
+    },
     3: {
         ...base_heading,
         fontSize: "1.5rem",

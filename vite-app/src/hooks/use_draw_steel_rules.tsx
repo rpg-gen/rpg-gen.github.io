@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { RulesSection, RulesProject } from "../types/draw_steel_rules"
-import { RULES_SOURCES, ANCHOR_HEADINGS, PROJECT_LEVELS } from "../configs/draw_steel_config"
+import { RULES_SOURCES, ANCHOR_HEADINGS, PROJECT_LEVELS, RulesSource } from "../configs/draw_steel_config"
 
 let cached_sections: RulesSection[] | null = null
 
@@ -29,7 +29,7 @@ function parse_markdown(raw: string, default_page: string): RulesSection[] {
     }
 
     for (const line of lines) {
-        const match = line.match(/^(#{3,6})\s+(.+)/)
+        const match = line.match(/^(#{2,6})\s+(.+)/)
         if (match) {
             flush()
             current_level = match[1].length
@@ -69,12 +69,32 @@ function assign_project_ids(sections: RulesSection[]): RulesSection[] {
     })
 }
 
+function strip_yaml_frontmatter(text: string): string {
+    return text.replace(/^---[\s\S]*?---\n/, "")
+}
+
+async function fetch_source_text(source: RulesSource): Promise<string> {
+    if (source.urls) {
+        const texts = await Promise.all(
+            source.urls.map(async (u) => {
+                const res = await fetch(u)
+                if (!res.ok) throw new Error(`HTTP ${res.status}`)
+                let text = await res.text()
+                if (source.strip_frontmatter) text = strip_yaml_frontmatter(text)
+                return text
+            })
+        )
+        return texts.join("\n")
+    }
+    const res = await fetch(source.url!)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return res.text()
+}
+
 async function fetch_all_sources(): Promise<RulesSection[]> {
     const results = await Promise.all(
         RULES_SOURCES.map(async (source) => {
-            const res = await fetch(source.url)
-            if (!res.ok) throw new Error(`HTTP ${res.status}`)
-            const text = await res.text()
+            const text = await fetch_source_text(source)
             return parse_markdown(text, source.default_page)
         })
     )

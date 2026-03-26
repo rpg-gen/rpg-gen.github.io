@@ -13,9 +13,8 @@ interface Props {
 
 export default function RulesProjectIndex({ base_path, page_key, intro, projects, loading }: Props) {
     return (
-        <div style={content_style}>
+        <>
             <RulesSectionList sections={intro} loading={loading} />
-
             {projects.length > 0 && (
                 <div style={grid_style}>
                     {projects.map(p => (
@@ -29,14 +28,8 @@ export default function RulesProjectIndex({ base_path, page_key, intro, projects
                     ))}
                 </div>
             )}
-        </div>
+        </>
     )
-}
-
-const content_style: React.CSSProperties = {
-    padding: "1rem 1.5rem",
-    paddingBottom: "4rem",
-    maxWidth: "800px",
 }
 
 const grid_style: React.CSSProperties = {

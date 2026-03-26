@@ -10,10 +10,6 @@ export default function DemoBanner() {
         <div
             title="Changes are stored locally on this device and won't be saved permanently"
             style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
                 height: 28,
                 backgroundColor: "rgba(37, 99, 235, 0.9)",
                 color: "#fff",
@@ -22,7 +18,6 @@ export default function DemoBanner() {
                 justifyContent: "center",
                 fontSize: 13,
                 fontWeight: 600,
-                zIndex: 1050,
                 letterSpacing: "0.5px",
                 cursor: "default",
             }}
