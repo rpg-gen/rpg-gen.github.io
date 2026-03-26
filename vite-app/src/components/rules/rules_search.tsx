@@ -63,6 +63,13 @@ export default function RulesSearch(props: Props) {
         return () => document.removeEventListener("mousedown", handle_click)
     }, [])
 
+    function handle_keydown(e: React.KeyboardEvent) {
+        if (e.key === "Escape") {
+            set_open(false)
+            ;(e.target as HTMLElement).blur()
+        }
+    }
+
     function handle_result_click(section: RulesSection) {
         set_query("")
         set_open(false)
@@ -87,6 +94,7 @@ export default function RulesSearch(props: Props) {
                 value={query}
                 onChange={e => { set_query(e.target.value); set_open(true) }}
                 onFocus={() => set_open(true)}
+                onKeyDown={handle_keydown}
                 style={input_style}
             />
             {show_dropdown && (
@@ -94,7 +102,7 @@ export default function RulesSearch(props: Props) {
                     {results.length === 0 ? (
                         <div style={no_results_style}>No results</div>
                     ) : (
-                        results.slice(0, 10).map(section => {
+                        results.slice(0, 20).map(section => {
                             const snippet = get_snippet(section.content, trimmed)
                             const project_name = get_project_name(
                                 section, projects_for_page

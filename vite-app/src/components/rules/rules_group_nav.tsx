@@ -50,6 +50,10 @@ export default function RulesGroupNav(props: Props) {
     } else if (has_group_index) {
         back_to = `${base_path}/${group.slug}`
         back_label = group.label
+    } else if (group.parent_slug) {
+        back_to = `${base_path}/${group.parent_slug}`
+        const parent = page_groups.find(g => g.slug === group.parent_slug)
+        back_label = parent?.label ?? "Rules"
     } else {
         back_to = base_path
         back_label = "Rules"

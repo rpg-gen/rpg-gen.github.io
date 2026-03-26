@@ -1,6 +1,7 @@
 export interface TtrpgMemberItem {
     name: string
     quantity: number
+    lore_id?: string
 }
 
 export interface TtrpgMemberFollower {

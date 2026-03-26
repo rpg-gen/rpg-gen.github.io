@@ -7,6 +7,8 @@ import TtrpgQuest from "../../types/ttrpg/TtrpgQuest"
 import TtrpgProject from "../../types/ttrpg/TtrpgProject"
 import LoreNoteText from "./lore_note_text"
 import AutoResizeTextarea from "./auto_resize_textarea"
+import LoreFactionMembers from "./lore_faction_members"
+import LoreItemHolder from "./lore_item_holder"
 import { ttrpg, themeStyles } from "../../configs/ttrpg_theme"
 import { LORE_COLORS, LORE_LABELS, ALL_LORE_TYPES } from "../../configs/ttrpg_constants"
 
@@ -28,11 +30,17 @@ interface NotesHook {
     updateNote: (id: string, note: Partial<TtrpgSessionNote>) => Promise<void>
 }
 
+interface MembersHook {
+    updateMember: (id: string, member: Partial<TtrpgMember>) => Promise<void>
+}
+
 interface LoreDetailViewProps {
     entry: TtrpgLoreEntry
     data: CampaignData
     loreHook: LoreHook
     notesHook: NotesHook
+    membersHook: MembersHook
+    updateMembers: (updater: (members: TtrpgMember[]) => TtrpgMember[]) => void
     goToSession: (sessionId: string, noteId?: string) => void
     openLoreDetail: (entryId: string) => void
     openMemberDetail: (memberId: string) => void
@@ -47,7 +55,8 @@ interface LoreDetailViewProps {
 }
 
 export default function LoreDetailView({
-    entry, data, loreHook, notesHook, goToSession, openLoreDetail, openMemberDetail, openQuestDetail, openProjectDetail,
+    entry, data, loreHook, notesHook, membersHook, updateMembers,
+    goToSession, openLoreDetail, openMemberDetail, openQuestDetail, openProjectDetail,
     cameFromSessionId, backToOriginSession, clearCameFromSessionId,
     onBack, onDelete, onAddPersonToFaction
 }: LoreDetailViewProps) {
@@ -93,6 +102,18 @@ export default function LoreDetailView({
             for (const note of data.notes) {
                 if (pattern.test(note.text)) {
                     await notesHook.updateNote(note.id, { text: note.text.replace(pattern, `[[${trimmed}]]`) })
+                }
+            }
+            // Propagate name change to linked inventory items
+            for (const member of data.members) {
+                const hasLinked = member.items.some(i => i.lore_id === entry.id)
+                if (hasLinked) {
+                    const updatedItems = member.items.map(i =>
+                        i.lore_id === entry.id ? { ...i, name: trimmed } : i
+                    )
+                    membersHook.updateMember(member.id, {
+                        campaign_id: member.campaign_id, name: member.name, items: updatedItems
+                    }).catch(err => console.error("Error propagating lore name to inventory:", err))
                 }
             }
         } catch (error) {
@@ -286,41 +307,24 @@ export default function LoreDetailView({
 
                 {/* Faction members list */}
                 {entry.type === "faction" && (
-                    <div style={{ ...themeStyles.sectionDivider, marginBottom: "0.5rem" }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <strong>Members{factionMembers.length > 0 ? ` (${factionMembers.length})` : ""}</strong>
-                            {onAddPersonToFaction && (
-                                <button
-                                    onClick={() => onAddPersonToFaction(entry.id)}
-                                    style={{ backgroundColor: LORE_COLORS.person, color: "#222", border: "1px solid #ccc", borderRadius: "4px", padding: "0.25rem 0.5rem", cursor: "pointer", fontSize: "0.85rem" }}
-                                >
-                                    + Person
-                                </button>
-                            )}
-                        </div>
-                        {factionMembers.map(member => (
-                            <div
-                                key={member.id}
-                                onClick={() => openLoreDetail(member.id)}
-                                style={{
-                                    border: "1px solid #ddd",
-                                    borderRadius: "4px",
-                                    padding: "0.5rem",
-                                    marginTop: "0.5rem",
-                                    backgroundColor: LORE_COLORS.person,
-                                    cursor: "pointer",
-                                    color: "#333"
-                                }}
-                            >
-                                <div style={{ display: "flex", alignItems: "baseline", overflow: "hidden" }}>
-                                    <strong style={{ flexShrink: 0 }}>{member.name}</strong>
-                                    {member.subtitle && (
-                                        <span style={{ color: "#666", marginLeft: "0.5rem", fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{member.subtitle}</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <LoreFactionMembers
+                        factionId={entry.id}
+                        factionMembers={factionMembers}
+                        openLoreDetail={openLoreDetail}
+                        onAddPersonToFaction={onAddPersonToFaction}
+                    />
+                )}
+
+                {/* Lore item holder */}
+                {entry.type === "item" && (
+                    <LoreItemHolder
+                        loreId={entry.id}
+                        loreName={entry.name}
+                        members={data.members}
+                        membersHook={membersHook}
+                        updateMembers={updateMembers}
+                        openMemberDetail={openMemberDetail}
+                    />
                 )}
 
                 {/* Session mentions */}

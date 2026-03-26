@@ -52,12 +52,13 @@ export default function RulesPage(props: Props) {
         )
     }
 
-    // Landing page — no page selected, show one card per group
+    // Landing page — no page selected, show one card per group (hide child groups)
     if (!page_key) {
+        const root_groups = page_groups.filter(g => !g.parent_slug)
         return (
             <div style={content_style}>
                 <div style={links_grid_style}>
-                    {page_groups.map(group => (
+                    {root_groups.map(group => (
                         <Link
                             key={group.label}
                             to={`${base_path}/${group.slug ?? group.keys[0]}`}
@@ -77,19 +78,42 @@ export default function RulesPage(props: Props) {
     // Group index page — show all pages in this group as cards
     const matched_group = page_groups.find(g => g.slug === page_key)
     if (matched_group) {
+        const back_to = matched_group.parent_slug
+            ? `${base_path}/${matched_group.parent_slug}`
+            : base_path
+        const back_label = matched_group.parent_slug
+            ? (page_groups.find(g => g.slug === matched_group.parent_slug)?.label ?? "Rules")
+            : "Rules"
+
+        // Parent group with sub-groups — show child group cards
+        const child_groups = matched_group.sub_groups
+            ? matched_group.sub_groups.map(s => page_groups.find(g => g.slug === s)).filter(Boolean) as PageGroup[]
+            : null
+
         return (
             <div style={content_style}>
-                <Link to={base_path} style={back_style}>&larr; Rules</Link>
+                <Link to={back_to} style={back_style}>&larr; {back_label}</Link>
                 <h2 style={group_index_heading}>{matched_group.label}</h2>
                 {matched_group.description && (
                     <p style={group_index_desc}>{matched_group.description}</p>
                 )}
                 <div style={links_grid_style}>
-                    {matched_group.keys.map(key => (
-                        <Link key={key} to={`${base_path}/${key}`} style={link_card_style}>
-                            {page_labels[key] ?? key}
-                        </Link>
-                    ))}
+                    {child_groups ? (
+                        child_groups.map(cg => (
+                            <Link key={cg.slug} to={`${base_path}/${cg.slug}`} style={link_card_style}>
+                                <div style={group_card_label}>{cg.label}</div>
+                                {cg.description && (
+                                    <div style={group_card_desc}>{cg.description}</div>
+                                )}
+                            </Link>
+                        ))
+                    ) : (
+                        matched_group.keys.map(key => (
+                            <Link key={key} to={`${base_path}/${key}`} style={link_card_style}>
+                                {page_labels[key] ?? key}
+                            </Link>
+                        ))
+                    )}
                 </div>
             </div>
         )

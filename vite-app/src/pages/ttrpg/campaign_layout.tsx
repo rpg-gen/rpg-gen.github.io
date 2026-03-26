@@ -13,6 +13,8 @@ import CampaignTabBar, { CampaignTab } from "../../components/ttrpg/campaign_tab
 import { nav_paths, page_layout } from "../../configs/constants"
 import UserContext from "../../contexts/user_context"
 import { ttrpg } from "../../configs/ttrpg_theme"
+import CampaignSearchFab from "../../components/ttrpg/campaign_search_fab"
+import CampaignSearchOverlay from "../../components/ttrpg/campaign_search_overlay"
 
 type Tab = CampaignTab
 
@@ -47,6 +49,8 @@ export default function CampaignLayout() {
     const demoCampaignData = useDemoCampaignData()
 
     const active = isDemoMode ? demoCampaignData : firebaseCampaignData
+
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
 
     const [campaign, setCampaign] = useState<TtrpgCampaign | null>(
         campaignId ? campaign_cache[campaignId] ?? null : null
@@ -140,6 +144,15 @@ export default function CampaignLayout() {
 
                 <Outlet context={outletContext} />
             </div>
+
+            <CampaignSearchFab onClick={() => setIsSearchOpen(true)} />
+            {isSearchOpen && (
+                <CampaignSearchOverlay
+                    data={active.data}
+                    campaignId={campaignId!}
+                    onClose={() => setIsSearchOpen(false)}
+                />
+            )}
         </FullPageOverlay>
     )
 }

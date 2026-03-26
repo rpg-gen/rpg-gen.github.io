@@ -268,6 +268,7 @@ export default function MemberDetailView({
                 <CollapsibleSection title="Inventory" count={member.items.reduce((sum, i) => sum + i.quantity, 0)} onAdd={() => setAddingItem(true)}>
                     <MemberInventory
                         member={member} membersHook={membersHook} updateMembers={updateMembers}
+                        lore={data.lore} allMembers={data.members} openLoreDetail={openLoreDetail}
                         showUnassign campaignId={campaignId}
                         partyResourcesHook={partyResourcesHook}
                         partyResources={data.partyResources}

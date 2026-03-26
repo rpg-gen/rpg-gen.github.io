@@ -88,7 +88,7 @@ export default function PartyResourcesPanel({
         if (!editItemName.trim()) { alert("Item name is required"); return }
         const prev = partyResources.unassigned_items
         const updated = prev.map((item, i) =>
-            i === idx ? { name: editItemName.trim(), quantity: parseInt(editItemQty) || 1 } : item
+            i === idx ? { ...item, name: editItemName.trim(), quantity: parseInt(editItemQty) || 1 } : item
         )
         updatePartyResources(pr => ({ ...pr, unassigned_items: updated }))
         setSelectedItemIdx(null)
@@ -139,8 +139,8 @@ export default function PartyResourcesPanel({
         updatePartyResources(pr => ({ ...pr, unassigned_items: remaining }))
         updateMembers(ms => ms.map(m => {
             if (m.id !== memberId) return m
-            const existingIdx = m.items.findIndex(i => i.name === item.name)
-            if (existingIdx >= 0) {
+            const existingIdx = m.items.findIndex(i => i.name === item.name && i.lore_id === item.lore_id)
+            if (existingIdx >= 0 && !item.lore_id) {
                 return { ...m, items: m.items.map((i, idx) => idx === existingIdx ? { ...i, quantity: i.quantity + item.quantity } : i) }
             }
             return { ...m, items: [...m.items, item] }
@@ -201,27 +201,41 @@ export default function PartyResourcesPanel({
                         onClick={() => { setSelectedItemIdx(idx); setEditItemName(item.name); setEditItemQty(String(item.quantity)); setShowItemAssign(false) }}
                         style={{ padding: "0.25rem 0", cursor: "pointer", color: "#336", textDecoration: "underline", textDecorationColor: "#ccc" }}
                     >
-                        {item.name} x{item.quantity}
+                        {item.lore_id && <span title="Lore-linked item" style={{ color: "#b8860b", marginRight: "0.25rem" }}>{"\u2605"}</span>}
+                        {item.name}{!item.lore_id && ` x${item.quantity}`}
                     </div>
                 ))}
 
-                {selectedItemIdx !== null && partyResources.unassigned_items[selectedItemIdx] && (
+                {selectedItemIdx !== null && partyResources.unassigned_items[selectedItemIdx] && (() => {
+                    const selItem = partyResources.unassigned_items[selectedItemIdx]
+                    const isLore = selItem.lore_id != null
+                    return (
                     <div style={themeStyles.modalBackdrop}
                         onClick={closeItemModal}>
                         <div className="ttrpg-modal-content" style={themeStyles.tinyModalContent}
                             onClick={e => e.stopPropagation()}>
                             <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Item</strong>
                             <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
-                            <input type="text" value={editItemName} onChange={e => setEditItemName(e.target.value)}
-                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
-                            <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
-                            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
-                                <button onClick={() => setEditItemQty(String(Math.max(1, (parseInt(editItemQty) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
-                                <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>{editItemQty}</span>
-                                <button onClick={() => setEditItemQty(String((parseInt(editItemQty) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
-                            </div>
+                            {isLore ? (
+                                <div style={{ padding: "0.4rem", marginBottom: "0.5rem", backgroundColor: "#f0f0f0", borderRadius: "4px", color: "#555" }}>
+                                    {"\u2605"} {selItem.name} <span style={{ fontSize: "0.75rem", color: "#999" }}>(lore-linked)</span>
+                                </div>
+                            ) : (
+                                <input type="text" value={editItemName} onChange={e => setEditItemName(e.target.value)}
+                                    style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
+                            )}
+                            {!isLore && (
+                                <>
+                                    <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
+                                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
+                                        <button onClick={() => setEditItemQty(String(Math.max(1, (parseInt(editItemQty) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
+                                        <span style={{ minWidth: "2rem", textAlign: "center", fontWeight: "bold" }}>{editItemQty}</span>
+                                        <button onClick={() => setEditItemQty(String((parseInt(editItemQty) || 0) + 1))} style={{ width: "2rem", fontSize: "1rem" }}>+</button>
+                                    </div>
+                                </>
+                            )}
                             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                                <button onClick={() => handleEditItem(selectedItemIdx)} style={primaryButtonSmallStyle}>Save</button>
+                                {!isLore && <button onClick={() => handleEditItem(selectedItemIdx)} style={primaryButtonSmallStyle}>Save</button>}
                                 <button onClick={() => setShowItemAssign(!showItemAssign)} style={{ fontSize: "0.8rem" }}>Assign</button>
                                 <button onClick={() => handleRemoveItem(selectedItemIdx)} style={{ fontSize: "0.8rem", color: "#c0392b" }}>Remove</button>
                                 <button onClick={closeItemModal} style={{ fontSize: "0.8rem" }}>Cancel</button>
@@ -235,7 +249,8 @@ export default function PartyResourcesPanel({
                             )}
                         </div>
                     </div>
-                )}
+                    )
+                })()}
 
                 {addingItem && (
                     <div style={themeStyles.modalBackdrop} onClick={() => { setAddingItem(false); setNewItemName(""); setNewItemQty("1") }}>

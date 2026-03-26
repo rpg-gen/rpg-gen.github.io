@@ -74,6 +74,7 @@ function strip_yaml_frontmatter(text: string): string {
 }
 
 async function fetch_source_text(source: RulesSource): Promise<string> {
+    if (source.inline) return source.inline
     if (source.urls) {
         const texts = await Promise.all(
             source.urls.map(async (u) => {
@@ -168,10 +169,28 @@ export default function useDrawSteelRules() {
         (query: string): RulesSection[] => {
             if (!query.trim()) return []
             const lower = query.toLowerCase()
-            return sections.filter(
+            const matches = sections.filter(
                 s => s.heading.toLowerCase().includes(lower) ||
                      s.content.toLowerCase().includes(lower)
             )
+            const word_re = new RegExp(`\\b${lower.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`)
+            return matches.sort((a, b) => {
+                const a_head = a.heading.toLowerCase()
+                const b_head = b.heading.toLowerCase()
+                const a_exact = a_head === lower
+                const b_exact = b_head === lower
+                if (a_exact !== b_exact) return a_exact ? -1 : 1
+                const a_starts = a_head.startsWith(lower)
+                const b_starts = b_head.startsWith(lower)
+                if (a_starts !== b_starts) return a_starts ? -1 : 1
+                const a_in_head = a_head.includes(lower)
+                const b_in_head = b_head.includes(lower)
+                if (a_in_head !== b_in_head) return a_in_head ? -1 : 1
+                const a_word = word_re.test(a_head) || word_re.test(a.content.toLowerCase())
+                const b_word = word_re.test(b_head) || word_re.test(b.content.toLowerCase())
+                if (a_word !== b_word) return a_word ? -1 : 1
+                return 0
+            })
         },
         [sections]
     )

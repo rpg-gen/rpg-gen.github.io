@@ -8,7 +8,7 @@ export default function LoreDetail() {
     const { campaignId, loreId } = useParams<{ campaignId: string; loreId: string }>()
     const navigate = useNavigate()
     const location = useLocation()
-    const { data, isLoading, loreHook, notesHook } = useOutletContext<CampaignLayoutContext>()
+    const { data, isLoading, loreHook, notesHook, membersHook, updateMembers } = useOutletContext<CampaignLayoutContext>()
 
     const cameFromSessionId = (location.state as { fromSessionId?: string } | null)?.fromSessionId ?? null
 
@@ -65,6 +65,8 @@ export default function LoreDetail() {
             data={data}
             loreHook={loreHook}
             notesHook={notesHook}
+            membersHook={membersHook}
+            updateMembers={updateMembers}
             goToSession={goToSession}
             openLoreDetail={openLoreDetail}
             openMemberDetail={openMemberDetail}

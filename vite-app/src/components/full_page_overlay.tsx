@@ -1,12 +1,17 @@
-import { ReactNode, MouseEvent } from "react"
+import { ReactNode, MouseEvent, useContext } from "react"
 
 import spacing from "../configs/spacing"
 import class_names from "../configs/class_names"
 import { ttrpg } from "../configs/ttrpg_theme"
+import UserContext from "../contexts/user_context"
+import { DEMO_BANNER_HEIGHT } from "./demo_banner"
 
 export default function FullPageOverlay(props: {
     children: ReactNode|ReactNode[]
 }) {
+    const user_context = useContext(UserContext)
+    const is_demo = user_context.is_auth_checked && !user_context.is_logged_in
+    const top_offset = is_demo ? DEMO_BANNER_HEIGHT : 0
 
     function handle_off_click(event: MouseEvent) {
         if ((event.target as HTMLDivElement).classList.contains(class_names.count_as_off_click)) {
@@ -18,9 +23,9 @@ export default function FullPageOverlay(props: {
         <div
             style={{
                 position: "absolute",
-                top: 0,
+                top: top_offset,
                 // bottom: 0,
-                minHeight: "100%",
+                minHeight: `calc(100% - ${top_offset}px)`,
                 left: 0,
                 right: 0,
                 backgroundColor: ttrpg.colors.pageBg,

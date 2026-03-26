@@ -1,6 +1,8 @@
 import { useContext } from "react"
 import UserContext from "../contexts/user_context"
 
+export const DEMO_BANNER_HEIGHT = 28
+
 export default function DemoBanner() {
     const user_context = useContext(UserContext)
 

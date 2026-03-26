@@ -1,0 +1,2 @@
+[12535180ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/src/components/ttrpg/party_resources_panel.tsx?t=1774566300946:0
+[12535180ms] [ERROR] [hmr] Failed to reload /src/components/ttrpg/party_resources_panel.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3000/@vite/client:297
