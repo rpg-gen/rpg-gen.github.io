@@ -4,7 +4,7 @@ export default function RulesBookButton() {
     const navigate = useNavigate()
     const location = useLocation()
 
-    if (location.pathname.startsWith("/rules")) return null
+    if (!location.pathname.startsWith("/rpg-notes")) return null
 
     function handle_click() {
         sessionStorage.setItem("rules_entry_origin", location.pathname)

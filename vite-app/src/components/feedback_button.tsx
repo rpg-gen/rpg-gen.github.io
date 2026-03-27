@@ -58,7 +58,7 @@ export default function FeedbackButton() {
                     justifyContent: "center",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
                 }}
-                title="Submit Feedback"
+                title="App Feedback"
             >
                 💬
             </button>
@@ -87,7 +87,7 @@ export default function FeedbackButton() {
                         maxWidth: 420,
                         color: "#fff"
                     }}>
-                        <h3 style={{ margin: "0 0 16px" }}>Submit Feedback</h3>
+                        <h3 style={{ margin: "0 0 16px" }}>App Feedback</h3>
 
                         <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
                             <TypeButton

@@ -60,6 +60,7 @@ export default function NoteEditModal({
                     quests={quests}
                     projects={projects}
                     onCreateLore={onCreateLore}
+                    placeholder="Type a note... Use [[ or / to link"
                     style={{ minHeight: "120px" }}
                 />
                 <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>

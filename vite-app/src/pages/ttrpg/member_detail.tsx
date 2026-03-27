@@ -22,7 +22,9 @@ export default function MemberDetail() {
     const member = data.members.find(m => m.id === memberId)
 
     function openLoreDetail(entryId: string) {
-        navigate(`${nav_paths.rpg_notes}/${campaignId}/lore/${entryId}`)
+        navigate(`${nav_paths.rpg_notes}/${campaignId}/lore/${entryId}`, {
+            state: { fromMemberId: memberId, fromMemberName: member?.name }
+        })
     }
 
     function openMemberDetail(id: string) {

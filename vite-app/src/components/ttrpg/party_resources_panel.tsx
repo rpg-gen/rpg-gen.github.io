@@ -199,10 +199,17 @@ export default function PartyResourcesPanel({
                 {partyResources.unassigned_items.map((item, idx) => (
                     <div key={idx}
                         onClick={() => { setSelectedItemIdx(idx); setEditItemName(item.name); setEditItemQty(String(item.quantity)); setShowItemAssign(false) }}
-                        style={{ padding: "0.25rem 0", cursor: "pointer", color: "#336", textDecoration: "underline", textDecorationColor: "#ccc" }}
+                        style={{
+                            display: "flex", justifyContent: "space-between", alignItems: "center",
+                            padding: "0.35rem 0.5rem", cursor: "pointer",
+                            backgroundColor: idx % 2 === 0 ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.03)",
+                        }}
                     >
-                        {item.lore_id && <span title="Lore-linked item" style={{ color: "#b8860b", marginRight: "0.25rem" }}>{"\u2605"}</span>}
-                        {item.name}{!item.lore_id && ` x${item.quantity}`}
+                        <span>
+                            {item.lore_id && <span title="Lore-linked item" style={{ color: "#b8860b", marginRight: "0.25rem" }}>{"\u2605"}</span>}
+                            {item.name}
+                        </span>
+                        <span style={{ fontVariantNumeric: "tabular-nums", color: "#888" }}>{item.quantity}</span>
                     </div>
                 ))}
 

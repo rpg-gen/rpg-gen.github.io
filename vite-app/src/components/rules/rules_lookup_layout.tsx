@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { ttrpg } from "../../configs/ttrpg_theme"
 import { mobile } from "../../configs/constants"
 import { RulesSection, RulesProject } from "../../types/draw_steel_rules"
@@ -36,9 +37,15 @@ interface Props {
 }
 
 export default function RulesLookupLayout({ config, data }: Props) {
+    const navigate = useNavigate()
     const [sidebar_open, set_sidebar_open] = useState(false)
     const [width] = useWindowSize()
     const is_mobile = width <= mobile.break_point
+
+    function handleClose() {
+        const origin = sessionStorage.getItem("rules_entry_origin")
+        navigate(origin || "/")
+    }
 
     return (
         <div style={page_style}>
@@ -59,6 +66,13 @@ export default function RulesLookupLayout({ config, data }: Props) {
                     projects_for_page={data.projects_for_page}
                     placeholder={config.search_placeholder}
                 />
+                <button
+                    onClick={handleClose}
+                    style={close_button_style}
+                    title="Close rules"
+                >
+                    {"\u2715"}
+                </button>
             </div>
 
             <div style={body_style}>
@@ -163,6 +177,16 @@ const mobile_sidebar_style: React.CSSProperties = {
     backgroundColor: ttrpg.colors.pageBg,
     zIndex: 15,
     boxShadow: "4px 0 12px rgba(0,0,0,0.4)",
+}
+
+const close_button_style: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    color: ttrpg.colors.textOnDark,
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    padding: "0.25rem 0.5rem",
+    flexShrink: 0,
 }
 
 const content_area_style: React.CSSProperties = {

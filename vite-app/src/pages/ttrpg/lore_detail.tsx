@@ -10,11 +10,14 @@ export default function LoreDetail() {
     const location = useLocation()
     const { data, isLoading, loreHook, notesHook, membersHook, updateMembers } = useOutletContext<CampaignLayoutContext>()
 
-    const cameFromSessionId = (location.state as { fromSessionId?: string } | null)?.fromSessionId ?? null
+    const locState = location.state as { fromSessionId?: string; fromMemberId?: string; fromMemberName?: string } | null
+    const cameFromSessionId = locState?.fromSessionId ?? null
+    const cameFromMemberId = locState?.fromMemberId ?? null
+    const cameFromMemberName = locState?.fromMemberName ?? null
 
     useEffect(() => {
-        if (cameFromSessionId) window.history.replaceState({}, "")
-    }, [cameFromSessionId])
+        if (cameFromSessionId || cameFromMemberId) window.history.replaceState({}, "")
+    }, [cameFromSessionId, cameFromMemberId])
 
     const entry = data.lore.find(e => e.id === loreId)
 
@@ -74,6 +77,10 @@ export default function LoreDetail() {
             openProjectDetail={openProjectDetail}
             cameFromSessionId={cameFromSessionId}
             backToOriginSession={backToOriginSession}
+            cameFromMemberName={cameFromMemberName}
+            backToOriginMember={cameFromMemberId
+                ? () => navigate(`${nav_paths.rpg_notes}/${campaignId}/party/${cameFromMemberId}`)
+                : undefined}
             clearCameFromSessionId={() => {}}
             onBack={() => navigate(`${nav_paths.rpg_notes}/${campaignId}/lore`)}
             onDelete={() => navigate(`${nav_paths.rpg_notes}/${campaignId}/lore`)}

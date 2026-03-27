@@ -48,6 +48,8 @@ interface LoreDetailViewProps {
     openProjectDetail?: (projectId: string) => void
     cameFromSessionId: string | null
     backToOriginSession: () => void
+    cameFromMemberName?: string | null
+    backToOriginMember?: () => void
     clearCameFromSessionId: () => void
     onBack: () => void
     onDelete: () => void
@@ -57,8 +59,8 @@ interface LoreDetailViewProps {
 export default function LoreDetailView({
     entry, data, loreHook, notesHook, membersHook, updateMembers,
     goToSession, openLoreDetail, openMemberDetail, openQuestDetail, openProjectDetail,
-    cameFromSessionId, backToOriginSession, clearCameFromSessionId,
-    onBack, onDelete, onAddPersonToFaction
+    cameFromSessionId, backToOriginSession, cameFromMemberName, backToOriginMember,
+    clearCameFromSessionId, onBack, onDelete, onAddPersonToFaction
 }: LoreDetailViewProps) {
 
     const [editingField, setEditingField] = useState<"name" | "subtitle" | null>(null)
@@ -88,8 +90,8 @@ export default function LoreDetailView({
         }
     }
     mentions.sort((a, b) =>
-        a.session.session_number - b.session.session_number
-        || a.note.created_at.localeCompare(b.note.created_at)
+        b.session.session_number - a.session.session_number
+        || b.note.created_at.localeCompare(a.note.created_at)
     )
 
     async function saveName() {
@@ -173,6 +175,9 @@ export default function LoreDetailView({
             <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
                 {cameFromSessionId && (
                     <button onClick={backToOriginSession}>Back to session</button>
+                )}
+                {backToOriginMember && (
+                    <button onClick={backToOriginMember}>Back to {cameFromMemberName || "player"}</button>
                 )}
                 <button onClick={() => { onBack(); clearCameFromSessionId() }}>Back to lore list</button>
             </div>

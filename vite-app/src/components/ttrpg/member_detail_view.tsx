@@ -162,8 +162,8 @@ export default function MemberDetailView({
         }
     }
     mentions.sort((a, b) =>
-        a.session.session_number - b.session.session_number
-        || a.note.created_at.localeCompare(b.note.created_at)
+        b.session.session_number - a.session.session_number
+        || b.note.created_at.localeCompare(a.note.created_at)
     )
 
     return (

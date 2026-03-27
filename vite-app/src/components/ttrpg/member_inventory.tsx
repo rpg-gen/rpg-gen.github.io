@@ -164,9 +164,16 @@ export default function MemberInventory({
         <div style={{ paddingLeft: "1rem" }}>
             {member.items.map((item, idx) => (
                 <div key={idx} onClick={() => { setSelectedIdx(idx); setEditingItemName(item.name); setEditingItemQuantity(String(item.quantity)) }}
-                    style={{ padding: "0.25rem 0", cursor: "pointer", color: "#336", textDecoration: "underline", textDecorationColor: "#ccc" }}>
-                    {item.lore_id && <span title="Lore-linked item" style={{ color: "#b8860b", marginRight: "0.25rem" }}>{"\u2605"}</span>}
-                    {item.name}{!item.lore_id && ` x${item.quantity}`}
+                    style={{
+                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                        padding: "0.35rem 0.5rem", cursor: "pointer",
+                        backgroundColor: idx % 2 === 0 ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.03)",
+                    }}>
+                    <span>
+                        {item.lore_id && <span title="Lore-linked item" style={{ color: "#b8860b", marginRight: "0.25rem" }}>{"\u2605"}</span>}
+                        {item.name}
+                    </span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", color: "#888" }}>{item.quantity}</span>
                 </div>
             ))}
 
@@ -178,15 +185,29 @@ export default function MemberInventory({
                         <strong style={{ display: "block", marginBottom: "0.75rem" }}>Edit Item</strong>
                         <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Name</label>
                         {isLoreLinked ? (
-                            <div style={{ padding: "0.4rem", marginBottom: "0.5rem", backgroundColor: "#f0f0f0", borderRadius: "4px", color: "#555" }}>
-                                {"\u2605"} {selectedItem.name} <span style={{ fontSize: "0.75rem", color: "#999" }}>(lore-linked)</span>
-                            </div>
-                        ) : (
-                            <input type="text" value={editingItemName} onChange={e => setEditingItemName(e.target.value)}
-                                style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
-                        )}
-                        {!isLoreLinked && (
                             <>
+                                <div style={{ padding: "0.4rem", marginBottom: "0.5rem", backgroundColor: "#f0f0f0", borderRadius: "4px", color: "#555" }}>
+                                    {"\u2605"} {selectedItem.name} <span style={{ fontSize: "0.75rem", color: "#999" }}>(lore-linked)</span>
+                                </div>
+                                {openLoreDetail && (
+                                    <div
+                                        onClick={() => { setSelectedIdx(null); openLoreDetail(selectedItem.lore_id!) }}
+                                        style={{
+                                            display: "flex", justifyContent: "space-between", alignItems: "center",
+                                            padding: "0.5rem 0.6rem", marginBottom: "0.75rem",
+                                            backgroundColor: "#e8f0fe", borderRadius: "4px",
+                                            cursor: "pointer", color: "#1a56db", fontWeight: "bold", fontSize: "0.9rem"
+                                        }}
+                                    >
+                                        <span>View in Lore</span>
+                                        <span>{"\u2192"}</span>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <input type="text" value={editingItemName} onChange={e => setEditingItemName(e.target.value)}
+                                    style={{ width: "100%", padding: "0.4rem", boxSizing: "border-box", marginBottom: "0.5rem" }} />
                                 <label style={{ display: "block", marginBottom: "0.25rem", fontSize: "0.85rem" }}>Quantity</label>
                                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "1rem" }}>
                                     <button onClick={() => setEditingItemQuantity(String(Math.max(1, (parseInt(editingItemQuantity) || 0) - 1)))} style={{ width: "2rem", fontSize: "1rem" }}>{"\u2212"}</button>
@@ -197,9 +218,6 @@ export default function MemberInventory({
                         )}
                         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                             {!isLoreLinked && <button onClick={() => handleUpdateItem(selectedIdx)} style={primaryButtonSmallStyle}>Save</button>}
-                            {isLoreLinked && openLoreDetail && (
-                                <button onClick={() => { setSelectedIdx(null); openLoreDetail(selectedItem.lore_id!) }} style={{ fontSize: "0.8rem" }}>View in Lore</button>
-                            )}
                             {showUnassign && <button onClick={() => handleUnassign(selectedIdx)} style={{ fontSize: "0.8rem" }}>Unassign</button>}
                             <button onClick={() => handleRemoveItem(selectedIdx)} style={{ fontSize: "0.8rem", color: "#c0392b" }}>Remove</button>
                             <button onClick={() => setSelectedIdx(null)} style={{ fontSize: "0.8rem" }}>Cancel</button>

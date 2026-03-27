@@ -172,41 +172,40 @@ export default function LoreTab({ campaignId, data, loreHook }: LoreTabProps) {
                                 onClick={() => toggleLoreFilter(type)}
                                 style={{
                                     padding: "0.25rem 0.75rem",
-                                    borderRadius: active ? "12px 0 0 12px" : "12px",
+                                    borderRadius: "12px 0 0 12px",
                                     border: `1px solid ${active ? LORE_COLORS[type] : "rgba(255,255,255,0.2)"}`,
                                     backgroundColor: active ? LORE_COLORS[type] : "transparent",
                                     color: active ? "#222" : "rgba(255,255,255,0.5)",
                                     cursor: "pointer",
                                     fontSize: "0.85rem",
-                                    borderRight: active ? "none" : undefined,
+                                    borderRight: "none",
                                 }}
                             >
                                 {LORE_LABELS_PLURAL[type]}
                             </button>
-                            {active && (
-                                <button
-                                    onClick={() => {
-                                        setLoreFormType(type)
-                                        setLoreFormName("")
-                                        setLoreFormSubtitle("")
-                                        setLoreFormSessionId(latestSession?.id)
-                                        setLoreFormMode("add")
-                                    }}
-                                    style={{
-                                        padding: "0.25rem 0.5rem",
-                                        borderRadius: "0 12px 12px 0",
-                                        border: `1px solid ${LORE_COLORS[type]}`,
-                                        backgroundColor: LORE_COLORS[type],
-                                        color: "#222",
-                                        cursor: "pointer",
-                                        fontSize: "0.85rem",
-                                        fontWeight: "bold",
-                                    }}
-                                    title={`Add ${LORE_LABELS[type]}`}
-                                >
-                                    +
-                                </button>
-                            )}
+                            <button
+                                onClick={() => {
+                                    if (!active) setLoreFilter(type)
+                                    setLoreFormType(type)
+                                    setLoreFormName("")
+                                    setLoreFormSubtitle("")
+                                    setLoreFormSessionId(latestSession?.id)
+                                    setLoreFormMode("add")
+                                }}
+                                style={{
+                                    padding: "0.25rem 0.5rem",
+                                    borderRadius: "0 12px 12px 0",
+                                    border: `1px solid ${active ? LORE_COLORS[type] : "rgba(255,255,255,0.2)"}`,
+                                    backgroundColor: active ? LORE_COLORS[type] : "transparent",
+                                    color: active ? "#222" : "rgba(255,255,255,0.5)",
+                                    cursor: "pointer",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold",
+                                }}
+                                title={`Add ${LORE_LABELS[type]}`}
+                            >
+                                +
+                            </button>
                         </span>
                     )
                 })}

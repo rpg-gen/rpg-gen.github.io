@@ -25,12 +25,7 @@ export default function MemberList({ members, onSelect, onAdd }: MemberListProps
             {members.map(member => {
                 const itemCount = member.items.reduce((sum, i) => sum + i.quantity, 0)
                 const followerCount = member.followers.length
-                const titleCount = member.titles.length
-                const counts = [
-                    itemCount > 0 ? `${itemCount} item${itemCount !== 1 ? "s" : ""}` : null,
-                    followerCount > 0 ? `${followerCount} follower${followerCount !== 1 ? "s" : ""}` : null,
-                    titleCount > 0 ? `${titleCount} title${titleCount !== 1 ? "s" : ""}` : null,
-                ].filter(Boolean).join(" · ")
+                const loreItems = member.items.filter(i => i.lore_id)
 
                 return (
                     <div key={member.id} className="ttrpg-card"
@@ -55,11 +50,44 @@ export default function MemberList({ members, onSelect, onAdd }: MemberListProps
                                     ))}
                                 </div>
                             )}
-                            <div style={{ display: "flex", gap: "1rem", fontSize: "0.85rem", color: ttrpg.colors.textMuted, marginBottom: counts ? "0.25rem" : 0 }}>
-                                <span>Wealth: {member.wealth}</span>
-                                <span>Renown: {member.renown}</span>
+                            {member.titles.length > 0 && (
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginBottom: "0.35rem" }}>
+                                    {member.titles.map(t => (
+                                        <span key={t.name} style={{
+                                            fontSize: "0.7rem", fontStyle: "italic",
+                                            padding: "0.1rem 0.4rem", borderRadius: ttrpg.radius.sm,
+                                            backgroundColor: "rgba(255,255,255,0.08)", color: ttrpg.colors.textMuted,
+                                        }}>{t.name}</span>
+                                    ))}
+                                </div>
+                            )}
+                            <div style={{
+                                display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
+                                textAlign: "center", gap: "0.25rem", marginBottom: loreItems.length > 0 ? "0.35rem" : 0,
+                            }}>
+                                {[
+                                    { label: "Wealth", value: member.wealth },
+                                    { label: "Renown", value: member.renown },
+                                    { label: "Items", value: itemCount },
+                                    { label: "Followers", value: followerCount },
+                                ].map(stat => (
+                                    <div key={stat.label}>
+                                        <div style={{ fontSize: "0.7rem", color: ttrpg.colors.textMuted }}>{stat.label}</div>
+                                        <div style={{ fontSize: "0.95rem", fontWeight: 600, color: ttrpg.colors.textDark }}>{stat.value}</div>
+                                    </div>
+                                ))}
                             </div>
-                            {counts && <div style={{ fontSize: "0.8rem", color: ttrpg.colors.textMuted }}>{counts}</div>}
+                            {loreItems.length > 0 && (
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+                                    {loreItems.map(i => (
+                                        <span key={i.lore_id} style={{
+                                            fontSize: "0.7rem", padding: "0.1rem 0.4rem",
+                                            borderRadius: ttrpg.radius.sm,
+                                            backgroundColor: "rgba(184,134,11,0.15)", color: "#b8860b",
+                                        }}>{"\u2605"} {i.name}</span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )

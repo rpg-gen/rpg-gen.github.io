@@ -1,2 +1,53 @@
 [12535180ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/src/components/ttrpg/party_resources_panel.tsx?t=1774566300946:0
 [12535180ms] [ERROR] [hmr] Failed to reload /src/components/ttrpg/party_resources_panel.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:3000/@vite/client:297
+[27214164ms] ReferenceError: close_button_style is not defined
+    at RulesLookupLayout (http://localhost:3000/src/components/rules/rules_lookup_layout.tsx?t=1774580979919:81:18)
+    at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[27214166ms] ReferenceError: close_button_style is not defined
+    at RulesLookupLayout (http://localhost:3000/src/components/rules/rules_lookup_layout.tsx?t=1774580979919:81:18)
+    at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at HTMLUnknownElement.callCallback2 (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3674:22)
+    at Object.invokeGuardedCallbackDev (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3699:24)
+    at invokeGuardedCallback (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:3733:39)
+    at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19761:15)
+    at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+[27214166ms] [ERROR] The above error occurred in the <RulesLookupLayout> component:
+
+    at RulesLookupLayout (http://localhost:3000/src/components/rules/rules_lookup_layout.tsx?t=1774580979919:26:45)
+    at RulesLayout (http://localhost:3000/src/pages/rules/rules_layout.tsx?t=1774553876939:33:16)
+    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at Outlet (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3720:26)
+    at DelveCardFilterProvider (http://localhost:3000/src/contexts/delve_card_filter_context.tsx:20:43)
+    at App (http://localhost:3000/src/App.tsx?t=1774546054927:34:53)
+    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3327:5)
+    at RenderErrorBoundary (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3287:5)
+    at DataRoutes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3648:5)
+    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3727:15)
+    at RouterProvider (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3597:5)
+    at Routes
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderErrorBoundary. @ http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14035
+[27214166ms] [ERROR] React Router caught the following error during render ReferenceError: close_button_style is not defined
+    at RulesLookupLayout (http://localhost:3000/src/components/rules/rules_lookup_layout.tsx?t=1774580979919:81:18)
+    at renderWithHooks (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:12171:26)
+    at updateFunctionComponent (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:14577:28)
+    at beginWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:15912:22)
+    at beginWork$1 (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19749:22)
+    at performUnitOfWork (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19194:20)
+    at workLoopSync (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19133:13)
+    at renderRootSync (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:19112:15)
+    at recoverFromConcurrentError (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18732:28)
+    at performSyncWorkOnRoot (http://localhost:3000/node_modules/.vite/deps/chunk-AF2CZ24Y.js?v=dbc409e8:18875:28) {componentStack: 
+    at RulesLookupLayout (http://localhost:3000/s…ct-router-dom.js?v=dbc409e8:3597:5)
+    at Routes} @ http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=dbc409e8:3313
